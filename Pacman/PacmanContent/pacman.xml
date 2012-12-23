@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with TexturePacker http://texturepacker.com-->
+<!-- $TexturePacker:SmartUpdate:9da1c2f3faf254308f0ca5f18c1647fc$ -->
+<!--Format:
+n  => name of the sprite
+x  => sprite x pos in texture
+y  => sprite y pos in texture
+w  => sprite width (may be trimmed)
+h  => sprite height (may be trimmed)
+oX => sprite's x-corner offset (only available if trimmed)
+oY => sprite's y-corner offset (only available if trimmed)
+oW => sprite's original width (only available if trimmed)
+oH => sprite's original height (only available if trimmed)
+r => 'y' only set if sprite is rotated
+-->
+<TextureAtlas imagePath="pacman.png" width="256" height="256">
+    <sprite n="pacman-01.png" x="2" y="2" w="29" h="29"/>
+    <sprite n="pacman-02.png" x="33" y="2" w="29" h="29"/>
+    <sprite n="pacman-03.png" x="64" y="2" w="29" h="29"/>
+    <sprite n="pacman-04.png" x="95" y="2" w="29" h="29"/>
+    <sprite n="pacman-05.png" x="126" y="2" w="29" h="29"/>
+    <sprite n="pacman-06.png" x="157" y="2" w="29" h="29"/>
+    <sprite n="pacman-07.png" x="188" y="2" w="29" h="29"/>
+    <sprite n="pacman-08.png" x="219" y="2" w="29" h="29"/>
+    <sprite n="pacman-09.png" x="2" y="33" w="29" h="29"/>
+    <sprite n="pacman-10.png" x="33" y="33" w="29" h="29"/>
+    <sprite n="pacman-11.png" x="64" y="33" w="29" h="29"/>
+    <sprite n="pacman-12.png" x="95" y="33" w="29" h="29"/>
+    <sprite n="pacman-13.png" x="126" y="33" w="29" h="29"/>
+    <sprite n="pacman-14.png" x="157" y="33" w="29" h="29"/>
+    <sprite n="pacman-15.png" x="188" y="33" w="29" h="29"/>
+    <sprite n="pacman-16.png" x="219" y="33" w="29" h="29"/>
+    <sprite n="pacman-17.png" x="2" y="64" w="29" h="29"/>
+    <sprite n="pacman-18.png" x="33" y="64" w="29" h="29"/>
+    <sprite n="pacman-19.png" x="64" y="64" w="29" h="29"/>
+    <sprite n="pacman-20.png" x="95" y="64" w="29" h="29"/>
+    <sprite n="pacman-21.png" x="126" y="64" w="29" h="29"/>
+    <sprite n="pacman-22.png" x="157" y="64" w="29" h="29"/>
+    <sprite n="pacman-23.png" x="188" y="64" w="29" h="29"/>
+    <sprite n="pacman-24.png" x="219" y="64" w="29" h="29"/>
+    <sprite n="pacman-25.png" x="2" y="95" w="29" h="29"/>
+    <sprite n="pacman-26.png" x="33" y="95" w="29" h="29"/>
+    <sprite n="pacman-27.png" x="64" y="95" w="29" h="29"/>
+    <sprite n="pacman-28.png" x="95" y="95" w="29" h="29"/>
+    <sprite n="pacman-29.png" x="126" y="95" w="29" h="29"/>
+    <sprite n="pacman-30.png" x="157" y="95" w="29" h="29"/>
+    <sprite n="pacman-31.png" x="188" y="95" w="29" h="29"/>
+    <sprite n="pacman-32.png" x="219" y="95" w="29" h="29"/>
+    <sprite n="pacman-33.png" x="2" y="126" w="29" h="29"/>
+    <sprite n="pacman-34.png" x="33" y="126" w="29" h="29"/>
+    <sprite n="pacman-35.png" x="64" y="126" w="29" h="29"/>
+    <sprite n="pacman-36.png" x="95" y="126" w="29" h="29"/>
+    <sprite n="pacman-37.png" x="126" y="126" w="29" h="29"/>
+    <sprite n="pacman-38.png" x="157" y="126" w="29" h="29"/>
+    <sprite n="pacman-39.png" x="188" y="126" w="29" h="29"/>
+    <sprite n="pacman-40.png" x="219" y="126" w="29" h="29"/>
+    <sprite n="pacman-41.png" x="2" y="157" w="29" h="29"/>
+    <sprite n="pacman-42.png" x="33" y="157" w="29" h="29"/>
+    <sprite n="pacman-43.png" x="64" y="157" w="29" h="29"/>
+    <sprite n="pacman-44.png" x="95" y="157" w="29" h="29"/>
+    <sprite n="pacman-45.png" x="126" y="157" w="29" h="29"/>
+    <sprite n="pacman-46.png" x="157" y="157" w="29" h="29"/>
+    <sprite n="pacman-47.png" x="188" y="157" w="29" h="29"/>
+    <sprite n="pacman-48.png" x="219" y="157" w="29" h="29"/>
+    <sprite n="pacman-49.png" x="2" y="188" w="29" h="29"/>
+    <sprite n="pacman-50.png" x="33" y="188" w="29" h="29"/>
+    <sprite n="pacman-51.png" x="64" y="188" w="29" h="29"/>
+    <sprite n="pacman-52.png" x="95" y="188" w="29" h="29"/>
+    <sprite n="pacman-53.png" x="126" y="188" w="29" h="29"/>
+    <sprite n="pacman-54.png" x="157" y="188" w="29" h="29"/>
+</TextureAtlas>
