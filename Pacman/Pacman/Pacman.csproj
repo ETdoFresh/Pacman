@@ -114,7 +114,7 @@
     <Compile Include="Ghost.cs" />
     <Compile Include="Inky.cs" />
     <Compile Include="Map.cs" />
-    <Compile Include="MapTile.cs" />
+    <Compile Include="Tile.cs" />
     <Compile Include="Pinky.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerManager.cs" />

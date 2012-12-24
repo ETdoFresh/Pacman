@@ -20,7 +20,7 @@ namespace Pacman
         Ghost pinky;
         Ghost inky;
         Ghost clyde;
-        List<Sprite> mapTiles = new List<Sprite>();
+        List<Tile> mapTiles = new List<Tile>();
         PlayerManager playerManager;
         CollisionManager collisionManager;
 
@@ -71,11 +71,26 @@ namespace Pacman
                     if (Map.data[row, column] > 0)
                     {
                         var tileIndex = Map.data[row, column] + 53;
-                        var newTile = new MapTile(texture, textureRectangles, tileIndex);
+                        var newTile = new Tile(texture, textureRectangles, tileIndex);
                         var xPos = newTile.Width * column + newTile.Width / 2;
                         var yPos = newTile.Height * row + newTile.Height / 2;
                         newTile.Position = new Vector2(xPos, yPos);
                         newTile.Rotation = Map.rotation[row, column] * MathHelper.ToRadians(90);
+                        mapTiles.Add(newTile);
+                    }
+                }
+
+            for (int row = 0; row < Map.innerWallsData.GetLength(0); row++)
+                for (int column = 0; column < Map.innerWallsData.GetLength(1); column++)
+                {
+                    if (Map.innerWallsData[row, column] > 0)
+                    {
+                        var tileIndex = Map.innerWallsData[row, column] + 53;
+                        var newTile = new Tile(texture, textureRectangles, tileIndex);
+                        var xPos = newTile.Width * column + newTile.Width / 2;
+                        var yPos = newTile.Height * row + newTile.Height / 2;
+                        newTile.Position = new Vector2(xPos, yPos);
+                        newTile.Rotation = Map.innerWallsRotation[row, column] * MathHelper.ToRadians(90);
                         mapTiles.Add(newTile);
                     }
                 }
@@ -137,7 +152,7 @@ namespace Pacman
             DrawBoundBox(inky);
             DrawBoundBox(clyde);
             foreach (var tile in mapTiles)
-                DrawBoundBox(tile);
+               // DrawBoundBox(tile);
 
             player.Draw(spriteBatch);
             blinky.Draw(spriteBatch);

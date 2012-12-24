@@ -10,9 +10,9 @@ namespace Pacman
     {
         private Player player;
         private List<Ghost> ghosts;
-        private List<Sprite> walls;
+        private List<Tile> walls;
 
-        public CollisionManager(Player player, List<Ghost> ghosts, List<Sprite> walls)
+        public CollisionManager(Player player, List<Ghost> ghosts, List<Tile> walls)
         {
             this.player = player;
             this.ghosts = ghosts;

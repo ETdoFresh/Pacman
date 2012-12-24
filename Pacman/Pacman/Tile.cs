@@ -7,9 +7,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pacman
 {
-    class MapTile : Sprite
+    class Tile : Sprite
     {
-        public MapTile(Texture2D texture, List<Rectangle> textureRectangles, int tileIndex)
+        public Tile(Texture2D texture, List<Rectangle> textureRectangles, int tileIndex)
             : base (texture, textureRectangles)
         {
             this.sequences = new List<AnimationSequence>()
