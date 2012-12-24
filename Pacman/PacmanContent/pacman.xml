@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://texturepacker.com-->
-<!-- $TexturePacker:SmartUpdate:9da1c2f3faf254308f0ca5f18c1647fc$ -->
+<!-- $TexturePacker:SmartUpdate:7f662f20139c156dc4c8e26a449fcdb9$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
@@ -68,4 +68,9 @@ r => 'y' only set if sprite is rotated
     <sprite n="pacman-52.png" x="95" y="188" w="29" h="29"/>
     <sprite n="pacman-53.png" x="126" y="188" w="29" h="29"/>
     <sprite n="pacman-54.png" x="157" y="188" w="29" h="29"/>
+    <sprite n="pacman-55.png" x="188" y="188" w="15" h="15"/>
+    <sprite n="pacman-56.png" x="205" y="188" w="15" h="15"/>
+    <sprite n="pacman-57.png" x="222" y="188" w="15" h="15"/>
+    <sprite n="pacman-58.png" x="239" y="188" w="15" h="15"/>
+    <sprite n="pacman-59.png" x="2" y="219" w="15" h="15"/>
 </TextureAtlas>
