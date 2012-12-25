@@ -20,6 +20,7 @@ namespace Pacman
         Map map;
         PlayerManager playerManager;
         MapManager mapManager;
+        private TileMap tileMap;
 
         public Game1()
         {
@@ -45,6 +46,9 @@ namespace Pacman
             var texture = Content.Load<Texture2D>(filename);
             var textureRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\" + filename + ".xml");
 
+            tileMap = new TileMap(texture, textureRectangles);
+
+            /*
             player = new Player(texture, textureRectangles);
             blinky = new Blinky(texture, textureRectangles);
             pinky = new Pinky(texture, textureRectangles);
@@ -56,6 +60,7 @@ namespace Pacman
 
             mapManager = new MapManager(map, player, ghosts);
             playerManager = new PlayerManager(player);
+             */
         }
 
         protected override void UnloadContent()
@@ -68,6 +73,7 @@ namespace Pacman
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 this.Exit();
 
+            /*
             player.Update(gameTime);
             blinky.Update(gameTime);
             pinky.Update(gameTime);
@@ -76,6 +82,7 @@ namespace Pacman
 
             mapManager.Update(gameTime);
             playerManager.Update(gameTime);
+            */
 
             base.Update(gameTime);
         }
@@ -86,12 +93,15 @@ namespace Pacman
 
             spriteBatch.Begin();
 
+            /*
             player.Draw(spriteBatch);
             blinky.Draw(spriteBatch);
             pinky.Draw(spriteBatch);
             inky.Draw(spriteBatch);
             clyde.Draw(spriteBatch);
             map.Draw(spriteBatch);
+            */
+            tileMap.Draw(spriteBatch);
 
             spriteBatch.End();
 
