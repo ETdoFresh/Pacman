@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
 
 namespace Pacman
 {
@@ -18,10 +14,12 @@ namespace Pacman
         private double eatableDuration;
 
         public bool IsEatable { get { return isEatable; } }
+        public Rectangle BoundingBox { get { return new Rectangle((int)X - Width / 2, (int)Y - Height / 2, Width, Height); } }
 
-        public Ghost(Texture2D texture, List<Rectangle> textureRectangles)
-            : base(texture, textureRectangles)
+        public Ghost(Texture2D texture, List<Rectangle> sourceRectangles)
+            : base(texture, sourceRectangles)
         {
+            sequence = new Sequence(name: "Default", start: 0, count: 2, time: 200);
         }
 
         public override void Update(GameTime gameTime)
@@ -72,8 +70,7 @@ namespace Pacman
                     sequenceName = "Still";
             }
 
-            if (Sequence != sequenceName)
-                setSequence(sequenceName);
+            setSequence(sequenceName);
         }
 
         private void isNowEatable(double duration)

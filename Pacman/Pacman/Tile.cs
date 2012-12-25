@@ -1,23 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Pacman
 {
-    class Tile : Sprite
+    class Tile : Image
     {
-        public Tile(Texture2D texture, List<Rectangle> textureRectangles, int tileIndex)
-            : base (texture, textureRectangles)
-        {
-            this.sequences = new List<AnimationSequence>()
-            {
-                new AnimationSequence(name: "MapTile", start: tileIndex, count: 1, time: 0),
-            };
+        public Rectangle BoundingBox { get { return new Rectangle((int)X - Width / 2, (int)Y - Height / 2, Width, Height); } }
 
-            setSequence("MapTile");
+        public Tile(Texture2D texture, List<Rectangle> sourceRectangles, int tileIndex)
+            : base (texture, sourceRectangles, tileIndex)
+        {
         }
     }
 }

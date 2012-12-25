@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Xml.Linq;
-using System.Diagnostics;
 
 namespace Pacman
 {
@@ -24,15 +23,16 @@ namespace Pacman
         PlayerManager playerManager;
         CollisionManager collisionManager;
 
-        Dictionary<Sprite, Texture2D> bbox = new Dictionary<Sprite,Texture2D>();
+        Dictionary<Image, Texture2D> bbox = new Dictionary<Image, Texture2D>();
 
         public Game1()
         {
+            this.IsMouseVisible = true;
             graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = 800;
             graphics.PreferredBackBufferHeight = 500;
+            Content.RootDirectory = "Content";
         }
 
         protected override void Initialize()
@@ -50,18 +50,23 @@ namespace Pacman
             var textureRectangles = LoadTextureRectangles(Content.RootDirectory + "\\" + filename + ".xml");
 
             player = new Player(texture, textureRectangles);
-            player.Position = new Vector2(graphics.GraphicsDevice.Viewport.Width / 2, graphics.GraphicsDevice.Viewport.Height / 2);
-
+            player.X = 600;
             playerManager = new PlayerManager(player);
 
             blinky = new Blinky(texture, textureRectangles);
-            blinky.Position = new Vector2(player.Position.X + player.Width + 10, player.Position.Y);
             pinky = new Pinky(texture, textureRectangles);
-            pinky.Position = new Vector2(blinky.Position.X + blinky.Width + 10, blinky.Position.Y);
             inky = new Inky(texture, textureRectangles);
-            inky.Position = new Vector2(pinky.Position.X + player.Width + 10, pinky.Position.Y);
             clyde = new Clyde(texture, textureRectangles);
-            clyde.Position = new Vector2(inky.Position.X + inky.Width + 10, inky.Position.Y);
+
+            blinky.X = graphics.GraphicsDevice.Viewport.Width / 2 + 40;
+            blinky.Y = graphics.GraphicsDevice.Viewport.Height / 2;
+            pinky.X = blinky.X + 40;
+            pinky.Y = blinky.Y;
+            inky.X = blinky.X + 80;
+            inky.Y = blinky.Y;
+            clyde.X = blinky.X + 120;
+            clyde.Y = blinky.Y;
+            clyde.Velocity = new Vector2(1, 0);
 
             var ghosts = new List<Ghost>(){ blinky, pinky, inky, clyde };
 
@@ -75,7 +80,7 @@ namespace Pacman
                         var xPos = newTile.Width * column + newTile.Width / 2;
                         var yPos = newTile.Height * row + newTile.Height / 2;
                         newTile.Position = new Vector2(xPos, yPos);
-                        newTile.Rotation = Map.rotation[row, column] * MathHelper.ToRadians(90);
+                        newTile.Orientation = Map.rotation[row, column] * MathHelper.ToRadians(90);
                         mapTiles.Add(newTile);
                     }
                 }
@@ -90,7 +95,7 @@ namespace Pacman
                         var xPos = newTile.Width * column + newTile.Width / 2;
                         var yPos = newTile.Height * row + newTile.Height / 2;
                         newTile.Position = new Vector2(xPos, yPos);
-                        newTile.Rotation = Map.innerWallsRotation[row, column] * MathHelper.ToRadians(90);
+                        newTile.Orientation = Map.innerWallsRotation[row, column] * MathHelper.ToRadians(90);
                         mapTiles.Add(newTile);
                     }
                 }
@@ -146,14 +151,6 @@ namespace Pacman
 
             spriteBatch.Begin();
 
-            DrawBoundBox(player);
-            DrawBoundBox(blinky);
-            DrawBoundBox(pinky);
-            DrawBoundBox(inky);
-            DrawBoundBox(clyde);
-            foreach (var tile in mapTiles)
-               // DrawBoundBox(tile);
-
             player.Draw(spriteBatch);
             blinky.Draw(spriteBatch);
             pinky.Draw(spriteBatch);
@@ -166,22 +163,6 @@ namespace Pacman
             spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        private void DrawBoundBox(Sprite sprite)
-        {
-            if (bbox.ContainsKey(sprite))
-            {
-                spriteBatch.Draw(bbox[sprite], sprite.BoundingBox, Color.Black);
-            }
-            else
-            {
-                var texture = new Texture2D(graphics.GraphicsDevice, sprite.BoundingBox.Width, sprite.BoundingBox.Height);
-                Color[] data = new Color[sprite.BoundingBox.Width * sprite.BoundingBox.Height];
-                for (int i = 0; i < data.Length; ++i) data[i] = Color.Black;
-                texture.SetData(data);
-                bbox.Add(sprite, texture);
-            }
         }
     }
 }
