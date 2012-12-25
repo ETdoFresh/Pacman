@@ -115,7 +115,9 @@
     <Compile Include="Image.cs" />
     <Compile Include="Inky.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="MapManager.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="TexturePacker.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="Pinky.cs" />
     <Compile Include="Player.cs" />
