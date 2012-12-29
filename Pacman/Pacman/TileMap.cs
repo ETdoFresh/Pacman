@@ -192,12 +192,43 @@ namespace Pacman
                         if (cells[x, y].tiles[i] != 0)
                         {
                             var destinationRectangle = new Rectangle(x * TileWidth + TileWidth / 2, y * TileHeight + TileHeight / 2, TileWidth, TileHeight);
+                            destinationRectangle.X += (int)Camera.Position.X;
+                            destinationRectangle.Y += (int)Camera.Position.Y;
                             var origin = new Vector2(TileWidth / 2, TileHeight / 2);
                             spriteBatch.Draw(texture, destinationRectangle, sourceRectangles[cells[x, y].tiles[i]], Color.White, cells[x, y].orientations[i], origin, SpriteEffects.None, 0);
                         }
                     }
                 }
             }
+        }
+
+        public MapCell GetMapCellFromWorldCoordinates(Vector2 worldCoordinates)
+        {
+            var x = (int)Math.Floor(worldCoordinates.X / TileWidth);
+            var y = (int)Math.Floor(worldCoordinates.Y / TileHeight);
+            if (x < cells.GetLength(0) && y < cells.GetLength(1))
+                return cells[x, y];
+            
+            return null;
+        }
+
+        public Vector2 GetTilePositionFromWorldCoordinates(Vector2 worldCoordinates)
+        {
+            var x = (int)Math.Floor(worldCoordinates.X / TileWidth);
+            var y = (int)Math.Floor(worldCoordinates.Y / TileHeight);
+            if (IsCoordinatesOnMap(worldCoordinates))
+                return new Vector2(x * TileWidth + TileWidth / 2, y * TileHeight + TileHeight / 2);
+            return new Vector2(-1, -1);
+        }
+
+        private bool IsCoordinatesOnMap(Vector2 coordinates)
+        {
+            if (coordinates.X < 0 && coordinates.Y < 0)
+                return false;
+            else if (coordinates.X < MapWidth * TileWidth && coordinates.Y < MapHeight * TileHeight)
+                return true;
+            else
+                return false;
         }
     }
 }

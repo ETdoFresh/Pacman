@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="Animation.cs" />
     <Compile Include="Blinky.cs" />
+    <Compile Include="Camera.cs" />
     <Compile Include="Clyde.cs" />
     <Compile Include="CollisionManager.cs" />
     <Compile Include="Ghost.cs" />

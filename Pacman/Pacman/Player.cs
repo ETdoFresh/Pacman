@@ -26,6 +26,8 @@ namespace Pacman
         {
             base.Update(gameTime);
 
+            updateDirection();
+
             string sequenceName;
             if (Velocity == Vector2.Zero)
                 sequenceName = "Still";

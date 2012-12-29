@@ -41,8 +41,9 @@ namespace Pacman
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            if ( isVisible )
-                spriteBatch.Draw(texture, position, sourceRectangle, Color.White, orientation, origin, scale, SpriteEffects.None, 0);
+            var offsetPosition = Camera.Position + position;
+            if (isVisible)
+                spriteBatch.Draw(texture, offsetPosition, sourceRectangle, Color.White, orientation, origin, scale, SpriteEffects.None, 0);
         }
 
         protected void UpdateSourceRectangle(Rectangle newSourceRectangle)

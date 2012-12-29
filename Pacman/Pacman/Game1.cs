@@ -21,6 +21,7 @@ namespace Pacman
         PlayerManager playerManager;
         MapManager mapManager;
         private TileMap tileMap;
+        private Texture2D rect;
 
         public Game1()
         {
@@ -47,6 +48,10 @@ namespace Pacman
             var textureRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\" + filename + ".xml");
 
             tileMap = new TileMap(texture, textureRectangles);
+
+            rect = new Texture2D(graphics.GraphicsDevice, 1, 1);
+            rect.SetData(new[] { Color.White });
+            Camera.Position = new Vector2(50, 50);
 
             /*
             player = new Player(texture, textureRectangles);
@@ -102,6 +107,18 @@ namespace Pacman
             map.Draw(spriteBatch);
             */
             tileMap.Draw(spriteBatch);
+
+            var mouseState = Mouse.GetState();
+            var screenCoordinates = new Vector2(mouseState.X, mouseState.Y);
+            var worldCoordinates = Camera.GetWorldCoordinatesFromScreenCoordinates(screenCoordinates);
+            var tilePosition = tileMap.GetTilePositionFromWorldCoordinates(worldCoordinates);
+
+            if (tilePosition.X > -1 && tilePosition.Y > -1)
+            {
+                var screenTilePosition = Camera.GetScreenCoordinatesFromWorldCoordinates(tilePosition);
+                var highlightRectangle = new Rectangle((int)screenTilePosition.X - tileMap.TileWidth / 2, (int)screenTilePosition.Y - tileMap.TileHeight / 2, tileMap.TileWidth, tileMap.TileHeight);
+                spriteBatch.Draw(rect, highlightRectangle, Color.White);
+            }
 
             spriteBatch.End();
 
