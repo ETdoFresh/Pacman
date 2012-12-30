@@ -9,22 +9,26 @@ namespace Pacman
     class CollisionManager
     {
         private Player player;
-        private List<Ghost> ghosts;
-        private MapManager mapManager;
 
-        public CollisionManager(Player player, List<Ghost> ghosts, MapManager mapManager)
+        public CollisionManager(Player player)
         {
             this.player = player;
-            this.ghosts = ghosts;
-            this.mapManager = mapManager;
-        }
-        public void Update(GameTime gameTime)
-        {
-            checkPlayerWallCollision();
         }
 
-        private void checkPlayerWallCollision()
+        internal void Update(GameTime gameTime)
         {
+            var mapLimitX = 800;
+            var mapLimitY = 500;
+            
+            if (player.X > mapLimitX)
+                player.X = 0;
+            else if (player.X < 0)
+                player.X = mapLimitX;
+
+            if (player.Y > mapLimitY)
+                player.Y = 0;
+            else if (player.Y < 0)
+                player.Y = mapLimitY;
         }
     }
 }
