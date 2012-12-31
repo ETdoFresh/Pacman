@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
-    class Ghost
+    class Ghost : IGameObject
     {
         private Rectangle sourceRectangle;
         private Vector2 position;
@@ -37,13 +37,22 @@ namespace Pacman
             setSequence("NoAnimation");
         }
 
-        internal void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
             UpdateVelocityFromKeyboard(keyboardState);
             UpdatePositionFromVelocity(gameTime);
             UpdateAnimation(gameTime);
             UpdateSequence();
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            var tint = Color.White;
+            var spriteEffect = SpriteEffects.None;
+            var layerDepth = 0.0f;
+            var scale = 1.0f;
+            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
         }
 
         private void UpdateSequence()
@@ -74,15 +83,6 @@ namespace Pacman
                     return;
                 }
             }
-        }
-
-        internal void Draw(SpriteBatch spriteBatch)
-        {
-            var tint = Color.White;
-            var spriteEffect = SpriteEffects.None;
-            var layerDepth = 0.0f;
-            var scale = 1.0f;
-            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
         }
 
         private void UpdatePositionFromVelocity(GameTime gameTime)

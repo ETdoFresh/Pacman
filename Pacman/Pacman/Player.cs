@@ -8,10 +8,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
-    class Player
+    class Player : IGameObject
     {
         private Rectangle sourceRectangle;
         private Vector2 position;
+        private Vector2 previousPosition;
+        private Vector2 destination;
         private Vector2 origin;
         private Vector2 velocity;
         private float orientation;
@@ -24,8 +26,11 @@ namespace Pacman
         private int currentFrame;
         private int totalFrames;
 
-        public float X { get { return position.X; } set { position.X = value; } }
-        public float Y { get { return position.Y; } set { position.Y = value; } }
+        public int X { get { return (int)position.X; } set { previousPosition = position; position.X = value; } }
+        public int Y { get { return (int)position.Y; } set { previousPosition = position; position.Y = value; } }
+        public Vector2 Position { get { return position; } }
+        public Vector2 InputDirection { get; set; }
+        public Vector2 Destination { get { return destination; } set { destination = value; } }
 
         public Player(Texture2D texture, List<Rectangle> sourceRectangles)
         {
@@ -42,15 +47,45 @@ namespace Pacman
             sequence = sequences[0];
             totalFrames = sequence.frames.Count;
             origin = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
+            InputDirection = new Vector2(-1, 0);
         }
 
-        internal void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
-            var keyboardState = Keyboard.GetState();
-            UpdateVelocityFromKeyboard(keyboardState);
+            UpdateIntendedVelocity();
+            UpdateVelocity();
             UpdatePositionFromVelocity(gameTime);
             UpdateAnimation(gameTime);
             UpdateSequence();
+        }
+
+        private void UpdateIntendedVelocity()
+        {
+            var keyboardState = Keyboard.GetState();
+            var keyDictionary = new Dictionary<Keys, Vector2>
+            {
+                {Keys.Left, new Vector2(-1, 0)},
+                {Keys.Right, new Vector2(1, 0)},
+                {Keys.Up, new Vector2(0, -1)},
+                {Keys.Down, new Vector2(0, 1)},
+            };
+
+            var newVelocity = Vector2.Zero;
+            foreach (var key in keyDictionary)
+                if (keyboardState.IsKeyDown(key.Key))
+                    newVelocity += key.Value;
+
+            if (!newVelocity.Equals(Vector2.Zero))
+                InputDirection = newVelocity;
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            var tint = Color.White;
+            var spriteEffect = SpriteEffects.None;
+            var layerDepth = 0.0f;
+            var scale = 1.0f;
+            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
         }
 
         private void UpdateSequence()
@@ -77,38 +112,28 @@ namespace Pacman
             }
         }
 
-        internal void Draw(SpriteBatch spriteBatch)
-        {
-            var tint = Color.White;
-            var spriteEffect = SpriteEffects.None;
-            var layerDepth = 0.0f;
-            var scale = 1.0f;
-            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
-        }
-
         private void UpdatePositionFromVelocity(GameTime gameTime)
         {
+            previousPosition = position;
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
             position += velocity * time * speed;
+
+            var destinationLength = (destination - previousPosition).Length();
+            var movementLength = (position - previousPosition).Length();
+
+            if (destinationLength < movementLength)
+                position = destination;
+
             if (!velocity.Equals(Vector2.Zero))
                 orientation = (float)Math.Atan2(-velocity.Y, -velocity.X);
             //orientation += Rotation * time * Speed;
         }
 
-        private void UpdateVelocityFromKeyboard(KeyboardState keyboardState)
+        private void UpdateVelocity()
         {
-            var keyDictionary = new Dictionary<Keys, Vector2>
-            {
-                {Keys.Left, new Vector2(-1, 0)},
-                {Keys.Right, new Vector2(1, 0)},
-                {Keys.Up, new Vector2(0, -1)},
-                {Keys.Down, new Vector2(0, 1)},
-            };
-
-            velocity = Vector2.Zero;
-            foreach (var key in keyDictionary)
-                if (keyboardState.IsKeyDown(key.Key))
-                    velocity += key.Value;
+            velocity = destination - position;
+            if (!velocity.Equals(Vector2.Zero))
+                velocity.Normalize();
         }
 
         private void UpdateAnimation(GameTime gameTime)
@@ -140,6 +165,22 @@ namespace Pacman
         {
             origin.X = sourceRectangle.Width / 2;
             origin.Y = sourceRectangle.Height / 2;
+        }
+
+        internal void collideWithWall()
+        {
+            setPreviosPosition();
+            stopVelocity();
+        }
+
+        private void stopVelocity()
+        {
+            velocity = Vector2.Zero;
+        }
+
+        private void setPreviosPosition()
+        {
+            position = previousPosition;
         }
     }
 

@@ -15,12 +15,9 @@ namespace Pacman
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Player player;
+        private Map map;
         private CollisionManager collisionManager;
-        private Blinky blinky;
-        private Pinky pinky;
-        private Inky inky;
-        private Clyde clyde;
+        private DebugManager debugManager;
 
         public Game1()
         {
@@ -44,14 +41,12 @@ namespace Pacman
 
             var texture = Content.Load<Texture2D>("pacman");
             var textureRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
+            var font = Content.Load<SpriteFont>("SpriteFont");
 
-            player = new Player(texture, textureRectangles);
-            blinky = new Blinky(texture, textureRectangles);
-            pinky = new Pinky(texture, textureRectangles);
-            inky = new Inky(texture, textureRectangles);
-            clyde = new Clyde(texture, textureRectangles);
+            map = new Map(texture, textureRectangles);
+            collisionManager = new CollisionManager(map);
+            debugManager = new DebugManager(font, map);
 
-            collisionManager = new CollisionManager(player);
         }
 
         protected override void UnloadContent()
@@ -63,12 +58,9 @@ namespace Pacman
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            player.Update(gameTime);
-            blinky.Update(gameTime);
-            pinky.Update(gameTime);
-            inky.Update(gameTime);
-            clyde.Update(gameTime);
+            map.Update(gameTime);
             collisionManager.Update(gameTime);
+            debugManager.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -78,11 +70,8 @@ namespace Pacman
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            player.Draw(spriteBatch);
-            blinky.Draw(spriteBatch);
-            pinky.Draw(spriteBatch);
-            inky.Draw(spriteBatch);
-            clyde.Draw(spriteBatch);
+            map.Draw(spriteBatch);
+            debugManager.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
