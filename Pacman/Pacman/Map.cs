@@ -155,6 +155,7 @@ namespace Pacman
         private List<Ghost> ghosts = new List<Ghost>();
 
         public Player Player { get { return player; } }
+        public List<Ghost> Ghosts { get { return ghosts; } }
         public List<IGameObject> Objects { get; set; }
 
         public int TileWidth { get; private set; }
@@ -242,6 +243,7 @@ namespace Pacman
         }
 
         public Vector2 GetTileCoordinates(Player player) { return GetTileCoordinates(new Vector2(player.X, player.Y)); }
+        public Vector2 GetTileCoordinates(Ghost ghost) { return GetTileCoordinates(new Vector2(ghost.X, ghost.Y)); }
 
         public Vector2 GetWorldCoordinates(Vector2 tileCoordinates)
         {

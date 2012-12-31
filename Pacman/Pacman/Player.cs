@@ -25,12 +25,14 @@ namespace Pacman
         private double timeSinceLastFrame;
         private int currentFrame;
         private int totalFrames;
+        private int currentLoop;
 
         public int X { get { return (int)position.X; } set { previousPosition = position; position.X = value; } }
         public int Y { get { return (int)position.Y; } set { previousPosition = position; position.Y = value; } }
-        public Vector2 Position { get { return position; } }
+        public Vector2 Position { get { return position; } set { position = value; } }
         public Vector2 InputDirection { get; set; }
         public Vector2 Destination { get { return destination; } set { destination = value; } }
+        public bool IsDead { get; set; }
 
         public Player(Texture2D texture, List<Rectangle> sourceRectangles)
         {
@@ -42,7 +44,7 @@ namespace Pacman
             {
                 new Sequence(name: "Still", start: 36, count: 1, time: 0),
                 new Sequence(name: "Chomp", frames: new List<int>() { 36, 37, 36, 38 }, time: 200),
-                new Sequence(name: "Die", start: 38, count: 12, time: 0),
+                new Sequence(name: "Die", start: 38, count: 12, time: 1500, loop: 1),
             };
             sequence = sequences[0];
             totalFrames = sequence.frames.Count;
@@ -52,11 +54,14 @@ namespace Pacman
 
         public void Update(GameTime gameTime)
         {
-            UpdateIntendedVelocity();
-            UpdateVelocity();
-            UpdatePositionFromVelocity(gameTime);
+            if (!IsDead)
+            {
+                UpdateIntendedVelocity();
+                UpdateVelocity();
+                UpdatePositionFromVelocity(gameTime);
+                UpdateSequence();
+            }
             UpdateAnimation(gameTime);
-            UpdateSequence();
         }
 
         private void UpdateIntendedVelocity()
@@ -107,6 +112,7 @@ namespace Pacman
                 {
                     sequence = seq;
                     totalFrames = sequence.frames.Count;
+                    currentLoop = 0;
                     return;
                 }
             }
@@ -118,12 +124,6 @@ namespace Pacman
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
             position += velocity * time * speed;
 
-            var destinationLength = (destination - previousPosition).Length();
-            var movementLength = (position - previousPosition).Length();
-
-            if (destinationLength < movementLength)
-                position = destination;
-
             if (!velocity.Equals(Vector2.Zero))
                 orientation = (float)Math.Atan2(-velocity.Y, -velocity.X);
             //orientation += Rotation * time * Speed;
@@ -132,7 +132,12 @@ namespace Pacman
         private void UpdateVelocity()
         {
             velocity = destination - position;
-            if (!velocity.Equals(Vector2.Zero))
+            if (velocity.Length() < 5)
+            {
+                position = destination;
+                velocity = Vector2.Zero;
+            }
+            else
                 velocity.Normalize();
         }
 
@@ -145,9 +150,13 @@ namespace Pacman
                 timeSinceLastFrame = 0;
             }
             if (currentFrame >= totalFrames)
+            {
+                currentLoop++;
                 currentFrame = 0;
+            }
 
-            UpdateSourceRectangle(sourceRectangles[sequence.frames[currentFrame]]);
+            if (sequence.loop == 0 || currentLoop < sequence.loop)
+                UpdateSourceRectangle(sourceRectangles[sequence.frames[currentFrame]]);
         }
 
         private double SecondsBetweenFrames()
@@ -182,6 +191,12 @@ namespace Pacman
         {
             position = previousPosition;
         }
+
+        internal void Die()
+        {
+            IsDead = true;
+            setSequence("Die");
+        }
     }
 
     public struct Sequence
@@ -189,21 +204,24 @@ namespace Pacman
         public string name;
         public List<int> frames;
         public int time;
+        public int loop;
 
-        public Sequence(string name, List<int> frames, int time = 1000)
+        public Sequence(string name, List<int> frames, int time = 1000, int loop = 0)
         {
             this.name = name;
             this.frames = frames;
             this.time = time;
+            this.loop = loop;
         }
 
-        public Sequence(string name, int start = 0, int count = 1, int time = 1000)
+        public Sequence(string name, int start = 0, int count = 1, int time = 1000, int loop = 0)
         {
             this.name = name;
             this.frames = new List<int>();
             for (int i = start; i < start + count; i++)
                 this.frames.Add(i);
             this.time = time;
+            this.loop = loop;
         }
     }
 }

@@ -11,11 +11,13 @@ namespace Pacman
         private Player player;
         private Map map;
         private Vector2 previousInputDirection;
+        private List<Ghost> ghosts;
 
         public CollisionManager(Map map)
         {
             this.map = map;
             this.player = map.Player;
+            this.ghosts = map.Ghosts;
         }
 
         internal void Update(GameTime gameTime)
@@ -23,6 +25,21 @@ namespace Pacman
             WrapAroundEdges();
             UpdatePlayerTarget();
             CheckWallCollision();
+            CheckGhostCollision();
+        }
+
+        private void CheckGhostCollision()
+        {
+            var playerTile = map.GetTileCoordinates(player);
+            foreach (var ghost in ghosts)
+            {
+                var ghostTile = map.GetTileCoordinates(ghost);
+                if (playerTile.Equals(ghostTile))
+                {
+                    player.Die();
+                    return;
+                }
+            }
         }
 
         private void UpdatePlayerTarget()
@@ -53,29 +70,9 @@ namespace Pacman
                 nextTile = currentTile + currentInputDirection;
             }
 
-            if (currentInputDirection.X < 0 && player.Position.X <= currentTilePosition.X)
-            {
-                if (0 <= nextTile.X && nextTile.X < map.MapWidth && map.IsPassable(nextTile))
-                    target.X = map.GetWorldCoordinates(nextTile).X;
-            }
-            else if (currentInputDirection.X > 0 && player.Position.X >= currentTilePosition.X)
-            {
-                if (0 <= nextTile.X && nextTile.X < map.MapWidth && map.IsPassable(nextTile))
-                    target.X = map.GetWorldCoordinates(nextTile).X;
-            }
-            
-            if (currentInputDirection.Y < 0 && player.Position.Y <= currentTilePosition.Y)
-            {
-                if (0 <= nextTile.Y && nextTile.Y < map.MapHeight && map.IsPassable(nextTile))
-                    target.Y = map.GetWorldCoordinates(nextTile).Y;
-            }
-            else if (currentInputDirection.Y > 0 && player.Position.Y >= currentTilePosition.Y)
-            {
-                if (0 <= nextTile.Y && nextTile.Y < map.MapHeight && map.IsPassable(nextTile))
-                    target.Y = map.GetWorldCoordinates(nextTile).Y;
-            }
-
-            if (nextTile.Y == 14 && (nextTile.X == -1 || nextTile.X == map.MapWidth))
+            if (map.IsPassable(nextTile))
+                target = map.GetWorldCoordinates(nextTile);
+            else if (nextTile.Y == 14 && (nextTile.X == -1 || nextTile.X == map.MapWidth))
                 target = map.GetWorldCoordinates(nextTile);
 
             previousInputDirection = currentInputDirection;
