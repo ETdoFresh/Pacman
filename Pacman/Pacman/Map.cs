@@ -149,10 +149,9 @@ namespace Pacman
             { 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
         };
 
-        private Tile[,] innerTiles;
-        private Tile[,] outerTiles;
         private Player player;
         private List<Ghost> ghosts = new List<Ghost>();
+        private MapCell[,] mapCells;
 
         public Player Player { get { return player; } }
         public List<Ghost> Ghosts { get { return ghosts; } }
@@ -167,56 +166,66 @@ namespace Pacman
 
         public Map(Texture2D texture, List<Rectangle> textureRectangles)
         {
-            player = new Player(texture, textureRectangles);
-            ghosts.Add(new Blinky(texture, textureRectangles));
-            ghosts.Add(new Pinky(texture, textureRectangles));
-            ghosts.Add(new Inky(texture, textureRectangles));
-            ghosts.Add(new Clyde(texture, textureRectangles));
+            MapWidth = innerWallData.GetLength(1);
+            MapHeight = innerWallData.GetLength(0);
 
-            innerTiles = new Tile[innerWallData.GetLength(0), innerWallData.GetLength(1)];
-            outerTiles = new Tile[outerWallData.GetLength(0), outerWallData.GetLength(1)];
-            for (int row = 0; row < innerWallData.GetLength(0); row++)
+            var testTile = new Tile(texture, textureRectangles, 54);
+            TileWidth = testTile.Width;
+            TileHeight = testTile.Height;
+
+            mapCells = new MapCell[MapWidth, MapHeight];
+            for (int row = 0; row < MapHeight; row++)
             {
-                for (int column = 0; column < innerWallData.GetLength(1); column++)
+                for (int column = 0; column < MapWidth; column++)
                 {
+                    var mapCell = new MapCell(column, row);
+                    mapCells[column, row] = mapCell;
+
                     if (innerWallData[row, column] > 0)
                     {
-                        var newTile = new Tile(texture, textureRectangles, innerWallData[row, column] + 53);
+                        var textureIndex = innerWallData[row, column] + 53;
+                        var orientation = innerWallOrientation[row, column] * MathHelper.ToRadians(90);
+                        var newTile = new Tile(texture, textureRectangles, textureIndex, orientation);
                         newTile.X = newTile.Width * column + newTile.Width / 2;
                         newTile.Y = newTile.Height * row + newTile.Width / 2;
-                        newTile.Orientation = innerWallOrientation[row, column] * MathHelper.ToRadians(90);
-                        innerTiles[row, column] = newTile;
+                        mapCell.addLayer(newTile);
+                        mapCell.IsPassable = false;
                     }
+                    else
+                    {
+                        mapCell.IsPassable = true;
+                    }
+
                     if (outerWallData[row, column] > 0)
                     {
-                        var newTile = new Tile(texture, textureRectangles, outerWallData[row, column] + 53);
+                        var textureIndex = outerWallData[row, column] + 53;
+                        var orientation = outerWallOrientation[row, column] * MathHelper.ToRadians(90);
+                        var newTile = new Tile(texture, textureRectangles, textureIndex, orientation);
                         newTile.X = newTile.Width * column + newTile.Width / 2;
                         newTile.Y = newTile.Height * row + newTile.Width / 2;
-                        newTile.Orientation = outerWallOrientation[row, column] * MathHelper.ToRadians(90);
-                        outerTiles[row, column] = newTile;
+                        mapCell.addLayer(newTile);
                     }
                 }
             }
+
+            player = new Player(texture, textureRectangles);
+            ghosts.Add(new Blinky(texture, textureRectangles));
+            //ghosts.Add(new Pinky(texture, textureRectangles));
+            //ghosts.Add(new Inky(texture, textureRectangles));
+            //ghosts.Add(new Clyde(texture, textureRectangles));
 
             var objects = new List<IGameObject> { player };
             foreach (var ghost in ghosts) objects.Add(ghost);
-            for (int x = 0; x < innerTiles.GetLength(0); x++)
-            {
-                for (int y = 0; y < innerTiles.GetLength(1); y++)
-                {
-                    if (innerTiles[x, y] != null)
-                        objects.Add(innerTiles[x, y]);
-                    if (outerTiles[x, y] != null)
-                        objects.Add(outerTiles[x, y]);
-                }
-            }
             Objects = objects;
-            MapWidth = innerWallData.GetLength(1);
-            MapHeight = innerWallData.GetLength(0);
-            TileWidth = innerTiles[0, 0].Width;
-            TileHeight = innerTiles[0, 0].Height;
 
             placePlayerAtStartingPoint();
+            placeBlinkyAtStartingPoint();
+        }
+
+        private void placeBlinkyAtStartingPoint()
+        {
+            ghosts[0].X = TileWidth * 14;
+            ghosts[0].Y = (int)(TileHeight * 11.5);
         }
 
         private void placePlayerAtStartingPoint()
@@ -228,11 +237,13 @@ namespace Pacman
         public void Update(GameTime gameTime)
         {
             foreach (var obj in Objects) obj.Update(gameTime);
+            foreach (var cell in mapCells) cell.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var obj in Objects) obj.Draw(spriteBatch);
+            foreach (var cell in mapCells) cell.Draw(spriteBatch);
         }
 
         public Vector2 GetTileCoordinates(Vector2 worldCoordinates)
@@ -245,6 +256,15 @@ namespace Pacman
         public Vector2 GetTileCoordinates(Player player) { return GetTileCoordinates(new Vector2(player.X, player.Y)); }
         public Vector2 GetTileCoordinates(Ghost ghost) { return GetTileCoordinates(new Vector2(ghost.X, ghost.Y)); }
 
+        public Vector2 GetTileCoordinates(MapCell mapCell) 
+        {
+            for (int x = 0; x < MapWidth; x++)
+                for (int y = 0; y < MapHeight; y++)
+                    if (mapCells[x, y] == mapCell)
+                        return new Vector2(x, y);
+            return new Vector2(-1, -1);
+        }
+
         public Vector2 GetWorldCoordinates(Vector2 tileCoordinates)
         {
             var x = tileCoordinates.X * TileWidth + TileWidth / 2;
@@ -252,10 +272,18 @@ namespace Pacman
             return new Vector2(x, y);
         }
 
+        public Vector2 GetWorldCoordinates(MapCell mapCell)
+        {
+            var tileCoordinates = GetTileCoordinates(mapCell);
+            return GetWorldCoordinates(tileCoordinates);
+        }
+
+        public Vector2 GetWorldCoordinates(Player player) { return GetWorldCoordinates(GetTileCoordinates(player)); }
+
         public bool IsPassable(Vector2 tileCoordinates)
         {
             if (isValidTileCoordinates(tileCoordinates))
-                return innerTiles[(int)tileCoordinates.Y, (int)tileCoordinates.X] == null ? true : false;
+                return mapCells[(int)tileCoordinates.X, (int)tileCoordinates.Y].IsPassable;
 
             return false;
         }
@@ -267,6 +295,23 @@ namespace Pacman
                     return true;
             
             return false;
+        }
+
+        internal MapCell getCurrentMapCell(Ghost ghost)
+        {
+            var tileCoordinates = GetTileCoordinates(ghost);
+            return mapCells[(int)tileCoordinates.X, (int)tileCoordinates.Y];
+        }
+
+        internal MapCell getNextMapCell(Ghost ghost)
+        {
+            var currentMapCell = GetTileCoordinates(ghost);
+            var x = currentMapCell.X + ghost.InputDirection.X;
+            var y = currentMapCell.Y + ghost.InputDirection.Y;
+            if (0 <= x && x < MapWidth && 0 <= y && y < MapHeight)
+                return mapCells[(int)x, (int)y];
+            else
+                return null;
         }
     }
 }

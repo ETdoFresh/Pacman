@@ -11,10 +11,10 @@ namespace Pacman
     {
         private Texture2D texture;
         private List<Rectangle> sourceRectangles;
-        private Rectangle destinationRectangle;
         private Rectangle sourceRectangle;
-        private float orientation;
+        private Rectangle destinationRectangle;
         private Vector2 origin;
+        private float orientation;
         private float x;
         private float y;
         private int width;
@@ -24,14 +24,15 @@ namespace Pacman
         public float Y { get { return y; } set { y = value; UpdateDestination(); } }
         public int Width { get { return width; } set { width = value; UpdateDestination(); CenterOrigin(); } }
         public int Height { get { return height; } set { height = value; UpdateDestination(); CenterOrigin(); } }
-        public float Orientation { get { return orientation; } set { orientation = value; UpdateDestination(); } }
         public bool IsVisible { get; set; }
+        
 
-        public Tile(Texture2D texture, List<Rectangle> sourceRectangles, int textureIndex)
+        public Tile(Texture2D texture, List<Rectangle> sourceRectangles, int textureIndex, float orientation = 0)
         {
             this.texture = texture;
             this.sourceRectangles = sourceRectangles;
             this.sourceRectangle = sourceRectangles[textureIndex];
+            this.orientation = orientation;
 
             Width = sourceRectangle.Width;
             Height = sourceRectangle.Height;
@@ -53,7 +54,7 @@ namespace Pacman
             }
         }
 
-        public void ChangeTexture(int textureIndex)
+        public void ChangeTexture(int layerIndex, int textureIndex)
         {
             sourceRectangle = sourceRectangles[textureIndex];
         }

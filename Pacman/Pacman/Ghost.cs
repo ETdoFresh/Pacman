@@ -23,9 +23,14 @@ namespace Pacman
         private double timeSinceLastFrame;
         private int currentFrame;
         private int totalFrames;
+        private Vector2 destination;
 
+        static Random random = new Random();
+        
         public float X { get { return position.X; } set { position.X = value; } }
         public float Y { get { return position.Y; } set { position.Y = value; } }
+        public Vector2 InputDirection { get; set; }
+        public Vector2 Destination { get { return destination; } set { destination = value; } }
 
         public Ghost(Texture2D texture, List<Rectangle> sourceRectangles)
         {
@@ -35,15 +40,34 @@ namespace Pacman
             speed = 200;
             sequences = new Sequence[] { new Sequence(name: "NoAnimation", start: 34, count: 1, time: 0), };
             setSequence("NoAnimation");
+
+            setStartingVelocity();
         }
 
-        public void Update(GameTime gameTime)
+        private void setStartingVelocity()
         {
-            var keyboardState = Keyboard.GetState();
-            UpdateVelocityFromKeyboard(keyboardState);
+            var fiftyFifty = random.Next(100) % 2 == 0;
+            InputDirection = fiftyFifty ? new Vector2(1, 0) : new Vector2(-1, 0);
+        }
+
+        public virtual void Update(GameTime gameTime)
+        {
+            UpdateVelocity();
             UpdatePositionFromVelocity(gameTime);
             UpdateAnimation(gameTime);
             UpdateSequence();
+        }
+
+        private void UpdateVelocity()
+        {
+            velocity = destination - position;
+            if (velocity.Length() < 5)
+            {
+                position = destination;
+                velocity = Vector2.Zero;
+            }
+            else
+                velocity.Normalize();
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -89,22 +113,6 @@ namespace Pacman
         {
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
             position += velocity * time * speed;
-        }
-
-        private void UpdateVelocityFromKeyboard(KeyboardState keyboardState)
-        {
-            var keyDictionary = new Dictionary<Keys, Vector2>
-            {
-                {Keys.Left, new Vector2(-1, 0)},
-                {Keys.Right, new Vector2(1, 0)},
-                {Keys.Up, new Vector2(0, -1)},
-                {Keys.Down, new Vector2(0, 1)},
-            };
-
-            velocity = Vector2.Zero;
-            foreach (var key in keyDictionary)
-                if (keyboardState.IsKeyDown(key.Key))
-                    velocity += key.Value;
         }
 
         private void UpdateAnimation(GameTime gameTime)
@@ -156,6 +164,11 @@ namespace Pacman
                 new Sequence(name: "EatableFastFlashing", start: 32, count: 4, time: 200),
             };
             setSequence("Still");
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
         }
     }
 

@@ -22,7 +22,8 @@ namespace Pacman
         public void Update(GameTime gameTime)
         {
             var tile = map.GetTileCoordinates(map.Player);
-            output = string.Format("map.size = {4}, {5}\nplayer.Position = {0}, {1}\nplayer.tile = {2}, {3}", map.Player.X, map.Player.Y, tile.X, tile.Y,map.Width, map.Height);
+            var tile2 = map.GetTileCoordinates(map.Ghosts[0]);
+            output = string.Format("player.Position = {0}, {1}\nplayer.tile = {2}, {3}\nghost[0].tile = {4}, {5}", map.Player.X, map.Player.Y, tile.X, tile.Y, tile2.X, tile2.Y);
         }
 
         public void Draw(SpriteBatch spriteBatch)

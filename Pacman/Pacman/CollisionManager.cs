@@ -24,8 +24,29 @@ namespace Pacman
         {
             WrapAroundEdges();
             UpdatePlayerTarget();
+            UpdateGhostTarget();
             CheckWallCollision();
             CheckGhostCollision();
+        }
+
+        private void UpdateGhostTarget()
+        {
+            foreach (var ghost in ghosts)
+            {
+                var currentMapCell = map.getCurrentMapCell(ghost);
+                var nextMapCell = map.getNextMapCell(ghost);
+
+                if (nextMapCell != null && nextMapCell.IsPassable)
+                    ghost.Destination = map.GetWorldCoordinates(nextMapCell);
+
+                if (nearGhostCage(currentMapCell))
+                    return;
+            }
+        }
+
+        private static bool nearGhostCage(MapCell mapCell)
+        {
+            return (mapCell.Y == 11 || mapCell.Y == 17) && (10 < mapCell.X && mapCell.X < 17);
         }
 
         private void CheckGhostCollision()
