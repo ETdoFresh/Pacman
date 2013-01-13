@@ -20,6 +20,7 @@ namespace Pacman.DisplayObject
         public float YOrigin { get; set; }
         public float YReference { get; set; }
         public float YScale { get; set; }
+        public Color Color { get; set; }
 
         public float ContentX { get { return (Parent != null ? X * ContentXScale + Parent.ContentX : X * ContentXScale); } }
         public float ContentY { get { return (Parent != null ? Y * ContentYScale + Parent.ContentY : Y * ContentYScale); } }
@@ -38,6 +39,9 @@ namespace Pacman.DisplayObject
             Orientation = 0;
             XScale = 1;
             YScale = 1;
+            IsVisible = true;
+            Alpha = 1;
+            Color = Color.White;
         }
 
         public Vector2 ContentToLocal(Vector2 contentPosition)

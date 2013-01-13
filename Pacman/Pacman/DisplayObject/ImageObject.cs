@@ -23,16 +23,19 @@ namespace Pacman.DisplayObject
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            spriteBatch.Draw(
-                texture: imageSheet.texture,
-                position: new Vector2(ContentX, ContentY),
-                sourceRectangle: imageSheet.sourceRectangle,
-                color: Color.White,
-                rotation: ContentOrientation,
-                origin: new Vector2(XOrigin, YOrigin),
-                scale: new Vector2(ContentXScale, ContentYScale),
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
+            if (IsVisible)
+            {
+                spriteBatch.Draw(
+                    texture: imageSheet.texture,
+                    position: new Vector2(ContentX, ContentY),
+                    sourceRectangle: imageSheet.sourceRectangle,
+                    color: Color * Alpha,
+                    rotation: ContentOrientation,
+                    origin: new Vector2(XOrigin, YOrigin),
+                    scale: new Vector2(ContentXScale, ContentYScale),
+                    effects: SpriteEffects.None,
+                    layerDepth: 0f);
+            }
         }
     }
 

@@ -71,6 +71,22 @@ namespace Pacman.DisplayObject
             return NewText(Stage, text, left, top);
         }
 
+        public static RectangleObject NewRect(GroupObject parent, int left, int top, int width, int height)
+        {
+            var newRect = new RectangleObject();
+            newRect.Width = width;
+            newRect.Height = height;
+            newRect.X = left + width / 2;
+            newRect.Y = top + height / 2;
+            parent = parent == null ? Stage : parent;
+            parent.Insert(newRect);
+            return newRect;
+        }
+        public static RectangleObject NewRect(int left, int top, int width, int height)
+        {
+            return NewRect(Stage, left, top, width, height);
+        }
+
         public static Texture2D RetrieveTexture(string filename)
         {
             if (!textures.ContainsKey(filename))

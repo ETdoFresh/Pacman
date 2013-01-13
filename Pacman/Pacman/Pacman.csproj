@@ -112,6 +112,7 @@
     <Compile Include="DisplayObject\DisplayObject.cs" />
     <Compile Include="DisplayObject\GroupObject.cs" />
     <Compile Include="DisplayObject\ImageObject.cs" />
+    <Compile Include="DisplayObject\RectangleObject.cs" />
     <Compile Include="DisplayObject\SpriteObject.cs" />
     <Compile Include="DisplayObject\TextObject.cs" />
     <Compile Include="DebugManager.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="TexturePacker.cs" />
+    <Compile Include="Tile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

@@ -21,7 +21,7 @@ namespace Pacman.DisplayObject
         {
             imageSheet = new ImageSheet() { texture = texture, sourceRectangles = rectangles };
 
-            addSequence("Default", 0, 1);
+            addSequence("Default", 0, rectangles.Count);
             setSequence("Default");
             UpdateProperties();
         }
@@ -36,9 +36,10 @@ namespace Pacman.DisplayObject
             IsPlaying = true;
         }
 
-        public void setFrame(int frameIndex)
+        public void SetFrame(int frameIndex)
         {
             CurrentFrame = frameIndex;
+            UpdateProperties();
         }
 
         public void setSequence(string sequenceName)
@@ -68,18 +69,21 @@ namespace Pacman.DisplayObject
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            var sourceRectangleIndex = sequenceData.frames[CurrentFrame];
-            var sourceRectangle = imageSheet.sourceRectangles[sourceRectangleIndex];
-            spriteBatch.Draw(
-                texture: imageSheet.texture,
-                position: new Vector2(ContentX, ContentY),
-                sourceRectangle: sourceRectangle,
-                color: Color.White,
-                rotation: ContentOrientation,
-                origin: new Vector2(XOrigin, YOrigin),
-                scale: new Vector2(ContentXScale, ContentYScale),
-                effects: SpriteEffects.None,
-                layerDepth: 0f);
+            if (IsVisible)
+            {
+                var sourceRectangleIndex = sequenceData.frames[CurrentFrame];
+                var sourceRectangle = imageSheet.sourceRectangles[sourceRectangleIndex];
+                spriteBatch.Draw(
+                    texture: imageSheet.texture,
+                    position: new Vector2(ContentX, ContentY),
+                    sourceRectangle: sourceRectangle,
+                    color: Color * Alpha,
+                    rotation: ContentOrientation,
+                    origin: new Vector2(XOrigin, YOrigin),
+                    scale: new Vector2(ContentXScale, ContentYScale),
+                    effects: SpriteEffects.None,
+                    layerDepth: 0f);
+            }
         }
 
         public override void Update(GameTime gameTime)

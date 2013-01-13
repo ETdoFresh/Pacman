@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Pacman.DisplayObject;
+using System;
 
 namespace Pacman
 {
@@ -36,6 +37,8 @@ namespace Pacman
             var map = new Map();
             var player = new Player(map);
             var ghost = new Ghost(map);
+            var rectangle = display.NewRect(10, 10, 20, 20);
+            rectangle.Color = Color.BlueViolet;
 
             player.X = display.ContentWidth / 2;
             player.Y = display.ContentHeight / 2;
@@ -45,6 +48,7 @@ namespace Pacman
 
             DebugManager.Player = player;
             DebugManager.Ghost = ghost;
+            DebugManager.Map = map;
         }
 
         protected override void UnloadContent()

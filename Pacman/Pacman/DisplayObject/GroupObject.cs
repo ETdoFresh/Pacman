@@ -45,8 +45,11 @@ namespace Pacman.DisplayObject
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-            foreach (var child in children)
-                child.Draw(spriteBatch);
+            if (IsVisible)
+            {
+                foreach (var child in children)
+                    child.Draw(spriteBatch);
+            }
         }
 
         public override void Update(GameTime gameTime)
