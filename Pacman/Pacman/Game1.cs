@@ -5,7 +5,7 @@ using Pacman.DisplayObject;
 
 namespace Pacman
 {
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -30,16 +30,18 @@ namespace Pacman
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
             display.Content = Content;
+            display.graphics = graphics;
             display.font = Content.Load<SpriteFont>("SpriteFont");
 
-            var group = display.NewGroup();
-            group.XScale = .75f;
-            group.YScale = .75f;
-            group.X = 50;
-            group.Y = 50;
+            var map = new Map();
+            var player = new Player(map);
+            var ghost = new Ghost(map);
 
-            var player = new Player(group);
-            var ghost = new Ghost(group);
+            player.X = display.ContentWidth / 2;
+            player.Y = display.ContentHeight / 2;
+
+            ghost.X = player.X + 30;
+            ghost.Y = player.Y;
 
             DebugManager.Player = player;
             DebugManager.Ghost = ghost;

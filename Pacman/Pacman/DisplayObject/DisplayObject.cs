@@ -6,9 +6,6 @@ namespace Pacman.DisplayObject
 {
     class DisplayObject : EventListener
     {
-        public static ContentManager Content;
-        public static GroupObject Stage = display.Stage;
-
         public float Alpha { get; set; }
         public float Height { get; set; }
         public bool IsVisible { get; set; }

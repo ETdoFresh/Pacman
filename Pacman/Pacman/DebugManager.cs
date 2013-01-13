@@ -11,10 +11,16 @@ namespace Pacman
         public static void Update()
         {
             textObject.Text = "";
-            textObject.Text += string.Format("Player.X = {0}\n", Player.X);
-            textObject.Text += string.Format("Player.Y = {0}\n", Player.Y);
-            textObject.Text += string.Format("Ghost.X = {0}\n", Ghost.X);
-            textObject.Text += string.Format("Ghost.Y = {0}\n", Ghost.Y);
+            if (Player != null)
+            {
+                textObject.Text += string.Format("Player.X = {0}\n", Player.X);
+                textObject.Text += string.Format("Player.Y = {0}\n", Player.Y);
+            }
+            if (Ghost != null)
+            {
+                textObject.Text += string.Format("Ghost.X = {0}\n", Ghost.X);
+                textObject.Text += string.Format("Ghost.Y = {0}\n", Ghost.Y);
+            }
             textObject.X = textObject.ContentWidth / 2;
             textObject.Y = textObject.ContentHeight / 2;
         }

@@ -6,10 +6,10 @@ namespace Pacman.DisplayObject
 {
     class GroupObject : DisplayObject
     {
-        private List<DisplayObject> children = new List<DisplayObject>();
+        protected List<DisplayObject> children = new List<DisplayObject>();
         public int NumChildren { get { return children.Count; } }
 
-        public GroupObject(GroupObject parent) : base() { }
+        public GroupObject() : base() { }
 
         public void Remove(DisplayObject gameObject)
         {

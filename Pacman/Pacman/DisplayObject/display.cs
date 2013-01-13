@@ -11,25 +11,29 @@ namespace Pacman.DisplayObject
         public static ContentManager Content;
         public static Dictionary<string, Texture2D> textures = new Dictionary<string, Texture2D>();
         public static Dictionary<string, List<Rectangle>> rectangles = new Dictionary<string, List<Rectangle>>();
-        public static GroupObject Stage = new GroupObject(null);
+        public static GroupObject Stage = new GroupObject();
         public static SpriteFont font;
+        public static GraphicsDeviceManager graphics;
+
+        public static float ContentWidth { get { return graphics.GraphicsDevice.Viewport.Width; } }
+        public static float ContentHeight { get { return graphics.GraphicsDevice.Viewport.Height; } }
 
         // ------ Class Methods ------ //
         public static GroupObject NewGroup(GroupObject parent = null)
         {
+            var newGroup = new GroupObject(); 
             parent = parent == null ? Stage : parent;
-            var newGroup = new GroupObject(parent);
             parent.Insert(newGroup);
             return newGroup;
         }
 
         public static ImageObject NewImage(GroupObject parent, string filename, int left = 0, int top = 0, bool isFullResolution = false)
         {
-            parent = parent == null ? Stage : parent;
             var newImage = new ImageObject(RetrieveTexture(filename));
-            parent.Insert(newImage);
             newImage.X += left + newImage.XOrigin;
             newImage.Y += top + newImage.YOrigin;
+            parent = parent == null ? Stage : parent;
+            parent.Insert(newImage);
             return newImage;
         }
         public static ImageObject NewImage(string filename, int left = 0, int top = 0, bool isFullResolution = false)
@@ -39,12 +43,12 @@ namespace Pacman.DisplayObject
 
         public static SpriteObject NewSprite(GroupObject parent, string filename)
         {
-            parent = parent == null ? Stage : parent;
             var texture = RetrieveTexture(filename);
             var rectangles = RetrieveSourceRectangles(filename);
-            if(rectangles.Count == 0)
+            if (rectangles.Count == 0)
                 rectangles.Add(new Rectangle(0, 0, texture.Width, texture.Height));
             var newSprite = new SpriteObject(texture, rectangles);
+            parent = parent == null ? Stage : parent;
             parent.Insert(newSprite);
             return newSprite;
         }
@@ -55,11 +59,11 @@ namespace Pacman.DisplayObject
 
         public static TextObject NewText(GroupObject parent, string text, int left = 0, int top = 0)
         {
-            parent = parent == null ? Stage : parent;
             var newText = new TextObject(text);
-            parent.Insert(newText);
             newText.X = left + newText.XOrigin;
             newText.Y = top + newText.YOrigin;
+            parent = parent == null ? Stage : parent;
+            parent.Insert(newText);
             return newText;
         }
         public static TextObject NewText(string text, int left = 0, int top = 0)

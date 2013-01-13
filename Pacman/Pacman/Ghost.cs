@@ -21,6 +21,7 @@ namespace Pacman
 
             Speed = 200;
             addSequence("Still", 4, 1, 0);
+            setSequence("Still");
 
             var animationTime = 150;
             addSequence("Up", 0, 2, animationTime);

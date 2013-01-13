@@ -8,9 +8,6 @@ namespace Pacman
 {
     class Player : SpriteObject
     {
-        private Vector2 previousPosition;
-        private Vector2 destination;
-
         public Vector2 Velocity { get; set; }
         public float Speed { get; set; }
         public bool IsDead { get; set; }
@@ -62,7 +59,6 @@ namespace Pacman
 
         private void UpdatePositionFromVelocity(GameTime gameTime)
         {
-            previousPosition = Position;
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Position += Velocity * time * Speed;
 
