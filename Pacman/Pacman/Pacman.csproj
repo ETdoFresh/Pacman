@@ -107,18 +107,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CollisionManager.cs" />
+    <Compile Include="DisplayObject\display.cs" />
+    <Compile Include="DisplayObject\EventListener.cs" />
+    <Compile Include="DisplayObject\DisplayObject.cs" />
+    <Compile Include="DisplayObject\GroupObject.cs" />
+    <Compile Include="DisplayObject\ImageObject.cs" />
+    <Compile Include="DisplayObject\SpriteObject.cs" />
+    <Compile Include="DisplayObject\TextObject.cs" />
     <Compile Include="DebugManager.cs" />
     <Compile Include="Ghost.cs" />
-    <Compile Include="IGameObject.cs" />
     <Compile Include="Map.cs" />
-    <Compile Include="MapCell.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="TexturePacker.cs" />
-    <Compile Include="Tile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

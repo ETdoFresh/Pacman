@@ -1,34 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework;
+﻿using Pacman.DisplayObject;
 
 namespace Pacman
 {
-    class DebugManager : IGameObject
+    static class DebugManager
     {
-        private SpriteFont font;
-        private Map map;
-        private string output;
+        public static TextObject textObject = display.NewText("");
+        public static Player Player { get; set; }
+        public static Ghost Ghost { get; set; }
 
-        public DebugManager(SpriteFont font, Map map)
+        public static void Update()
         {
-            this.font = font;
-            this.map = map;
-        }
-
-        public void Update(GameTime gameTime)
-        {
-            var tile = map.GetTileCoordinates(map.Player);
-            var tile2 = map.GetTileCoordinates(map.Ghosts[0]);
-            output = string.Format("player.Position = {0}, {1}\nplayer.tile = {2}, {3}\nghost[0].tile = {4}, {5}", map.Player.X, map.Player.Y, tile.X, tile.Y, tile2.X, tile2.Y);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.DrawString(font, output, Vector2.Zero, Color.White);
+            textObject.Text = "";
+            textObject.Text += string.Format("Player.X = {0}\n", Player.X);
+            textObject.Text += string.Format("Player.Y = {0}\n", Player.Y);
+            textObject.Text += string.Format("Ghost.X = {0}\n", Ghost.X);
+            textObject.Text += string.Format("Ghost.Y = {0}\n", Ghost.Y);
+            textObject.X = textObject.ContentWidth / 2;
+            textObject.Y = textObject.ContentHeight / 2;
         }
     }
 }

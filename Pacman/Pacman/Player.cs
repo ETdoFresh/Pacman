@@ -1,70 +1,46 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Pacman.DisplayObject;
 
 namespace Pacman
 {
-    class Player : IGameObject
+    class Player : SpriteObject
     {
-        private Rectangle sourceRectangle;
-        private Vector2 position;
         private Vector2 previousPosition;
         private Vector2 destination;
-        private Vector2 origin;
-        private Vector2 velocity;
-        private float orientation;
-        private float speed;
-        private List<Rectangle> sourceRectangles;
-        private Texture2D texture;
-        private Sequence[] sequences;
-        private Sequence sequence;
-        private double timeSinceLastFrame;
-        private int currentFrame;
-        private int totalFrames;
-        private int currentLoop;
 
-        public int X { get { return (int)position.X; } set { previousPosition = position; position.X = value; } }
-        public int Y { get { return (int)position.Y; } set { previousPosition = position; position.Y = value; } }
-        public Vector2 Position { get { return position; } set { position = value; } }
-        public Vector2 InputDirection { get; set; }
-        public Vector2 Destination { get { return destination; } set { destination = value; } }
+        public Vector2 Velocity { get; set; }
+        public float Speed { get; set; }
         public bool IsDead { get; set; }
 
-        public Player(Texture2D texture, List<Rectangle> sourceRectangles)
+        public Player(GroupObject parent = null)
+            : base(display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
         {
-            this.texture = texture;
-            this.sourceRectangles = sourceRectangles;
+            if (parent == null)
+                parent = display.Stage;
+            parent.Insert(this);
 
-            speed = 200;
-            sequences = new Sequence[]
-            {
-                new Sequence(name: "Still", start: 36, count: 1, time: 0),
-                new Sequence(name: "Chomp", frames: new List<int>() { 36, 37, 36, 38 }, time: 200),
-                new Sequence(name: "Die", start: 38, count: 12, time: 1500, loop: 1),
-            };
-            sequence = sequences[0];
-            totalFrames = sequence.frames.Count;
-            origin = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
-            InputDirection = new Vector2(-1, 0);
+            Speed = 200;
+            addSequence("Still", 36, 1, 0);
+            addSequence("Chomp", new List<int> { 36, 38, 36, 37 }, 200);
+            setSequence("Chomp");
+            Play();
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (!IsDead)
             {
-                UpdateIntendedVelocity();
-                UpdateVelocity();
+                UpdateVelocityFromKeyboard();
                 UpdatePositionFromVelocity(gameTime);
                 UpdateSequence();
             }
-            UpdateAnimation(gameTime);
         }
 
-        private void UpdateIntendedVelocity()
+        private void UpdateVelocityFromKeyboard()
         {
             var keyboardState = Keyboard.GetState();
             var keyDictionary = new Dictionary<Keys, Vector2>
@@ -81,147 +57,26 @@ namespace Pacman
                     newVelocity += key.Value;
 
             if (!newVelocity.Equals(Vector2.Zero))
-                InputDirection = newVelocity;
-        }
-
-        private void UpdateVelocity()
-        {
-            velocity = destination - position;
-            if (velocity.Length() < 5)
-            {
-                position = destination;
-                velocity = Vector2.Zero;
-            }
-            else
-                velocity.Normalize();
+                Velocity = newVelocity;
         }
 
         private void UpdatePositionFromVelocity(GameTime gameTime)
         {
-            previousPosition = position;
+            previousPosition = Position;
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            position += velocity * time * speed;
+            Position += Velocity * time * Speed;
 
-            if (!velocity.Equals(Vector2.Zero))
-                orientation = (float)Math.Atan2(-velocity.Y, -velocity.X);
+            if (!Velocity.Equals(Vector2.Zero))
+                Orientation = (float)Math.Atan2(-Velocity.Y, -Velocity.X);
             //orientation += Rotation * time * Speed;
         }
 
         private void UpdateSequence()
         {
-            if (!velocity.Equals(Vector2.Zero))
+            if (!Velocity.Equals(Vector2.Zero))
                 setSequence("Chomp");
             else
                 setSequence("Still");
-        }
-
-        private void UpdateAnimation(GameTime gameTime)
-        {
-            timeSinceLastFrame += gameTime.ElapsedGameTime.TotalSeconds;
-            if (timeSinceLastFrame > SecondsBetweenFrames())
-            {
-                currentFrame++;
-                timeSinceLastFrame = 0;
-            }
-            if (currentFrame >= totalFrames)
-            {
-                currentLoop++;
-                currentFrame = 0;
-            }
-
-            if (sequence.loop == 0 || currentLoop < sequence.loop)
-                UpdateSourceRectangle(sourceRectangles[sequence.frames[currentFrame]]);
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            var tint = Color.White;
-            var spriteEffect = SpriteEffects.None;
-            var layerDepth = 0.0f;
-            var scale = 1.0f;
-            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
-        }
-
-        private void setSequence(string sequenceName)
-        {
-            if (sequence.name == sequenceName)
-                return;
-
-            foreach (var seq in sequences)
-            {
-                if (seq.name == sequenceName)
-                {
-                    sequence = seq;
-                    totalFrames = sequence.frames.Count;
-                    currentLoop = 0;
-                    return;
-                }
-            }
-        }
-
-        private double SecondsBetweenFrames()
-        {
-            return sequence.time / 1000.0 / totalFrames;
-        }
-
-        private void UpdateSourceRectangle(Rectangle newSourceRectangle)
-        {
-            this.sourceRectangle = newSourceRectangle;
-            setOriginToCenter();
-        }
-
-        private void setOriginToCenter()
-        {
-            origin.X = sourceRectangle.Width / 2;
-            origin.Y = sourceRectangle.Height / 2;
-        }
-
-        internal void collideWithWall()
-        {
-            setPreviosPosition();
-            stopVelocity();
-        }
-
-        private void stopVelocity()
-        {
-            velocity = Vector2.Zero;
-        }
-
-        private void setPreviosPosition()
-        {
-            position = previousPosition;
-        }
-
-        internal void Die()
-        {
-            IsDead = true;
-            setSequence("Die");
-        }
-    }
-
-    public struct Sequence
-    {
-        public string name;
-        public List<int> frames;
-        public int time;
-        public int loop;
-
-        public Sequence(string name, List<int> frames, int time = 1000, int loop = 0)
-        {
-            this.name = name;
-            this.frames = frames;
-            this.time = time;
-            this.loop = loop;
-        }
-
-        public Sequence(string name, int start = 0, int count = 1, int time = 1000, int loop = 0)
-        {
-            this.name = name;
-            this.frames = new List<int>();
-            for (int i = start; i < start + count; i++)
-                this.frames.Add(i);
-            this.time = time;
-            this.loop = loop;
         }
     }
 }

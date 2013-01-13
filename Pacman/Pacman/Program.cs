@@ -1,5 +1,3 @@
-using System;
-
 namespace Pacman
 {
 #if WINDOWS || XBOX

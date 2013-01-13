@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using Pacman.DisplayObject;
 
 namespace Pacman
 {
@@ -15,9 +9,6 @@ namespace Pacman
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Map map;
-        private CollisionManager collisionManager;
-        private DebugManager debugManager;
 
         public Game1()
         {
@@ -38,15 +29,20 @@ namespace Pacman
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            display.Content = Content;
+            display.font = Content.Load<SpriteFont>("SpriteFont");
 
-            var texture = Content.Load<Texture2D>("pacman");
-            var textureRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            var font = Content.Load<SpriteFont>("SpriteFont");
+            var group = display.NewGroup();
+            group.XScale = .75f;
+            group.YScale = .75f;
+            group.X = 50;
+            group.Y = 50;
 
-            map = new Map(texture, textureRectangles);
-            collisionManager = new CollisionManager(map);
-            debugManager = new DebugManager(font, map);
+            var player = new Player(group);
+            var ghost = new Ghost(group);
 
+            DebugManager.Player = player;
+            DebugManager.Ghost = ghost;
         }
 
         protected override void UnloadContent()
@@ -58,9 +54,8 @@ namespace Pacman
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            map.Update(gameTime);
-            collisionManager.Update(gameTime);
-            debugManager.Update(gameTime);
+            display.Stage.Update(gameTime);
+            DebugManager.Update();
 
             base.Update(gameTime);
         }
@@ -70,8 +65,7 @@ namespace Pacman
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            map.Draw(spriteBatch);
-            debugManager.Draw(spriteBatch);
+            display.Stage.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

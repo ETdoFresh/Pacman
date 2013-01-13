@@ -1,237 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Pacman.DisplayObject;
 
 namespace Pacman
 {
-    class Ghost : IGameObject
+    class Ghost: SpriteObject
     {
-        private Rectangle sourceRectangle;
-        private Vector2 position;
-        private Vector2 origin;
-        private Vector2 velocity;
-        private float orientation;
-        private float speed;
-        private List<Rectangle> sourceRectangles;
-        private Texture2D texture;
-        protected Sequence[] sequences;
-        private Sequence sequence;
-        private double timeSinceLastFrame;
-        private int currentFrame;
-        private int totalFrames;
-        private Vector2 destination;
+        public Vector2 Velocity { get; set; }
+        public float Speed { get; set; }
+        public bool IsDead { get; set; }
 
-        static Random random = new Random();
-        
-        public float X { get { return position.X; } set { position.X = value; } }
-        public float Y { get { return position.Y; } set { position.Y = value; } }
-        public Vector2 InputDirection { get; set; }
-        public Vector2 Destination { get { return destination; } set { destination = value; } }
-
-        public Ghost(Texture2D texture, List<Rectangle> sourceRectangles)
+        public Ghost(GroupObject parent = null)
+            : base(display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
         {
-            this.texture = texture;
-            this.sourceRectangles = sourceRectangles;
+            if (parent == null)
+                parent = display.Stage;
+            parent.Insert(this);
 
-            speed = 200;
-            sequences = new Sequence[] { new Sequence(name: "NoAnimation", start: 34, count: 1, time: 0), };
-            setSequence("NoAnimation");
+            Speed = 200;
+            addSequence("Still", 4, 1, 0);
 
-            setStartingVelocity();
+            var animationTime = 150;
+            addSequence("Up", 0, 2, animationTime);
+            addSequence("Down", 2, 2, animationTime);
+            addSequence("Left", 4, 2, animationTime);
+            addSequence("Right", 6, 2, animationTime);
+            Play();
         }
 
-        private void setStartingVelocity()
+        public override void Update(GameTime gameTime)
         {
-            var fiftyFifty = random.Next(100) % 2 == 0;
-            InputDirection = fiftyFifty ? new Vector2(1, 0) : new Vector2(-1, 0);
-        }
-
-        public virtual void Update(GameTime gameTime)
-        {
-            UpdateVelocity();
-            UpdatePositionFromVelocity(gameTime);
-            UpdateAnimation(gameTime);
-            UpdateSequence();
-        }
-
-        private void UpdateVelocity()
-        {
-            velocity = destination - position;
-            if (velocity.Length() < 5)
+            if (!IsDead)
             {
-                position = destination;
-                velocity = Vector2.Zero;
+                UpdateVelocityFromKeyboard();
+                UpdatePositionFromVelocity(gameTime);
+                UpdateSequence();
             }
-            else
-                velocity.Normalize();
+            base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        private void UpdateVelocityFromKeyboard()
         {
-            var tint = Color.White;
-            var spriteEffect = SpriteEffects.None;
-            var layerDepth = 0.0f;
-            var scale = 1.0f;
-            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
-        }
-
-        private void UpdateSequence()
-        {
-            if (velocity.X > 0)
-                setSequence("MoveRight");
-            else if (velocity.X < 0)
-                setSequence("MoveLeft");
-            else if (velocity.Y > 0)
-                setSequence("MoveDown");
-            else if (velocity.Y < 0)
-                setSequence("MoveUp");
-            else if (velocity.Equals(Vector2.Zero))
-                setSequence("Still");
-        }
-
-        protected void setSequence(string sequenceName)
-        {
-            if (sequence.name == sequenceName)
-                return;
-
-            foreach (var seq in sequences)
+            var keyboardState = Keyboard.GetState();
+            var keyDictionary = new Dictionary<Keys, Vector2>
             {
-                if (seq.name == sequenceName)
-                {
-                    sequence = seq;
-                    totalFrames = sequence.frames.Count;
-                    return;
-                }
-            }
+                {Keys.Left, new Vector2(-1, 0)},
+                {Keys.Right, new Vector2(1, 0)},
+                {Keys.Up, new Vector2(0, -1)},
+                {Keys.Down, new Vector2(0, 1)},
+            };
+
+            var newVelocity = Vector2.Zero;
+            foreach (var key in keyDictionary)
+                if (keyboardState.IsKeyDown(key.Key))
+                    newVelocity += key.Value;
+            
+            Velocity = newVelocity;
         }
 
         private void UpdatePositionFromVelocity(GameTime gameTime)
         {
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            position += velocity * time * speed;
+            Position += Velocity * time * Speed;
         }
 
-        private void UpdateAnimation(GameTime gameTime)
+        private void UpdateSequence()
         {
-            timeSinceLastFrame += gameTime.ElapsedGameTime.TotalSeconds;
-            if (timeSinceLastFrame > SecondsBetweenFrames())
-            {
-                currentFrame++;
-                timeSinceLastFrame = 0;
-            }
-            if (currentFrame >= totalFrames)
-                currentFrame = 0;
-
-            UpdateSourceRectangle(sourceRectangles[sequence.frames[currentFrame]]);
-        }
-
-        private double SecondsBetweenFrames()
-        {
-            return sequence.time / 1000.0 / totalFrames;
-        }
-
-        private void UpdateSourceRectangle(Rectangle newSourceRectangle)
-        {
-            this.sourceRectangle = newSourceRectangle;
-            setOriginToCenter();
-        }
-
-        private void setOriginToCenter()
-        {
-            origin.X = sourceRectangle.Width / 2;
-            origin.Y = sourceRectangle.Height / 2;
-        }
-    }
-
-    class Blinky : Ghost
-    {
-        public Blinky(Texture2D texture, List<Rectangle> textureRectangles)
-            : base(texture, textureRectangles)
-        {
-            sequences = new Sequence[]
-            {
-                new Sequence(name: "Still", start: 2, count: 1, time: 0),
-                new Sequence(name: "MoveUp", start: 0, count: 2, time: 200),
-                new Sequence(name: "MoveDown", start: 2, count: 2, time: 200),
-                new Sequence(name: "MoveLeft", start: 4, count: 2, time: 200),
-                new Sequence(name: "MoveRight", start: 6, count: 2, time: 200),
-                new Sequence(name: "Eatable", start: 32, count: 2, time: 200),
-                new Sequence(name: "EatableFlashing", frames: new List<int>{32,33,32,33,34,35,34,35}, time: 400),
-                new Sequence(name: "EatableFastFlashing", start: 32, count: 4, time: 200),
-            };
-            setSequence("Still");
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            base.Update(gameTime);
-        } 
-    }
-
-    class Clyde : Ghost
-    {
-        public Clyde(Texture2D texture, List<Rectangle> textureRectangles)
-            : base(texture, textureRectangles)
-        {
-            this.sequences = new Sequence[]
-            {
-                new Sequence(name: "Still", start: 26, count: 1, time: 0),
-                new Sequence(name: "MoveUp", start: 24, count: 2, time: 200),
-                new Sequence(name: "MoveDown", start: 26, count: 2, time: 200),
-                new Sequence(name: "MoveLeft", start: 28, count: 2, time: 200),
-                new Sequence(name: "MoveRight", start: 30, count: 2, time: 200),
-                new Sequence(name: "Eatable", start: 32, count: 2, time: 200),
-                new Sequence(name: "EatableFlashing", frames: new List<int>{32,33,32,33,34,35,34,35}, time: 400),
-                new Sequence(name: "EatableFastFlashing", start: 32, count: 4, time: 200),
-            };
-
-            setSequence("Still");
-        }
-    }
-
-    class Inky : Ghost
-    {
-        public Inky(Texture2D texture, List<Rectangle> textureRectangles)
-            : base(texture, textureRectangles)
-        {
-            this.sequences = new Sequence[]
-            {
-                new Sequence(name: "Still", start: 18, count: 1, time: 0),
-                new Sequence(name: "MoveUp", start: 16, count: 2, time: 200),
-                new Sequence(name: "MoveDown", start: 18, count: 2, time: 200),
-                new Sequence(name: "MoveLeft", start: 20, count: 2, time: 200),
-                new Sequence(name: "MoveRight", start: 22, count: 2, time: 200),
-                new Sequence(name: "Eatable", start: 32, count: 2, time: 200),
-                new Sequence(name: "EatableFlashing", frames: new List<int>{32,33,32,33,34,35,34,35}, time: 400),
-                new Sequence(name: "EatableFastFlashing", start: 32, count: 4, time: 200),
-            };
-
-            setSequence("Still");
-        }
-    }
-
-    class Pinky : Ghost
-    {
-        public Pinky(Texture2D texture, List<Rectangle> textureRectangles)
-            : base(texture, textureRectangles)
-        {
-            this.sequences = new Sequence[]
-            {
-                new Sequence(name: "Still", start: 10, count: 1, time: 0),
-                new Sequence(name: "MoveUp", start: 8, count: 2, time: 200),
-                new Sequence(name: "MoveDown", start: 10, count: 2, time: 200),
-                new Sequence(name: "MoveLeft", start: 12, count: 2, time: 200),
-                new Sequence(name: "MoveRight", start: 14, count: 2, time: 200),
-                new Sequence(name: "Eatable", start: 32, count: 2, time: 200),
-                new Sequence(name: "EatableFlashing", frames: new List<int>{32,33,32,33,34,35,34,35}, time: 400),
-                new Sequence(name: "EatableFastFlashing", start: 32, count: 4, time: 200),
-            };
-
-            setSequence("Still");
+            Play();
+            if (Velocity.X < 0)
+                setSequence("Left");
+            else if (Velocity.X > 0)
+                setSequence("Right");
+            else if (Velocity.Y < 0)
+                setSequence("Up");
+            else if (Velocity.Y > 0)
+                setSequence("Down");
+            else
+                Pause();
         }
     }
 }
