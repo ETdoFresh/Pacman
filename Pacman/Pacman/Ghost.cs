@@ -169,7 +169,7 @@ namespace Pacman
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-        }
+        } 
     }
 
     class Clyde : Ghost

@@ -84,38 +84,16 @@ namespace Pacman
                 InputDirection = newVelocity;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        private void UpdateVelocity()
         {
-            var tint = Color.White;
-            var spriteEffect = SpriteEffects.None;
-            var layerDepth = 0.0f;
-            var scale = 1.0f;
-            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
-        }
-
-        private void UpdateSequence()
-        {
-            if (!velocity.Equals(Vector2.Zero))
-                setSequence("Chomp");
-            else
-                setSequence("Still");
-        }
-
-        private void setSequence(string sequenceName)
-        {
-            if (sequence.name == sequenceName)
-                return;
-
-            foreach (var seq in sequences)
+            velocity = destination - position;
+            if (velocity.Length() < 5)
             {
-                if (seq.name == sequenceName)
-                {
-                    sequence = seq;
-                    totalFrames = sequence.frames.Count;
-                    currentLoop = 0;
-                    return;
-                }
+                position = destination;
+                velocity = Vector2.Zero;
             }
+            else
+                velocity.Normalize();
         }
 
         private void UpdatePositionFromVelocity(GameTime gameTime)
@@ -129,16 +107,12 @@ namespace Pacman
             //orientation += Rotation * time * Speed;
         }
 
-        private void UpdateVelocity()
+        private void UpdateSequence()
         {
-            velocity = destination - position;
-            if (velocity.Length() < 5)
-            {
-                position = destination;
-                velocity = Vector2.Zero;
-            }
+            if (!velocity.Equals(Vector2.Zero))
+                setSequence("Chomp");
             else
-                velocity.Normalize();
+                setSequence("Still");
         }
 
         private void UpdateAnimation(GameTime gameTime)
@@ -157,6 +131,32 @@ namespace Pacman
 
             if (sequence.loop == 0 || currentLoop < sequence.loop)
                 UpdateSourceRectangle(sourceRectangles[sequence.frames[currentFrame]]);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            var tint = Color.White;
+            var spriteEffect = SpriteEffects.None;
+            var layerDepth = 0.0f;
+            var scale = 1.0f;
+            spriteBatch.Draw(texture, position, sourceRectangle, tint, orientation, origin, scale, spriteEffect, layerDepth);
+        }
+
+        private void setSequence(string sequenceName)
+        {
+            if (sequence.name == sequenceName)
+                return;
+
+            foreach (var seq in sequences)
+            {
+                if (seq.name == sequenceName)
+                {
+                    sequence = seq;
+                    totalFrames = sequence.frames.Count;
+                    currentLoop = 0;
+                    return;
+                }
+            }
         }
 
         private double SecondsBetweenFrames()
