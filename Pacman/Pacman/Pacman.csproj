@@ -107,14 +107,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DisplayObject\display.cs" />
-    <Compile Include="DisplayObject\EventListener.cs" />
-    <Compile Include="DisplayObject\DisplayObject.cs" />
-    <Compile Include="DisplayObject\GroupObject.cs" />
-    <Compile Include="DisplayObject\ImageObject.cs" />
-    <Compile Include="DisplayObject\RectangleObject.cs" />
-    <Compile Include="DisplayObject\SpriteObject.cs" />
-    <Compile Include="DisplayObject\TextObject.cs" />
+    <Compile Include="Controller.cs" />
+    <Compile Include="DisplayEngine\display.cs" />
+    <Compile Include="DisplayEngine\EventListener.cs" />
+    <Compile Include="DisplayEngine\DisplayObject.cs" />
+    <Compile Include="DisplayEngine\GroupObject.cs" />
+    <Compile Include="DisplayEngine\ImageObject.cs" />
+    <Compile Include="DisplayEngine\RectangleObject.cs" />
+    <Compile Include="DisplayEngine\SpriteObject.cs" />
+    <Compile Include="DisplayEngine\TextObject.cs" />
     <Compile Include="DebugManager.cs" />
     <Compile Include="Ghost.cs" />
     <Compile Include="Map.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="SteeringObject.cs" />
     <Compile Include="TexturePacker.cs" />
     <Compile Include="Tile.cs" />
   </ItemGroup>

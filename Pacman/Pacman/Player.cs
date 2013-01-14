@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using Pacman.DisplayObject;
+using Pacman.DisplayEngine;
 
 namespace Pacman
 {
@@ -53,7 +53,7 @@ namespace Pacman
                 if (keyboardState.IsKeyDown(key.Key))
                     newVelocity += key.Value;
 
-            if (!newVelocity.Equals(Vector2.Zero))
+            //if (!newVelocity.Equals(Vector2.Zero))
                 Velocity = newVelocity;
         }
 

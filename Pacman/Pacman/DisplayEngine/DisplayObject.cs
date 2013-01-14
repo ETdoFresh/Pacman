@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Pacman.DisplayObject
+namespace Pacman.DisplayEngine
 {
     class DisplayObject : EventListener
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Pacman.DisplayObject;
+using Pacman.DisplayEngine;
 
 namespace Pacman
 {

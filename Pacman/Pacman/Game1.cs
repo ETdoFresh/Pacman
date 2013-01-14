@@ -1,8 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Pacman.DisplayObject;
+using Pacman.DisplayEngine;
 using System;
+using System.Collections.Generic;
 
 namespace Pacman
 {
@@ -10,12 +11,13 @@ namespace Pacman
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private Controller controller;
 
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            
+
             this.IsMouseVisible = true;
             graphics.IsFullScreen = false;
             graphics.PreferredBackBufferWidth = 800;
@@ -37,18 +39,27 @@ namespace Pacman
             var map = new Map();
             var player = new Player(map);
             var ghost = new Ghost(map);
-            var rectangle = display.NewRect(10, 10, 20, 20);
-            rectangle.Color = Color.BlueViolet;
+
+            controller = new Controller(map, player, ghost);
+
+            map.X = display.ContentWidth / 2 - map.Width / 2;
+            map.Y = display.ContentHeight / 2 - map.Height / 2;
 
             player.X = display.ContentWidth / 2;
             player.Y = display.ContentHeight / 2;
 
             ghost.X = player.X + 30;
             ghost.Y = player.Y;
+            ghost.Target = player;
 
             DebugManager.Player = player;
             DebugManager.Ghost = ghost;
             DebugManager.Map = map;
+            DebugManager.Rectangles = new List<RectangleObject>()
+            {
+                display.NewRect(map, 0, 0, map.TileWidth, map.TileHeight),
+                display.NewRect(map, 0, 0, map.TileWidth, map.TileHeight)
+            };
         }
 
         protected override void UnloadContent()
@@ -61,6 +72,7 @@ namespace Pacman
                 this.Exit();
 
             display.Stage.Update(gameTime);
+            controller.Update(gameTime);
             DebugManager.Update();
 
             base.Update(gameTime);

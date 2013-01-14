@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Pacman.DisplayObject
+namespace Pacman.DisplayEngine
 {
     class SpriteObject : DisplayObject
     {
@@ -48,6 +48,8 @@ namespace Pacman.DisplayObject
             {
                 Sequence = sequenceName;
                 sequenceData = sequences[Sequence];
+                if (CurrentFrame >= TotalFrames)
+                    CurrentFrame = 0;
             }
         }
 

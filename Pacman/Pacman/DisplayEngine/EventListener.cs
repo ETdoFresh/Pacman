@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pacman.DisplayObject
+namespace Pacman.DisplayEngine
 {
     class EventListener : Object
     {

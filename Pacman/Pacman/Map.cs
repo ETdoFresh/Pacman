@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Pacman.DisplayObject;
+using Pacman.DisplayEngine;
+using System;
 
 namespace Pacman
 {
@@ -63,6 +64,17 @@ namespace Pacman
                     Tiles[column, row] = tile;
                 }
             }
+        }
+
+        public Vector2 GetTilePositionFromChild(DisplayObject child)
+        {
+            var tileX = (int)Math.Floor(child.X / TileWidth);
+            var tileY = (int)Math.Floor(child.Y / TileHeight);
+            if (tileX < 0 || MapWidth <= tileX)
+                tileX = -1;
+            if (tileY < 0 || MapHeight <= tileY)
+                tileY = -1;
+            return new Vector2(tileX, tileY);
         }
 
         private static byte[,] outerWallData = new byte[,]
