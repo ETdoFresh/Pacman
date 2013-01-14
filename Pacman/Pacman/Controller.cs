@@ -12,25 +12,25 @@ namespace Pacman
         private Map map;
         private Player player;
         private Ghost ghost;
-        private List<DisplayObject> objects;
+        private List<SteeringObject> objects;
 
         public Controller(Map map, Player player, Ghost ghost)
         {
             this.map = map;
             this.player = player;
             this.ghost = ghost;
-            this.objects = new List<DisplayObject>() { player, ghost };
+            this.objects = new List<SteeringObject>() { player, ghost };
         }
 
         public void Update(GameTime gameTime)
         {
             foreach (var obj in objects)
             {
-                wrapAroundMap(obj);
+                WrapAroundMap(obj);
+                CheckCollisionWithWalls(obj);
             }
         }
-
-        private void wrapAroundMap(DisplayObject obj)
+        private void WrapAroundMap(DisplayObject obj)
         {
             if (obj.X < 0)
                 obj.X = map.Width - 1;
@@ -40,6 +40,16 @@ namespace Pacman
                 obj.Y = map.Height - 1;
             else if (obj.Y >= map.Height)
                 obj.Y = 0;
+        }
+
+        private void CheckCollisionWithWalls(SteeringObject obj)
+        {
+            var tile = map.GetTileFromChild(obj);
+            if (!tile.IsPassable)
+            {
+                obj.Velocity = Vector2.Zero;
+                obj.MoveToPreviousPosition();
+            }
         }
     }
 }

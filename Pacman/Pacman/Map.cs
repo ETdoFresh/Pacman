@@ -28,6 +28,8 @@ namespace Pacman
             var sourceRectangles = display.RetrieveSourceRectangles("pacman");
             TileWidth = sourceRectangles[tileOffset + 1].Width;
             TileHeight = sourceRectangles[tileOffset + 1].Height;
+            Tile.Width = TileWidth;
+            Tile.Height = TileHeight;
 
             Tiles = new Tile[MapWidth, MapHeight];
 
@@ -66,15 +68,16 @@ namespace Pacman
             }
         }
 
-        public Vector2 GetTilePositionFromChild(DisplayObject child)
+        public Tile GetTileFromChild(DisplayObject child)
         {
             var tileX = (int)Math.Floor(child.X / TileWidth);
             var tileY = (int)Math.Floor(child.Y / TileHeight);
-            if (tileX < 0 || MapWidth <= tileX)
-                tileX = -1;
-            if (tileY < 0 || MapHeight <= tileY)
-                tileY = -1;
-            return new Vector2(tileX, tileY);
+            
+            if (0 <= tileX && tileX < MapWidth)
+                if (0 <= tileY && tileY < MapHeight)
+                    return Tiles[tileX, tileY];
+            
+            return null;
         }
 
         private static byte[,] outerWallData = new byte[,]

@@ -6,10 +6,8 @@ using Pacman.DisplayEngine;
 
 namespace Pacman
 {
-    class Player : SpriteObject
+    class Player : SteeringObject
     {
-        public Vector2 Velocity { get; set; }
-        public float Speed { get; set; }
         public bool IsDead { get; set; }
 
         public Player(GroupObject parent = null)
@@ -59,6 +57,7 @@ namespace Pacman
 
         private void UpdatePositionFromVelocity(GameTime gameTime)
         {
+            previousPosition = Position;
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Position += Velocity * time * Speed;
 

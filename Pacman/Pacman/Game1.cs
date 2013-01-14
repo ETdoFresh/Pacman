@@ -45,11 +45,11 @@ namespace Pacman
             map.X = display.ContentWidth / 2 - map.Width / 2;
             map.Y = display.ContentHeight / 2 - map.Height / 2;
 
-            player.X = display.ContentWidth / 2;
-            player.Y = display.ContentHeight / 2;
+            player.X = map.Tiles[14, 17].X;
+            player.Y = map.Tiles[14, 17].Y + map.TileWidth / 2;
 
-            ghost.X = player.X + 30;
-            ghost.Y = player.Y;
+            ghost.X = map.Tiles[14, 11].X;
+            ghost.Y = map.Tiles[14, 11].Y + map.TileWidth / 2;
             ghost.Target = player;
 
             DebugManager.Player = player;

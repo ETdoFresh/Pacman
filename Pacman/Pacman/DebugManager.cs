@@ -18,25 +18,25 @@ namespace Pacman
             textObject.Text = "";
             if (Player != null)
             {
-                var tile = Map.GetTilePositionFromChild(Player);
+                var tile = Map.GetTileFromChild(Player);
                 textObject.Text += string.Format("Player.X = {0}\n", Player.X);
                 textObject.Text += string.Format("Player.Y = {0}\n", Player.Y);
-                textObject.Text += string.Format("Player.tileX = {0}\n", tile.X);
-                textObject.Text += string.Format("Player.tileY = {0}\n", tile.Y);
+                textObject.Text += string.Format("Player.tileX = {0}\n", tile.XTile);
+                textObject.Text += string.Format("Player.tileY = {0}\n", tile.YTile);
                 Rectangles[0].Color = Color.Yellow;
-                Rectangles[0].X = tile.X * Map.TileWidth;
-                Rectangles[0].Y = tile.Y * Map.TileHeight;
+                Rectangles[0].X = tile.X;
+                Rectangles[0].Y = tile.Y;
             }
             if (Ghost != null)
             {
-                var tile = Map.GetTilePositionFromChild(Ghost);
+                var tile = Map.GetTileFromChild(Ghost);
                 textObject.Text += string.Format("Ghost.X = {0}\n", Ghost.X);
                 textObject.Text += string.Format("Ghost.Y = {0}\n", Ghost.Y);
-                textObject.Text += string.Format("Ghost.tileX = {0}\n", tile.X);
-                textObject.Text += string.Format("Ghost.tileY = {0}\n", tile.Y);
+                textObject.Text += string.Format("Ghost.tileX = {0}\n", tile.XTile);
+                textObject.Text += string.Format("Ghost.tileY = {0}\n", tile.YTile);
                 Rectangles[1].Color = Color.Red;
-                Rectangles[1].X = tile.X * Map.TileWidth;
-                Rectangles[1].Y = tile.Y * Map.TileHeight;
+                Rectangles[1].X = tile.X;
+                Rectangles[1].Y = tile.Y;
             }
             textObject.X = textObject.ContentWidth / 2;
             textObject.Y = textObject.ContentHeight / 2;

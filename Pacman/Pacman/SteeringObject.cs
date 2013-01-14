@@ -10,6 +10,8 @@ namespace Pacman
 {
     class SteeringObject : SpriteObject
     {
+        protected Vector2 previousPosition;
+
         public Vector2 Velocity { get; set; }
         public DisplayObject Target { get; set; }
         public float Speed { get; set; }
@@ -47,10 +49,18 @@ namespace Pacman
         private void UpdatePositionFromVelocity(GameTime gameTime)
         {
             var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if ((Target.Position - Position).Length() > 5)
+            if (Target != null && (Target.Position - Position).Length() > 5)
+            {
+                previousPosition = Position;
                 Position += Velocity * time * Speed;
+            }
             else
                 Velocity = Vector2.Zero;
+        }
+
+        public void MoveToPreviousPosition()
+        {
+            Position = previousPosition;
         }
     }
 }
