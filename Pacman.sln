@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanContent", "Pacman\PacmanContent\PacmanContent.contentproj", "{7C496BBA-15B0-4A6E-8A6B-E380B6E1CBD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanGameContent", "Pacman\PacmanContent\PacmanGameContent.contentproj", "{7C496BBA-15B0-4A6E-8A6B-E380B6E1CBD1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacman", "Pacman\Pacman\Pacman.csproj", "{C501DC7E-35F4-4E79-B931-702EE47D2B5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanGame", "Pacman\Pacman\PacmanGame.csproj", "{C501DC7E-35F4-4E79-B931-702EE47D2B5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

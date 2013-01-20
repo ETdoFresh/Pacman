@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
-namespace Pacman
+namespace PacmanGame
 {
     public class Game1 : Game
     {
@@ -16,8 +16,9 @@ namespace Pacman
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            Player.Content = Content;
+            Pacman.Content = Content;
             Tile.Content = Content;
+            Pellet.Content = Content;
 
             this.IsMouseVisible = true;
             graphics.IsFullScreen = false;

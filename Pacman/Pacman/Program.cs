@@ -1,4 +1,4 @@
-namespace Pacman
+namespace PacmanGame
 {
 #if WINDOWS || XBOX
     static class Program

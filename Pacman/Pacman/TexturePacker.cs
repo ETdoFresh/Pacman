@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using System.Xml.Linq;
 
-namespace Pacman
+namespace PacmanGame
 {
     class TexturePacker
     {
