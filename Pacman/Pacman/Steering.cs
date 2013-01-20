@@ -12,15 +12,6 @@ namespace Pacman
         float Orientation { get; }
     }
 
-    class Static : IStatic
-    {
-        public Vector2 position = Vector2.Zero;
-        public float orientation = 0;
-
-        public Vector2 Position { get { return position; } }
-        public float Orientation { get { return orientation; } }
-    }
-
     interface IMovement
     {
         SteeringOutput GetSteering();

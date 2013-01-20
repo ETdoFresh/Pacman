@@ -6,19 +6,30 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Pacman
 {
     class Player : IGameObject, IStatic
     {
         public static ContentManager Content;
+
         private Texture2D texture;
         private Rectangle sourceRectangle;
-        private Vector2 position;
         private Vector2 origin;
+
+        private Vector2 position;
+        private Vector2 direction;
         private float orientation;
-        private IMovement kinematicSeek;
-        private Static target = new Static();
+        private KinematicSeek kinematicSeek;
+
+        public Vector2 Position { get { return position; } set { position = value; } }
+        public Vector2 PreviousDirection { get; set; }
+        public Vector2 DesiredDirection { get; set; }
+        public Vector2 Direction { get { return direction; } set { direction = value; } }
+        public IStatic Target { get { return kinematicSeek.target; } set { kinematicSeek.target = value; } }
+        public float Orientation { get { return orientation; } }
+        public bool IsSteering { get; set; }
 
         public Player()
         {
@@ -27,30 +38,14 @@ namespace Pacman
             sourceRectangle = sourceRectangles[36];
             origin.X = sourceRectangle.Width / 2;
             origin.Y = sourceRectangle.Height / 2;
-            kinematicSeek = new KinematicSeek() { character = this, target = target, maxSpeed = 300.0f };
+            kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 250.0f };
+            IsSteering = true;
         }
-
-        public Player(Vector2 position) : this() { this.position = position; }
 
         public void Update(GameTime gameTime)
         {
-            if (IsSteering && this.position != target.position)
-            {
-                var steering = kinematicSeek.GetSteering();
-                var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                var deltaPosition = steering.linear * time;
-                var distanceToTarget = (target.position - this.position).LengthSquared();
-                var distanceBySpeed = deltaPosition.LengthSquared();
-
-                if (distanceToTarget < distanceBySpeed)
-                    position = target.position;
-                else
-                    position += deltaPosition;
-
-                orientation = (float)Math.Atan2((double)-deltaPosition.Y, (double)-deltaPosition.X);
-                orientation += steering.angular * time;
-            }
+            PreviousDirection = Direction;
+            SteerToTarget(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -58,14 +53,30 @@ namespace Pacman
             spriteBatch.Draw(texture, position, sourceRectangle, Color.White, orientation, origin, 1, SpriteEffects.None, 0);
         }
 
-        public void SetTarget(float x, float y)
+        internal void SetTarget(IStatic target)
         {
-            target.position.X = x;
-            target.position.Y = y;
+            Target = target;
         }
 
-        public Vector2 Position { get { return position; } }
-        public float Orientation { get { return orientation; } }
-        public bool IsSteering { get; set; }
+        private void SteerToTarget(GameTime gameTime)
+        {
+            if (IsSteering && this.Position != Target.Position)
+            {
+                var steering = kinematicSeek.GetSteering();
+                var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                var deltaPosition = steering.linear * time;
+                var distanceToTarget = (Target.Position - this.position).LengthSquared();
+                var distanceBySpeed = deltaPosition.LengthSquared();
+
+                if (distanceToTarget < distanceBySpeed)
+                    position = Target.Position;
+                else
+                    position += deltaPosition;
+
+                orientation = (float)Math.Atan2((double)-deltaPosition.Y, (double)-deltaPosition.X);
+                orientation += steering.angular * time;
+            }
+        }
     }
 }

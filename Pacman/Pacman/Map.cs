@@ -31,6 +31,7 @@ namespace Pacman
                         var tileIndex = innerWallData[row, column] + TILEOFFSET;
                         var orientation = innerWallOrientation[row, column] * MathHelper.ToRadians(90);
                         tile.Insert(tileIndex, orientation);
+                        tile.IsPassable = false;
                     }
                     if (outerWallData[row, column] > 0)
                     {
@@ -41,7 +42,6 @@ namespace Pacman
                 }
             }
         }
-
 
         public void Update(GameTime gameTime)
         {
@@ -57,6 +57,37 @@ namespace Pacman
                 for (int x = 0; x < MapWidth; x++)
                     if (tiles != null)
                         tiles[x, y].Draw(spriteBatch);
+        }
+
+        public Tile GetTileFromPosition(Vector2 position)
+        {
+            var xTile = (int)position.X / TileWidth;
+            var yTile = (int)position.Y / TileHeight;
+
+            if (0 <= xTile && xTile < MapWidth)
+                if (0 <= yTile && yTile < MapHeight)
+                    return tiles[xTile, yTile];
+
+            return null;
+        }
+
+        public Tile GetTileFromDirection(Tile tile, Vector2 direction)
+        {
+            var xTile = (int)(tile.Position.X - TileWidth / 2) / TileWidth + (int)direction.X;
+            var yTile = (int)(tile.Position.Y - TileHeight / 2) / TileHeight + (int)direction.Y;
+
+            if (0 <= xTile && xTile < MapWidth)
+                if (0 <= yTile && yTile < MapHeight)
+                    return tiles[xTile, yTile];
+
+            return null;
+        }
+
+        public Vector2 SnapPositionToTilePosition(Vector2 position)
+        {
+            var x = Math.Floor(position.X / TileWidth) * TileWidth + TileWidth / 2;
+            var y = Math.Floor(position.Y / TileHeight) * TileHeight + TileHeight / 2;
+            return new Vector2((float)x, (float)y);
         }
 
         public int MapWidth { get; set; }
