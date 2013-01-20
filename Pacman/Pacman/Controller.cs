@@ -3,53 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
-using Pacman.DisplayEngine;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
-    class Controller
+    class Controller : IGameObject
     {
-        private Map map;
-        private Player player;
-        private Ghost ghost;
-        private List<SteeringObject> objects;
+        List<IGameObject> gameObjects = new List<IGameObject>();
+        Player player;
+        Map map;
 
-        public Controller(Map map, Player player, Ghost ghost)
+        public Controller()
         {
-            this.map = map;
-            this.player = player;
-            this.ghost = ghost;
-            this.objects = new List<SteeringObject>() { player, ghost };
+            map = new Map();
+            player = new Player(new Vector2(600, 100));
+            player.IsSteering = true;
+
+            gameObjects.Add(map);
+            gameObjects.Add(player);
         }
 
         public void Update(GameTime gameTime)
         {
-            foreach (var obj in objects)
-            {
-                WrapAroundMap(obj);
-                CheckCollisionWithWalls(obj);
-            }
-        }
-        private void WrapAroundMap(DisplayObject obj)
-        {
-            if (obj.X < 0)
-                obj.X = map.Width - 1;
-            else if (obj.X >= map.Width)
-                obj.X = 0;
-            if (obj.Y < 0)
-                obj.Y = map.Height - 1;
-            else if (obj.Y >= map.Height)
-                obj.Y = 0;
+            var mouseState = Mouse.GetState();
+            var tileX = (float)Math.Floor((decimal)mouseState.X / map.TileWidth) * map.TileWidth;
+            var tileY = (float)Math.Floor((decimal)mouseState.Y / map.TileHeight) * map.TileHeight;
+            player.SetTarget(tileX, tileY);
+
+            foreach (var gameObject in gameObjects)
+                gameObject.Update(gameTime);
         }
 
-        private void CheckCollisionWithWalls(SteeringObject obj)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            var tile = map.GetTileFromChild(obj);
-            if (!tile.IsPassable)
-            {
-                obj.Velocity = Vector2.Zero;
-                obj.MoveToPreviousPosition();
-            }
+            foreach (var gameObject in gameObjects)
+                gameObject.Draw(spriteBatch);
         }
     }
 }

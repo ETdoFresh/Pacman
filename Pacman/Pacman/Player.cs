@@ -1,77 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
-using Pacman.DisplayEngine;
 
 namespace Pacman
 {
-    class Player : SteeringObject
+    class Player : IGameObject, IStatic
     {
-        public bool IsDead { get; set; }
+        public static ContentManager Content;
+        private Texture2D texture;
+        private Rectangle sourceRectangle;
+        private Vector2 position;
+        private Vector2 origin;
+        private float orientation;
+        private IMovement kinematicSeek;
+        private Static target = new Static();
 
-        public Player(GroupObject parent = null)
-            : base(display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
+        public Player()
         {
-            if (parent == null)
-                parent = display.Stage;
-            parent.Insert(this);
-
-            Speed = 200;
-            addSequence("Still", 36, 1, 0);
-            addSequence("Chomp", new List<int> { 36, 38, 36, 37 }, 200);
-            setSequence("Chomp");
-            Play();
+            texture = Content.Load<Texture2D>("pacman");
+            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
+            sourceRectangle = sourceRectangles[36];
+            origin.X = sourceRectangle.Width / 2;
+            origin.Y = sourceRectangle.Height / 2;
+            kinematicSeek = new KinematicSeek() { character = this, target = target, maxSpeed = 300.0f };
         }
 
-        public override void Update(GameTime gameTime)
+        public Player(Vector2 position) : this() { this.position = position; }
+
+        public void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (!IsDead)
+            if (IsSteering && this.position != target.position)
             {
-                UpdateVelocityFromKeyboard();
-                UpdatePositionFromVelocity(gameTime);
-                UpdateSequence();
+                var steering = kinematicSeek.GetSteering();
+                var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                var deltaPosition = steering.linear * time;
+                var distanceToTarget = (target.position - this.position).LengthSquared();
+                var distanceBySpeed = deltaPosition.LengthSquared();
+
+                if (distanceToTarget < distanceBySpeed)
+                    position = target.position;
+                else
+                    position += deltaPosition;
+
+                orientation = (float)Math.Atan2((double)-deltaPosition.Y, (double)-deltaPosition.X);
+                orientation += steering.angular * time;
             }
         }
 
-        private void UpdateVelocityFromKeyboard()
+        public void Draw(SpriteBatch spriteBatch)
         {
-            var keyboardState = Keyboard.GetState();
-            var keyDictionary = new Dictionary<Keys, Vector2>
-            {
-                {Keys.Left, new Vector2(-1, 0)},
-                {Keys.Right, new Vector2(1, 0)},
-                {Keys.Up, new Vector2(0, -1)},
-                {Keys.Down, new Vector2(0, 1)},
-            };
-
-            var newVelocity = Vector2.Zero;
-            foreach (var key in keyDictionary)
-                if (keyboardState.IsKeyDown(key.Key))
-                    newVelocity += key.Value;
-
-            //if (!newVelocity.Equals(Vector2.Zero))
-                Velocity = newVelocity;
+            spriteBatch.Draw(texture, position, sourceRectangle, Color.White, orientation, origin, 1, SpriteEffects.None, 0);
         }
 
-        private void UpdatePositionFromVelocity(GameTime gameTime)
+        public void SetTarget(float x, float y)
         {
-            previousPosition = Position;
-            var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Position += Velocity * time * Speed;
-
-            if (!Velocity.Equals(Vector2.Zero))
-                Orientation = (float)Math.Atan2(-Velocity.Y, -Velocity.X);
-            //orientation += Rotation * time * Speed;
+            target.position.X = x;
+            target.position.Y = y;
         }
 
-        private void UpdateSequence()
-        {
-            if (!Velocity.Equals(Vector2.Zero))
-                setSequence("Chomp");
-            else
-                setSequence("Still");
-        }
+        public Vector2 Position { get { return position; } }
+        public float Orientation { get { return orientation; } }
+        public bool IsSteering { get; set; }
     }
 }

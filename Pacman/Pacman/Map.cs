@@ -1,84 +1,69 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Pacman.DisplayEngine;
-using System;
 
 namespace Pacman
 {
-    class Map : GroupObject
+    class Map : IGameObject
     {
-        public int TileWidth { get; private set; }
-        public int TileHeight { get; private set; }
-        public int MapWidth { get; private set; }
-        public int MapHeight { get; private set; }
-        public int Width { get { return MapWidth * TileWidth; } }
-        public int Height { get { return MapHeight * TileHeight; } }
-        public Tile[,] Tiles { get; private set; }
+        private Tile[,] tiles;
+        private const int TILEOFFSET = 53;
 
-        private const int tileOffset = 53;
-
-        public Map() : base ()
+        public Map()
         {
-            display.Stage.Insert(this);
-
+            TileWidth = 15;
+            TileHeight = 15;
             MapWidth = innerWallData.GetLength(1);
             MapHeight = innerWallData.GetLength(0);
-
-            var sourceRectangles = display.RetrieveSourceRectangles("pacman");
-            TileWidth = sourceRectangles[tileOffset + 1].Width;
-            TileHeight = sourceRectangles[tileOffset + 1].Height;
-            Tile.Width = TileWidth;
-            Tile.Height = TileHeight;
-
-            Tiles = new Tile[MapWidth, MapHeight];
+            tiles = new Tile[MapWidth, MapHeight];
 
             for (int row = 0; row < MapHeight; row++)
             {
                 for (int column = 0; column < MapWidth; column++)
                 {
-                    var tile = new Tile(this);
-                    tile.X = column * TileWidth;
-                    tile.Y = row * TileHeight;
+                    var tile = new Tile(new Vector2(TileWidth * column + TileWidth / 2, TileHeight * row + TileHeight / 2));
+                    tiles[column, row] = tile;
                     if (innerWallData[row, column] > 0)
                     {
-                        var tileIndex = innerWallData[row, column] + tileOffset;
+                        var tileIndex = innerWallData[row, column] + TILEOFFSET;
                         var orientation = innerWallOrientation[row, column] * MathHelper.ToRadians(90);
-                        var innerWall = display.NewSprite("pacman");
-                        innerWall.SetFrame(tileIndex);
-                        innerWall.Orientation = orientation;
-                        innerWall.X = innerWall.Width / 2;
-                        innerWall.Y = innerWall.Height / 2;
-                        tile.Insert(innerWall);
-                        tile.IsPassable = false;
+                        tile.Insert(tileIndex, orientation);
                     }
                     if (outerWallData[row, column] > 0)
                     {
-                        var tileIndex = outerWallData[row, column] + tileOffset;
+                        var tileIndex = outerWallData[row, column] + TILEOFFSET;
                         var orientation = outerWallOrientation[row, column] * MathHelper.ToRadians(90);
-                        var outerWall = display.NewSprite("pacman");
-                        outerWall.SetFrame(tileIndex);
-                        outerWall.Orientation = orientation;
-                        outerWall.X = outerWall.Width / 2;
-                        outerWall.Y = outerWall.Height / 2;
-                        tile.Insert(outerWall);
+                        tile.Insert(tileIndex, orientation);
                     }
-                    Tiles[column, row] = tile;
                 }
             }
         }
 
-        public Tile GetTileFromChild(DisplayObject child)
+
+        public void Update(GameTime gameTime)
         {
-            var tileX = (int)Math.Floor(child.X / TileWidth);
-            var tileY = (int)Math.Floor(child.Y / TileHeight);
-            
-            if (0 <= tileX && tileX < MapWidth)
-                if (0 <= tileY && tileY < MapHeight)
-                    return Tiles[tileX, tileY];
-            
-            return null;
+            for (int y = 0; y < MapHeight; y++)
+                for (int x = 0; x < MapWidth; x++)
+                    if (tiles != null)
+                        tiles[x, y].Update(gameTime);
         }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            for (int y = 0; y < MapHeight; y++)
+                for (int x = 0; x < MapWidth; x++)
+                    if (tiles != null)
+                        tiles[x, y].Draw(spriteBatch);
+        }
+
+        public int MapWidth { get; set; }
+        public int MapHeight { get; set; }
+        public int TileWidth { get; set; }
+        public int TileHeight { get; set; }
+        public Tile[,] Tiles { get { return tiles; } }
 
         private static byte[,] outerWallData = new byte[,]
         {
