@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="Ghost.cs" />
     <Compile Include="IGameObject.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Pellet.cs" />

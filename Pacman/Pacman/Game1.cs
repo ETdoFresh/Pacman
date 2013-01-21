@@ -19,6 +19,7 @@ namespace PacmanGame
             Pacman.Content = Content;
             Tile.Content = Content;
             Pellet.Content = Content;
+            Ghost.Content = Content;
 
             this.IsMouseVisible = true;
             graphics.IsFullScreen = false;

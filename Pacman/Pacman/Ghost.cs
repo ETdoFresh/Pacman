@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace PacmanGame
 {
-    class Pacman : IGameObject, IStatic
+    class Ghost: IGameObject, IStatic
     {
         public static ContentManager Content;
 
@@ -19,31 +17,28 @@ namespace PacmanGame
         private Vector2 origin;
 
         private Vector2 position;
-        private Vector2 direction;
         private KinematicSeek kinematicSeek;
 
         public Vector2 Position { get { return position; } set { position = value; } }
-        public Vector2 PreviousDirection { get; set; }
-        public Vector2 DesiredDirection { get; set; }
-        public Vector2 Direction { get { return direction; } set { direction = value; } }
         public IStatic Target { get { return kinematicSeek.target; } set { kinematicSeek.target = value; } }
+        public Tile NextTile { get; set; }
+        public Tile NextNextTile { get; set; }
         public float Orientation { get; set; }
         public bool IsSteering { get; set; }
 
-        public Pacman()
+        public Ghost()
         {
             texture = Content.Load<Texture2D>("pacman");
             var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[36];
+            sourceRectangle = sourceRectangles[0];
             origin.X = sourceRectangle.Width / 2;
             origin.Y = sourceRectangle.Height / 2;
-            kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 250.0f };
+            kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 150 };
             IsSteering = true;
         }
 
         public void Update(GameTime gameTime)
         {
-            PreviousDirection = Direction;
             SteerToTarget(gameTime);
         }
 
@@ -73,7 +68,6 @@ namespace PacmanGame
                 else
                     position += deltaPosition;
 
-                Orientation = (float)Math.Atan2((double)-deltaPosition.Y, (double)-deltaPosition.X);
                 Orientation += steering.angular * time;
             }
         }

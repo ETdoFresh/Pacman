@@ -12,7 +12,6 @@ namespace PacmanGame
     {
         public static ContentManager Content;
 
-        private Vector2 position;
         private Rectangle destinationRectangle;
         private Texture2D texture;
         private List<Rectangle> textureRectangles;
@@ -31,7 +30,7 @@ namespace PacmanGame
         public Tile(Vector2 position)
             : this()
         {
-            this.position = position;
+            Position = position;
             destinationRectangle = new Rectangle((int)position.X, (int)position.Y, 15, 15);
         }
 
@@ -51,8 +50,8 @@ namespace PacmanGame
                 spriteBatch.Draw(texture, destinationRectangle, sourceRectangles[i], Color.White, orientations[i], origin, SpriteEffects.None, 0);
         }
 
-        public Vector2 Position { get { return position; } }
-        public float Orientation { get { return 0; } }
+        public Vector2 Position { get; set; }
+        public float Orientation { get; set; }
         public bool IsPassable { get; set; }
     }
 }

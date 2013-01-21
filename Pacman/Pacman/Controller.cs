@@ -17,6 +17,7 @@ namespace PacmanGame
         Pacman pacman;
         Map map;
         List<Pellet> pellets;
+        Ghost ghost;
 
         public Controller()
         {
@@ -27,24 +28,31 @@ namespace PacmanGame
             pacman.Position = map.Tiles[13, 23].Position;
             pacman.DesiredDirection = new Vector2(-1, 0);
 
+            ghost = new Ghost();
+            ghost.Position = map.Tiles[13, 11].Position;
+
             player = new Player() { Score = 0 };
 
             gameObjects.Add(map);
-            gameObjects.Add(pacman);
             foreach (var pellet in pellets)
                 gameObjects.Add(pellet);
+            gameObjects.Add(pacman);
+            gameObjects.Add(ghost);
+            
         }
 
         public void Update(GameTime gameTime)
         {
-            SetDesiredDirectionFromKeyboard();
+            UpdatePlayerDesiredDirectionFromKeyboard();
             UpdatePlayerTargetFromDesiredDirection();
             CheckIfPlayerAtePellet();
+            UpdateGhostDirectionFromAI();
 
             foreach (var gameObject in gameObjects)
                 gameObject.Update(gameTime);
 
-            WrapAroundScreen();
+            WrapAroundScreen(pacman);
+            WrapAroundScreen(ghost);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -53,23 +61,23 @@ namespace PacmanGame
                 gameObject.Draw(spriteBatch);
         }
 
-        private void WrapAroundScreen()
+        private void WrapAroundScreen(IStatic gameObject)
         {
             var mapXLimit = map.MapWidth * map.TileWidth;
             var mapYLimit = map.MapHeight * map.TileHeight;
 
-            if (pacman.Position.X < 0)
-                pacman.Position = new Vector2(mapXLimit - 1, pacman.Position.Y);
-            else if (pacman.Position.X >= mapXLimit)
-                pacman.Position = new Vector2(0, pacman.Position.Y);
+            if (gameObject.Position.X < 0)
+                gameObject.Position = new Vector2(mapXLimit - 1, gameObject.Position.Y);
+            else if (gameObject.Position.X >= mapXLimit)
+                gameObject.Position = new Vector2(0, gameObject.Position.Y);
 
-            if (pacman.Position.Y < 0)
-                pacman.Position = new Vector2(pacman.Position.X, mapYLimit - 1);
-            else if (pacman.Position.Y >= mapYLimit)
-                pacman.Position = new Vector2(pacman.Position.X, 0);
+            if (gameObject.Position.Y < 0)
+                gameObject.Position = new Vector2(gameObject.Position.X, mapYLimit - 1);
+            else if (gameObject.Position.Y >= mapYLimit)
+                gameObject.Position = new Vector2(gameObject.Position.X, 0);
         }
 
-        private void SetDesiredDirectionFromKeyboard()
+        private void UpdatePlayerDesiredDirectionFromKeyboard()
         {
             var keyboardState = Keyboard.GetState();
             var keyDictionary = new Dictionary<Keys, Vector2>
@@ -97,7 +105,7 @@ namespace PacmanGame
             {
                 pacman.Direction = new Vector2(pacman.DesiredDirection.X, 0);
                 nextTile = map.GetTileFromDirection(currentTile, pacman.Direction);
-                
+
                 // Create new temp tile if wrapping across the screen
                 if (nextTile == null)
                     nextTile = new Tile(pacman.Position + pacman.Direction * 32);
@@ -130,6 +138,53 @@ namespace PacmanGame
                     pellets.RemoveAt(i);
                 }
             }
+        }
+
+        private void UpdateGhostDirectionFromAI()
+        {
+            var pacmanTile = map.GetTileFromPosition(pacman.Position);
+            var ghostTile = map.GetTileFromPosition(ghost.Position);
+            if (ghost.NextTile == null && ghost.NextNextTile == null)
+            {
+                ghost.NextTile = map.GetTileFromDirection(ghostTile, new Vector2(-1, 0));
+                ghost.NextNextTile = map.GetTileFromDirection(ghostTile, new Vector2(-2, 0));
+            }
+            else if (ghost.Position == ghost.NextTile.Position)
+            {
+                ghost.NextTile = ghost.NextNextTile;
+                Tile[] checkTiles = new Tile[4] 
+                {
+                    map.GetTileFromDirection(ghost.NextTile, new Vector2(-1, 0)),
+                    map.GetTileFromDirection(ghost.NextTile, new Vector2(1, 0)),
+                    map.GetTileFromDirection(ghost.NextTile, new Vector2(0, -1)),
+                    map.GetTileFromDirection(ghost.NextTile, new Vector2(0, 1))
+                };
+
+                Tile nextNextTile = null;
+                float distance = 0;
+                for (int i = 0; i < checkTiles.Length; i++)
+                {
+                    if (checkTiles[i] != null && checkTiles[i] != ghostTile && checkTiles[i].IsPassable)
+                    {
+                        if (nextNextTile != null)
+                        {
+                            var newDistance = (pacman.Position - checkTiles[i].Position).LengthSquared();
+                            if (newDistance < distance)
+                            {
+                                distance = newDistance;
+                                nextNextTile = checkTiles[i];
+                            }
+                        }
+                        else
+                        {
+                            nextNextTile = checkTiles[i];
+                            distance = (pacman.Position - nextNextTile.Position).LengthSquared();
+                        }
+                    }
+                }
+                ghost.NextNextTile = nextNextTile;
+            }
+            ghost.SetTarget(ghost.NextTile);
         }
     }
 }
