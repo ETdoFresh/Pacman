@@ -17,7 +17,7 @@ namespace PacmanGame
         Pacman pacman;
         Map map;
         List<Pellet> pellets;
-        Ghost ghost;
+        List<Ghost> ghosts;
 
         public Controller()
         {
@@ -28,8 +28,18 @@ namespace PacmanGame
             pacman.Position = map.Tiles[13, 23].Position;
             pacman.DesiredDirection = new Vector2(-1, 0);
 
-            ghost = new Ghost();
-            ghost.Position = map.Tiles[13, 11].Position;
+            
+            var blinky = new Blinky();
+            var pinky = new Pinky();
+            var inky = new Inky();
+            var clyde = new Clyde();
+            blinky.Position = map.Tiles[13, 11].Position;
+            pinky.Position = map.Tiles[13, 13].Position;
+            inky.Position = map.Tiles[11, 13].Position;
+            inky.Blinky = blinky;
+            clyde.Position = map.Tiles[15, 13].Position;
+
+            ghosts = new List<Ghost>() { blinky, pinky, inky, clyde };
 
             player = new Player() { Score = 0 };
 
@@ -37,7 +47,8 @@ namespace PacmanGame
             foreach (var pellet in pellets)
                 gameObjects.Add(pellet);
             gameObjects.Add(pacman);
-            gameObjects.Add(ghost);
+            foreach (var ghost in ghosts)
+                gameObjects.Add(ghost);
             
         }
 
@@ -46,13 +57,16 @@ namespace PacmanGame
             UpdatePlayerDesiredDirectionFromKeyboard();
             UpdatePlayerTargetFromDesiredDirection();
             CheckIfPlayerAtePellet();
-            UpdateGhostDirectionFromAI();
+            foreach (var ghost in ghosts)
+                ghost.UpdateGhostTiles(map, pacman);
 
             foreach (var gameObject in gameObjects)
                 gameObject.Update(gameTime);
 
             WrapAroundScreen(pacman);
-            WrapAroundScreen(ghost);
+
+            foreach (var ghost in ghosts)
+                WrapAroundScreen(ghost);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -138,53 +152,6 @@ namespace PacmanGame
                     pellets.RemoveAt(i);
                 }
             }
-        }
-
-        private void UpdateGhostDirectionFromAI()
-        {
-            var pacmanTile = map.GetTileFromPosition(pacman.Position);
-            var ghostTile = map.GetTileFromPosition(ghost.Position);
-            if (ghost.NextTile == null && ghost.NextNextTile == null)
-            {
-                ghost.NextTile = map.GetTileFromDirection(ghostTile, new Vector2(-1, 0));
-                ghost.NextNextTile = map.GetTileFromDirection(ghostTile, new Vector2(-2, 0));
-            }
-            else if (ghost.Position == ghost.NextTile.Position)
-            {
-                ghost.NextTile = ghost.NextNextTile;
-                Tile[] checkTiles = new Tile[4] 
-                {
-                    map.GetTileFromDirection(ghost.NextTile, new Vector2(-1, 0)),
-                    map.GetTileFromDirection(ghost.NextTile, new Vector2(1, 0)),
-                    map.GetTileFromDirection(ghost.NextTile, new Vector2(0, -1)),
-                    map.GetTileFromDirection(ghost.NextTile, new Vector2(0, 1))
-                };
-
-                Tile nextNextTile = null;
-                float distance = 0;
-                for (int i = 0; i < checkTiles.Length; i++)
-                {
-                    if (checkTiles[i] != null && checkTiles[i] != ghostTile && checkTiles[i].IsPassable)
-                    {
-                        if (nextNextTile != null)
-                        {
-                            var newDistance = (pacman.Position - checkTiles[i].Position).LengthSquared();
-                            if (newDistance < distance)
-                            {
-                                distance = newDistance;
-                                nextNextTile = checkTiles[i];
-                            }
-                        }
-                        else
-                        {
-                            nextNextTile = checkTiles[i];
-                            distance = (pacman.Position - nextNextTile.Position).LengthSquared();
-                        }
-                    }
-                }
-                ghost.NextNextTile = nextNextTile;
-            }
-            ghost.SetTarget(ghost.NextTile);
         }
     }
 }

@@ -8,9 +8,10 @@ namespace PacmanGame
 {
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private Controller controller;
+        
+        Controller controller;
 
         public Game1()
         {

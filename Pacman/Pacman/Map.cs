@@ -83,6 +83,17 @@ namespace PacmanGame
             return null;
         }
 
+        public Tile GetTileFromDirectionClamped(Tile tile, Vector2 direction)
+        {
+            var xTile = (tile.Position.X - TileWidth / 2) / TileWidth + direction.X;
+            var yTile = (tile.Position.Y - TileHeight / 2) / TileHeight + direction.Y;
+
+            xTile = MathHelper.Clamp(xTile, 0, MapWidth - 1);
+            yTile = MathHelper.Clamp(yTile, 0, MapHeight - 1);
+
+            return tiles[(int)xTile, (int)yTile];
+        }
+
         public Vector2 SnapPositionToTilePosition(Vector2 position)
         {
             var x = Math.Floor(position.X / TileWidth) * TileWidth + TileWidth / 2;
