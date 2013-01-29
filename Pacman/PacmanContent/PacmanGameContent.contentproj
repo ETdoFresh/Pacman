@@ -40,6 +40,9 @@
     <Reference Include="Microsoft.Xna.Framework.Content.Pipeline.VideoImporters, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=MSIL">
       <Private>False</Private>
     </Reference>
+    <Reference Include="TextureAtlasPipeline">
+      <HintPath>..\..\..\DisplayEngineTest\TextureAtlasPipeline\bin\x86\Debug\TextureAtlasPipeline.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="pacman.png">
@@ -47,12 +50,11 @@
       <Importer>TextureImporter</Importer>
       <Processor>TextureProcessor</Processor>
     </Compile>
-    <None Include="pacman.xml">
-      <Name>pacman</Name>
-      <Importer>XmlImporter</Importer>
-      <Processor>PassThroughProcessor</Processor>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Compile Include="pacman.xml">
+      <Name>pacmanxml</Name>
+      <Importer>ContentImporter1</Importer>
+      <Processor>TextureAtlasProcessor</Processor>
+    </Compile>
     <Compile Include="SpriteFont.spritefont">
       <Name>SpriteFont</Name>
       <Importer>FontDescriptionImporter</Importer>

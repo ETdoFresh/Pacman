@@ -5,21 +5,14 @@ using System.Text;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using DisplayEngine;
 
 namespace PacmanGame
 {
-    class Ghost : IGameObject, IStatic
+    class Ghost : SpriteObject, IGameObject, IStatic
     {
-        public static ContentManager Content;
-
-        protected Texture2D texture;
-        protected Rectangle sourceRectangle;
-        protected Vector2 origin;
-
         private KinematicSeek kinematicSeek;
 
-        public Vector2 Position { get; set; }
-        public float Orientation { get; set; }
         public IStatic Target { get { return kinematicSeek.target; } set { kinematicSeek.target = value; } }
         public Tile TargetTile { get; set; }
         public Tile ScatterTargetTile { get; set; }
@@ -30,13 +23,11 @@ namespace PacmanGame
         protected Texture2D debugRectangle;
         protected Color debugRectangleColor;
 
-        public Ghost()
+        public Ghost(): base (display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
         {
-            texture = Content.Load<Texture2D>("pacman");
-            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[0];
-            origin.X = sourceRectangle.Width / 2;
-            origin.Y = sourceRectangle.Height / 2;
+            SetFrame(0);
+            origin.X = Width / 2;
+            origin.Y = Height / 2;
             kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 150 };
             IsSteering = true;
 
@@ -47,22 +38,18 @@ namespace PacmanGame
             debugRectangleColor = Color.White;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             SteerToTarget(gameTime);
+            base.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, Position, sourceRectangle, Color.White, Orientation, origin, 1, SpriteEffects.None, 0);
+            base.Draw(spriteBatch);
 
             if (debugRectangle != null && TargetTile != null)
                 spriteBatch.Draw(debugRectangle, TargetTile.Position, debugRectangleColor);
-        }
-
-        internal void SetTarget(IStatic target)
-        {
-            Target = target;
         }
 
         private void SteerToTarget(GameTime gameTime)
@@ -81,7 +68,7 @@ namespace PacmanGame
                 else
                     Position += deltaPosition;
 
-                Orientation += steering.angular * time;
+                Rotation += steering.angular * time;
             }
         }
 
@@ -130,7 +117,7 @@ namespace PacmanGame
                 }
                 NextNextTile = nextNextTile;
             }
-            SetTarget(NextTile);
+            Target = NextTile;
         }
     }
 
@@ -139,9 +126,7 @@ namespace PacmanGame
         public Blinky()
             : base()
         {
-            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[0];
-            
+            SetFrame(0);
             debugRectangleColor = Color.Red * 0.5f;
         }
 
@@ -157,9 +142,7 @@ namespace PacmanGame
         public Pinky()
             : base()
         {
-            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[8];
-
+            SetFrame(8);
             debugRectangleColor = Color.Pink * 0.5f;
         }
 
@@ -178,8 +161,7 @@ namespace PacmanGame
         public Inky()
             : base()
         {
-            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[16];
+            SetFrame(16);
 
             debugRectangleColor = Color.Cyan * 0.5f;
         }
@@ -206,8 +188,7 @@ namespace PacmanGame
         public Clyde()
             : base()
         {
-            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[24];
+            SetFrame(24);
 
             debugRectangleColor = Color.Orange * 0.5f;
         }

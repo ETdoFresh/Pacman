@@ -5,45 +5,27 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using DisplayEngine;
 
 namespace PacmanGame
 {
-    class Pellet : IGameObject
+    class Pellet : SpriteObject, IGameObject
     {
-        public static ContentManager Content;
-
-        private Texture2D texture;
-        private Rectangle sourceRectangle;
-        private Vector2 origin;
-
-        public Vector2 Position { get; set; }
-        public float Orientation { get; set; }
         public int Score { get; private set; }
 
-        public Pellet(bool isPowerPellet = false)
+        public Pellet(bool isPowerPellet = false) : base(display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
         {
-            texture = Content.Load<Texture2D>("pacman");
-            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[60];
+            SetFrame(60);
             Score = 10;
             if (isPowerPellet)
             {
-                sourceRectangle = sourceRectangles[59];
+                SetFrame(59);
                 Score = 50;
             }
-            origin.X = sourceRectangle.Width / 2;
-            origin.Y = sourceRectangle.Height / 2;
+            origin.X = Width / 2;
+            origin.Y = Height / 2;
         }
-
-        public void Update(GameTime gameTime)
-        {
-        }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, Position, sourceRectangle, Color.White, Orientation, origin, 1, SpriteEffects.None, 0);
-        }
-
+        
         public static List<Pellet> CreateAllPellets(Map map)
         {
             var pellets = new List<Pellet>();

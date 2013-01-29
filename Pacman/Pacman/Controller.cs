@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using DisplayEngine;
 
 namespace PacmanGame
 {
@@ -28,7 +29,6 @@ namespace PacmanGame
             pacman.Position = map.Tiles[13, 23].Position;
             pacman.DesiredDirection = new Vector2(-1, 0);
 
-            
             var blinky = new Blinky();
             var pinky = new Pinky();
             var inky = new Inky();
@@ -60,9 +60,6 @@ namespace PacmanGame
             foreach (var ghost in ghosts)
                 ghost.UpdateGhostTiles(map, pacman);
 
-            foreach (var gameObject in gameObjects)
-                gameObject.Update(gameTime);
-
             WrapAroundScreen(pacman);
 
             foreach (var ghost in ghosts)
@@ -71,8 +68,6 @@ namespace PacmanGame
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (var gameObject in gameObjects)
-                gameObject.Draw(spriteBatch);
         }
 
         private void WrapAroundScreen(IStatic gameObject)
@@ -136,7 +131,7 @@ namespace PacmanGame
             }
 
             if (nextTile != null && nextTile.IsPassable)
-                pacman.SetTarget(nextTile);
+                pacman.Target = nextTile;
         }
 
         private void CheckIfPlayerAtePellet()
@@ -149,6 +144,7 @@ namespace PacmanGame
                 {
                     gameObjects.Remove(pellets[i]);
                     player.Score += pellets[i].Score;
+                    pellets[i].RemoveSelf();
                     pellets.RemoveAt(i);
                 }
             }

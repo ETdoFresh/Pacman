@@ -7,54 +7,35 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using DisplayEngine;
 
 namespace PacmanGame
 {
-    class Pacman : IGameObject, IStatic
+    class Pacman : SpriteObject, IStatic, IGameObject
     {
-        public static ContentManager Content;
-
-        private Texture2D texture;
-        private Rectangle sourceRectangle;
-        private Vector2 origin;
-
-        private Vector2 position;
-        private Vector2 direction;
         private KinematicSeek kinematicSeek;
 
-        public Vector2 Position { get { return position; } set { position = value; } }
         public Vector2 PreviousDirection { get; set; }
         public Vector2 DesiredDirection { get; set; }
-        public Vector2 Direction { get { return direction; } set { direction = value; } }
+        public Vector2 Direction { get; set; }
         public IStatic Target { get { return kinematicSeek.target; } set { kinematicSeek.target = value; } }
-        public float Orientation { get; set; }
         public bool IsSteering { get; set; }
 
-        public Pacman()
+        public Pacman() : base(display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
         {
-            texture = Content.Load<Texture2D>("pacman");
-            var sourceRectangles = TexturePacker.GetTextureRectangles(Content.RootDirectory + "\\pacman.xml");
-            sourceRectangle = sourceRectangles[36];
-            origin.X = sourceRectangle.Width / 2;
-            origin.Y = sourceRectangle.Height / 2;
+            SetFrame(36);
+            origin.X = Width / 2;
+            origin.Y = Height / 2;
             kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 250.0f };
             IsSteering = true;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             PreviousDirection = Direction;
             SteerToTarget(gameTime);
-        }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture, position, sourceRectangle, Color.White, Orientation, origin, 1, SpriteEffects.None, 0);
-        }
-
-        internal void SetTarget(IStatic target)
-        {
-            Target = target;
+            base.Update(gameTime);
         }
 
         private void SteerToTarget(GameTime gameTime)
@@ -73,8 +54,8 @@ namespace PacmanGame
                 else
                     position += deltaPosition;
 
-                Orientation = (float)Math.Atan2((double)-deltaPosition.Y, (double)-deltaPosition.X);
-                Orientation += steering.angular * time;
+                Rotation = (float)Math.Atan2((double)-deltaPosition.Y, (double)-deltaPosition.X);
+                Rotation += steering.angular * time;
             }
         }
     }

@@ -30,14 +30,14 @@ namespace PacmanGame
                     {
                         var tileIndex = innerWallData[row, column] + TILEOFFSET;
                         var orientation = innerWallOrientation[row, column] * MathHelper.ToRadians(90);
-                        tile.Insert(tileIndex, orientation);
+                        tile.InsertSprite(tileIndex, orientation);
                         tile.IsPassable = false;
                     }
                     if (outerWallData[row, column] > 0)
                     {
                         var tileIndex = outerWallData[row, column] + TILEOFFSET;
                         var orientation = outerWallOrientation[row, column] * MathHelper.ToRadians(90);
-                        tile.Insert(tileIndex, orientation);
+                        tile.InsertSprite(tileIndex, orientation);
                     }
                 }
             }

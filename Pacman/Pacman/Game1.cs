@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using DisplayEngine;
 
 namespace PacmanGame
 {
@@ -17,10 +18,6 @@ namespace PacmanGame
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            Pacman.Content = Content;
-            Tile.Content = Content;
-            Pellet.Content = Content;
-            Ghost.Content = Content;
 
             this.IsMouseVisible = true;
             graphics.IsFullScreen = false;
@@ -30,6 +27,7 @@ namespace PacmanGame
 
         protected override void Initialize()
         {
+            display.Initialize(Content, graphics, Content.Load<SpriteFont>("SpriteFont"));
             base.Initialize();
         }
 
@@ -48,6 +46,7 @@ namespace PacmanGame
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 this.Exit();
 
+            display.Update(gameTime);
             controller.Update(gameTime);
             base.Update(gameTime);
         }
@@ -57,7 +56,7 @@ namespace PacmanGame
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            controller.Draw(spriteBatch);
+            display.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

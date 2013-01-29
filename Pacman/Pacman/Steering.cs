@@ -9,7 +9,7 @@ namespace PacmanGame
     interface IStatic
     {
         Vector2 Position { get; set; }
-        float Orientation { get; set; }
+        float Rotation { get; set; }
     }
 
     interface IMovement

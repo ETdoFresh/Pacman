@@ -60,6 +60,9 @@
     <XnaCompressContent>true</XnaCompressContent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DisplayEngine">
+      <HintPath>..\..\..\DisplayEngineTest\DisplayEngine\bin\x86\Release\DisplayEngine.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
       <Private>False</Private>
     </Reference>
@@ -118,7 +121,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Steering.cs" />
-    <Compile Include="TexturePacker.cs" />
     <Compile Include="Tile.cs" />
   </ItemGroup>
   <ItemGroup>

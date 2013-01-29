@@ -32,3 +32,4 @@ $tf*/
 *.tps
 pacman-*.png
 Pacman/PacmanContent/tiles.xlsx
+*.cachefile
