@@ -15,6 +15,7 @@ namespace PacmanGame
     {
         private KinematicSeek kinematicSeek;
 
+        public Vector2 PositionTest { get { return Position; } set { DispatchEvent("test", new PropertyChangeEventArgs("test", Position, value)); Position = value; } }
         public Vector2 PreviousDirection { get; set; }
         public Vector2 DesiredDirection { get; set; }
         public Vector2 Direction { get; set; }
@@ -23,7 +24,10 @@ namespace PacmanGame
 
         public Pacman() : base(display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
         {
-            SetFrame(36);
+            AddSequence("chomp", new[] { 36, 37, 36, 38 }, 200);
+            AddSequence("still", new[] { 36 }, 0);
+            SetSequence("chomp");
+            Play();
             origin.X = Width / 2;
             origin.Y = Height / 2;
             kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 250.0f };
@@ -45,6 +49,8 @@ namespace PacmanGame
                 var steering = kinematicSeek.GetSteering();
                 var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
+                SetSequence("chomp");
+
                 var deltaPosition = steering.linear * time;
                 var distanceToTarget = (Target.Position - this.position).LengthSquared();
                 var distanceBySpeed = deltaPosition.LengthSquared();
@@ -56,6 +62,10 @@ namespace PacmanGame
 
                 Rotation = (float)Math.Atan2((double)-deltaPosition.Y, (double)-deltaPosition.X);
                 Rotation += steering.angular * time;
+            }
+            else
+            {
+                SetSequence("still");
             }
         }
     }

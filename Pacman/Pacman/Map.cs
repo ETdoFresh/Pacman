@@ -73,6 +73,7 @@ namespace PacmanGame
 
         public Tile GetTileFromDirection(Tile tile, Vector2 direction)
         {
+            if (tile == null) return null;
             var xTile = (int)(tile.Position.X - TileWidth / 2) / TileWidth + (int)direction.X;
             var yTile = (int)(tile.Position.Y - TileHeight / 2) / TileHeight + (int)direction.Y;
 
@@ -85,6 +86,7 @@ namespace PacmanGame
 
         public Tile GetTileFromDirectionClamped(Tile tile, Vector2 direction)
         {
+            if (tile == null) return null;
             var xTile = (tile.Position.X - TileWidth / 2) / TileWidth + direction.X;
             var yTile = (tile.Position.Y - TileHeight / 2) / TileHeight + direction.Y;
 

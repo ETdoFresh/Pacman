@@ -14,47 +14,50 @@ namespace PacmanGame
         private KinematicSeek kinematicSeek;
 
         public IStatic Target { get { return kinematicSeek.target; } set { kinematicSeek.target = value; } }
+        public float Speed { get { return kinematicSeek.maxSpeed; } set { kinematicSeek.maxSpeed = value; } }
+
         public Tile TargetTile { get; set; }
         public Tile ScatterTargetTile { get; set; }
         public Tile NextTile { get; set; }
         public Tile NextNextTile { get; set; }
         public bool IsSteering { get; set; }
+        public GhostState State { get; set; }
 
-        protected Texture2D debugRectangle;
-        protected Color debugRectangleColor;
+        public RectangleObject debugRectangle;
 
-        public Ghost(): base (display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
+        public Ghost(GhostState state)
+            : base(display.RetrieveTexture("pacman"), display.RetrieveSourceRectangles("pacman"))
         {
-            SetFrame(0);
+            debugRectangle = display.NewRect(0, 0, 15, 15);
+            kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 150 };
+
+            State = state;
+            State.Initialize(this);
             origin.X = Width / 2;
             origin.Y = Height / 2;
-            kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 150 };
             IsSteering = true;
-
-            debugRectangle = new Texture2D(Game1.graphics.GraphicsDevice, 15, 15);
-            Color[] data = new Color[15 * 15];
-            for (int i = 0; i < data.Length; i++) data[i] = Color.White;
-            debugRectangle.SetData(data);
-            debugRectangleColor = Color.White;
         }
+
+        public Ghost() : this(new BlinkyScatter()) { }
 
         public override void Update(GameTime gameTime)
         {
             SteerToTarget(gameTime);
+            
+            if (debugRectangle != null && TargetTile != null)
+                debugRectangle.Position = TargetTile.Position;
+
             base.Update(gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
             base.Draw(spriteBatch);
-
-            if (debugRectangle != null && TargetTile != null)
-                spriteBatch.Draw(debugRectangle, TargetTile.Position, debugRectangleColor);
         }
 
         private void SteerToTarget(GameTime gameTime)
         {
-            if (IsSteering && this.Position != Target.Position)
+            if (IsSteering && Target != null && this.Position != Target.Position)
             {
                 var steering = kinematicSeek.GetSteering();
                 var time = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -74,9 +77,10 @@ namespace PacmanGame
 
         public virtual void UpdateGhostTiles(Map map, Pacman pacman)
         {
+            State.UpdateGhostTiles(map, pacman);
             if (TargetTile == null) return;
-
             var ghostTile = map.GetTileFromPosition(Position);
+
             if (NextTile == null && NextNextTile == null)
             {
                 NextTile = map.GetTileFromDirection(ghostTile, new Vector2(-1, 0));
@@ -121,86 +125,5 @@ namespace PacmanGame
         }
     }
 
-    class Blinky : Ghost
-    {
-        public Blinky()
-            : base()
-        {
-            SetFrame(0);
-            debugRectangleColor = Color.Red * 0.5f;
-        }
-
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
-        {
-            TargetTile = map.GetTileFromPosition(pacman.Position);
-            base.UpdateGhostTiles(map, pacman);
-        }
-    }
-
-    class Pinky : Ghost
-    {
-        public Pinky()
-            : base()
-        {
-            SetFrame(8);
-            debugRectangleColor = Color.Pink * 0.5f;
-        }
-
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
-        {
-            var pacmanTile = map.GetTileFromPosition(pacman.Position);
-            TargetTile = map.GetTileFromDirectionClamped(pacmanTile, pacman.Direction * 4);
-            base.UpdateGhostTiles(map, pacman);
-        }
-    }
-
-    class Inky : Ghost
-    {
-        public IStatic Blinky { get; set; }
-
-        public Inky()
-            : base()
-        {
-            SetFrame(16);
-
-            debugRectangleColor = Color.Cyan * 0.5f;
-        }
-
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
-        {
-            var pacmanTile = map.GetTileFromPosition(pacman.Position);
-            TargetTile = map.GetTileFromDirectionClamped(pacmanTile, pacman.Direction * 2);
-            if (Blinky != null)
-            {
-                var difference = Blinky.Position - TargetTile.Position;
-                difference *= 2;
-                var targetPosition = Blinky.Position + difference;
-                targetPosition.X = MathHelper.Clamp(targetPosition.X, 0, map.TileWidth * map.MapWidth - 1);
-                targetPosition.Y = MathHelper.Clamp(targetPosition.Y, 0, map.TileHeight * map.MapHeight - 1);
-                TargetTile = map.GetTileFromPosition(targetPosition);
-            }
-            base.UpdateGhostTiles(map, pacman);
-        }
-    }
-
-    class Clyde : Ghost
-    {
-        public Clyde()
-            : base()
-        {
-            SetFrame(24);
-
-            debugRectangleColor = Color.Orange * 0.5f;
-        }
-
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
-        {
-            var pacmanTile = map.GetTileFromPosition(pacman.Position);
-            TargetTile = pacmanTile;
-            var distance = (Position - pacman.Position).Length();
-            if (distance < 15 * 8)
-                TargetTile = map.GetTileFromDirectionClamped(pacmanTile, new Vector2(-100, 100));
-            base.UpdateGhostTiles(map, pacman);
-        }
-    }
+   
 }

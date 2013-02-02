@@ -11,7 +11,6 @@ namespace PacmanGame
     {
         public static GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
         Controller controller;
 
         public Game1()

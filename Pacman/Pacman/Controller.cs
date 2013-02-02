@@ -26,20 +26,27 @@ namespace PacmanGame
             pellets = Pellet.CreateAllPellets(map);
 
             pacman = new Pacman();
-            pacman.Position = map.Tiles[13, 23].Position;
+            pacman.AddEventListener("test", print);
+            pacman.PositionTest = map.Tiles[13, 23].Position;
             pacman.DesiredDirection = new Vector2(-1, 0);
 
-            var blinky = new Blinky();
-            var pinky = new Pinky();
-            var inky = new Inky();
-            var clyde = new Clyde();
+            var blinky = new Ghost(new BlinkChase());
+            var pinky = new Ghost(new PinkyChase());
+            var inky = new Ghost(new InkyChase());
+            var clyde = new Ghost(new ClydeChase());
+            var eyes = new Ghost(new EatenState());
+            var frightened = new Ghost(new FrightenedState());
+            
             blinky.Position = map.Tiles[13, 11].Position;
             pinky.Position = map.Tiles[13, 13].Position;
             inky.Position = map.Tiles[11, 13].Position;
-            inky.Blinky = blinky;
             clyde.Position = map.Tiles[15, 13].Position;
+            eyes.Position = map.Tiles[13, 23].Position;
+            frightened.Position = map.Tiles[3, 3].Position;
 
-            ghosts = new List<Ghost>() { blinky, pinky, inky, clyde };
+            InkyChase.Blinky = blinky;
+
+            ghosts = new List<Ghost>() { blinky, pinky, inky, clyde, eyes, frightened };
 
             player = new Player() { Score = 0 };
 
@@ -50,6 +57,11 @@ namespace PacmanGame
             foreach (var ghost in ghosts)
                 gameObjects.Add(ghost);
             
+        }
+
+        private void print(object sender, EventArgs e)
+        {
+            System.Console.WriteLine(sender + " " + ((PropertyChangeEventArgs)e).NewValue + " " + ((PropertyChangeEventArgs)e).OldValue);
         }
 
         public void Update(GameTime gameTime)
@@ -64,6 +76,9 @@ namespace PacmanGame
 
             foreach (var ghost in ghosts)
                 WrapAroundScreen(ghost);
+
+            if (pacman.X > map.MapWidth * map.TileWidth)
+                throw new Exception();
         }
 
         public void Draw(SpriteBatch spriteBatch)
