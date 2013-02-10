@@ -12,6 +12,7 @@ namespace PacmanGame
     class Ghost : SpriteObject, IGameObject, IStatic
     {
         private KinematicSeek kinematicSeek;
+        private GhostState state;
 
         public IStatic Target { get { return kinematicSeek.target; } set { kinematicSeek.target = value; } }
         public float Speed { get { return kinematicSeek.maxSpeed; } set { kinematicSeek.maxSpeed = value; } }
@@ -21,7 +22,7 @@ namespace PacmanGame
         public Tile NextTile { get; set; }
         public Tile NextNextTile { get; set; }
         public bool IsSteering { get; set; }
-        public GhostState State { get; set; }
+        public GhostState State { get { return state; } set { state = value; state.Initialize(this); } }
 
         public RectangleObject debugRectangle;
 
@@ -32,13 +33,22 @@ namespace PacmanGame
             kinematicSeek = new KinematicSeek() { character = this, target = this, maxSpeed = 150 };
 
             State = state;
-            State.Initialize(this);
             origin.X = Width / 2;
             origin.Y = Height / 2;
             IsSteering = true;
+            AddEventListener("GhostCollidePacman", OnGhostCollidePacman);
         }
 
-        public Ghost() : this(new BlinkyScatter()) { }
+        private void OnGhostCollidePacman(object sender, EventArgs e)
+        {
+            if (State is FrightenedState)
+            {
+                var newState = new EatenState();
+                newState.PreviousState = State;
+                State = newState;
+                DispatchEvent("GhostEaten");
+            }
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -77,7 +87,12 @@ namespace PacmanGame
 
         public virtual void UpdateGhostTiles(Map map, Pacman pacman)
         {
-            State.UpdateGhostTiles(map, pacman);
+            State.UpdateTargetTile(map, pacman);
+            SetNextTiles(map);
+        }
+
+        private void SetNextTiles(Map map)
+        {
             if (TargetTile == null) return;
             var ghostTile = map.GetTileFromPosition(Position);
 

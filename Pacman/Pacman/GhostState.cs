@@ -17,7 +17,7 @@ namespace PacmanGame
     {
         protected Ghost ghost;
         public virtual void Initialize(Ghost ghost) { this.ghost = ghost; }
-        public virtual void UpdateGhostTiles(Map map, Pacman pacman) { }
+        public virtual void UpdateTargetTile(Map map, Pacman pacman) { }
     }
 
     class BlinkyBase : GhostState
@@ -32,15 +32,15 @@ namespace PacmanGame
 
     class BlinkyScatter : BlinkyBase
     {
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             ghost.TargetTile = map.Tiles[map.MapWidth - 1, 0];
         }
     }
 
-    class BlinkChase : BlinkyBase
+    class BlinkyChase : BlinkyBase
     {
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             ghost.TargetTile = map.GetTileFromPosition(pacman.Position);
         }
@@ -58,7 +58,7 @@ namespace PacmanGame
 
     class PinkyChase : PinkyBase
     {
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             var pacmanTile = map.GetTileFromPosition(pacman.Position);
             ghost.TargetTile = map.GetTileFromDirectionClamped(pacmanTile, pacman.Direction * 4);
@@ -67,7 +67,7 @@ namespace PacmanGame
 
     class PinkyScatter : PinkyBase
     {
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             ghost.TargetTile = map.Tiles[0, 0];
         }
@@ -87,7 +87,7 @@ namespace PacmanGame
     {
         public static IStatic Blinky { get; set; }
 
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             var pacmanTile = map.GetTileFromPosition(pacman.Position);
             ghost.TargetTile = map.GetTileFromDirectionClamped(pacmanTile, pacman.Direction * 2);
@@ -105,7 +105,7 @@ namespace PacmanGame
 
     class InkyScatter : InkyBase
     {
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             ghost.TargetTile = map.Tiles[map.MapWidth - 1, map.MapHeight - 1];
         }
@@ -113,7 +113,7 @@ namespace PacmanGame
 
     class ClydeBase : GhostState
     {
-        public override void  Initialize(Ghost ghost)
+        public override void Initialize(Ghost ghost)
         {
             ghost.SetFrame(24);
             ghost.debugRectangle.Color = Color.Orange * 0.5f;
@@ -124,7 +124,7 @@ namespace PacmanGame
 
     class ClydeChase : ClydeBase
     {
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             var pacmanTile = map.GetTileFromPosition(pacman.Position);
             ghost.TargetTile = pacmanTile;
@@ -144,10 +144,11 @@ namespace PacmanGame
             ghost.SetFrame(32);
             ghost.debugRectangle.Color = Color.Orange * 0.5f;
             ghost.Speed = 50;
+            target = null;
             base.Initialize(ghost);
         }
 
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             if (target == null)
             {
@@ -155,31 +156,43 @@ namespace PacmanGame
                 ghost.TargetTile = target;
             }
 
-            base.UpdateGhostTiles(map, pacman);
+            base.UpdateTargetTile(map, pacman);
         }
     }
 
     class EatenState : GhostState
     {
         public Tile target;
+        public GhostState PreviousState { get; set; }
 
         public override void Initialize(Ghost ghost)
         {
             ghost.SetFrame(50);
             ghost.debugRectangle.Color = Color.Green * 0.5f;
             ghost.Speed = 400;
+
             base.Initialize(ghost);
         }
 
-        public override void UpdateGhostTiles(Map map, Pacman pacman)
+        public override void UpdateTargetTile(Map map, Pacman pacman)
         {
             if (target == null)
             {
-                target = map.Tiles[13,11];
+                target = map.Tiles[13, 11];
                 ghost.TargetTile = target;
             }
 
-            base.UpdateGhostTiles(map, pacman);
+            if (PreviousState != null && ghost.Position == target.Position)
+            {
+                ghost.State = PreviousState;
+            }
+
+            base.UpdateTargetTile(map, pacman);
         }
+    }
+
+    class InkyHome : InkyBase
+    {
+
     }
 }

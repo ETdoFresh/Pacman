@@ -24,6 +24,12 @@ namespace PacmanGame
             }
             origin.X = Width / 2;
             origin.Y = Height / 2;
+            AddEventListener("PelletEaten", OnPelletEaten);
+        }
+
+        private void OnPelletEaten(object sender, EventArgs e)
+        {
+            RemoveSelf();
         }
         
         public static List<Pellet> CreateAllPellets(Map map)

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DisplayEngine;
 
 namespace PacmanGame
 {
-    class Map : IGameObject
+    class Map : EventListener, IGameObject
     {
         private Tile[,] tiles;
         private const int TILEOFFSET = 53;

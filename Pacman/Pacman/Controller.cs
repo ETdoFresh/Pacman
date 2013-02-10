@@ -19,18 +19,20 @@ namespace PacmanGame
         Map map;
         List<Pellet> pellets;
         List<Ghost> ghosts;
+        protected DebugInformation debugInformation;
 
         public Controller()
         {
             map = new Map();
             pellets = Pellet.CreateAllPellets(map);
+            
 
             pacman = new Pacman();
             pacman.AddEventListener("test", print);
             pacman.PositionTest = map.Tiles[13, 23].Position;
             pacman.DesiredDirection = new Vector2(-1, 0);
 
-            var blinky = new Ghost(new BlinkChase());
+            var blinky = new Ghost(new BlinkyChase());
             var pinky = new Ghost(new PinkyChase());
             var inky = new Ghost(new InkyChase());
             var clyde = new Ghost(new ClydeChase());
@@ -56,8 +58,17 @@ namespace PacmanGame
             gameObjects.Add(pacman);
             foreach (var ghost in ghosts)
                 gameObjects.Add(ghost);
-            
+
+            foreach (var pellet in pellets)
+            {
+                pellet.AddEventListener("PelletEaten", this.OnPelletEaten);
+                pellet.AddEventListener("PelletEaten", player.OnPelletEaten);
+            }
+
+            debugInformation = new DebugInformation(this);
         }
+
+        
 
         private void print(object sender, EventArgs e)
         {
@@ -68,7 +79,7 @@ namespace PacmanGame
         {
             UpdatePlayerDesiredDirectionFromKeyboard();
             UpdatePlayerTargetFromDesiredDirection();
-            CheckIfPlayerAtePellet();
+            CheckPlayerCollisions();
             foreach (var ghost in ghosts)
                 ghost.UpdateGhostTiles(map, pacman);
 
@@ -79,6 +90,8 @@ namespace PacmanGame
 
             if (pacman.X > map.MapWidth * map.TileWidth)
                 throw new Exception();
+
+            debugInformation.Update(gameTime);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -149,19 +162,53 @@ namespace PacmanGame
                 pacman.Target = nextTile;
         }
 
-        private void CheckIfPlayerAtePellet()
+        private void CheckPlayerCollisions()
         {
             var currentPlayerTile = map.GetTileFromPosition(pacman.Position);
             for (int i = 0; i < pellets.Count(); i++)
             {
                 var pelletTile = map.GetTileFromPosition(pellets[i].Position);
                 if (currentPlayerTile == pelletTile)
-                {
-                    gameObjects.Remove(pellets[i]);
-                    player.Score += pellets[i].Score;
-                    pellets[i].RemoveSelf();
-                    pellets.RemoveAt(i);
-                }
+                    pellets[i].DispatchEvent("PelletEaten", new EventArgs());
+            }
+            for (int i = 0; i < ghosts.Count(); i++)
+            {
+                var ghostTile = map.GetTileFromPosition(ghosts[i].Position);
+                if (currentPlayerTile == ghostTile)
+                    ghosts[i].DispatchEvent("GhostCollidePacman", new EventArgs());
+            }
+        }
+
+        private void OnPelletEaten(object sender, EventArgs e)
+        {
+            Pellet pellet = (Pellet)sender;
+            gameObjects.Remove(pellet);
+            pellets.Remove(pellet);
+            System.Console.WriteLine("Pellet Eaten! " + player.Score);
+        }
+
+        private void OnGhostCollidePacman(object sender, EventArgs e)
+        {
+            Ghost ghost = (Ghost)sender;
+        }
+
+        public class DebugInformation
+        {
+            Controller controller;
+            TextObject textObject;
+
+            public DebugInformation(Controller controller)
+            {
+                this.controller = controller;
+                textObject = display.NewText("Test");
+            }
+
+            public void Update(GameTime gameTime)
+            {
+                var updatedString = string.Format("Score: {0}", controller.player.Score);
+                textObject.Text = updatedString;
+                textObject.X = textObject.Width / 2;
+                textObject.Y = textObject.Height / 2;
             }
         }
     }
