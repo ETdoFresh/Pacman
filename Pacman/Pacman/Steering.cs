@@ -4,42 +4,64 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace PacmanGame
+namespace Pacman
 {
-    interface IStatic
+    public class Steering : IDisposable
     {
-        Vector2 Position { get; set; }
-        float Rotation { get; set; }
-    }
+        private Kinematic character;
+        private Kinematic target;
+        private KinematicSteeringOutput steeringOutput;
 
-    interface IMovement
-    {
-        SteeringOutput GetSteering();
-    }
+        public event EventHandler ArrivedAtTarget;
 
-    class KinematicSeek : IMovement
-    {
-        public IStatic character;
-        public IStatic target;
-        public float maxSpeed;
-
-        public SteeringOutput GetSteering()
+        public Steering(Kinematic character, Kinematic target)
         {
-            var steering = new SteeringOutput();
-            steering.linear = target.Position - character.Position;
-            if (steering.linear != Vector2.Zero)
-            {
-                steering.linear.Normalize();
-                steering.linear *= maxSpeed;
-            }
-            steering.angular = 0;
-            return steering;
-        }
-    }
+            this.character = character;
+            this.target = target;
 
-    struct SteeringOutput
-    {
-        public Vector2 linear;
-        public float angular;
+            Runtime.GameUpdate += OnGameUpdate;
+
+            MaxSpeed = 100;
+        }
+
+        private void OnGameUpdate(GameTime gameTime)
+        {
+            steeringOutput = new KinematicSteeringOutput();
+            steeringOutput.velocity = target.Position - character.Position;
+            
+            if (steeringOutput.velocity != Vector2.Zero)
+            {
+                steeringOutput.velocity.Normalize();
+                steeringOutput.velocity *= MaxSpeed;
+                steeringOutput.orientation = (float)Math.Atan2(-steeringOutput.velocity.Y, -steeringOutput.velocity.X);
+            }
+            else
+            {
+                if (ArrivedAtTarget != null) ArrivedAtTarget(this, EventArgs.Empty);
+                steeringOutput.orientation = character.Orienation;
+            }
+
+            character.Velocity = steeringOutput.velocity;
+            character.Orienation = steeringOutput.orientation;
+        }
+
+        public float MaxSpeed { get; set; }
+
+        public void Dispose()
+        {
+            Runtime.GameUpdate -= OnGameUpdate;
+        }
+
+        public class SteeringOutput
+        {
+            public Vector2 linear = Vector2.Zero;
+            private float angular = 0;
+        }
+
+        public class KinematicSteeringOutput
+        {
+            public Vector2 velocity = Vector2.Zero;
+            public float orientation = 0;
+        }
     }
 }

@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanGameContent", "Pacman\PacmanContent\PacmanGameContent.contentproj", "{7C496BBA-15B0-4A6E-8A6B-E380B6E1CBD1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacman", "Pacman\Pacman\Pacman.csproj", "{F66024E8-383E-46A2-8333-2922BFE926D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanGame", "Pacman\Pacman\PacmanGame.csproj", "{C501DC7E-35F4-4E79-B931-702EE47D2B5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanContent", "Pacman\PacmanContent\PacmanContent.contentproj", "{A2D42464-1E1C-472A-8F86-0C42F274998D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextureAtlasPipeline", "TextureAtlasPipeline\TextureAtlasPipeline.csproj", "{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,12 +13,16 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7C496BBA-15B0-4A6E-8A6B-E380B6E1CBD1}.Debug|x86.ActiveCfg = Debug|x86
-		{7C496BBA-15B0-4A6E-8A6B-E380B6E1CBD1}.Release|x86.ActiveCfg = Release|x86
-		{C501DC7E-35F4-4E79-B931-702EE47D2B5F}.Debug|x86.ActiveCfg = Debug|x86
-		{C501DC7E-35F4-4E79-B931-702EE47D2B5F}.Debug|x86.Build.0 = Debug|x86
-		{C501DC7E-35F4-4E79-B931-702EE47D2B5F}.Release|x86.ActiveCfg = Release|x86
-		{C501DC7E-35F4-4E79-B931-702EE47D2B5F}.Release|x86.Build.0 = Release|x86
+		{F66024E8-383E-46A2-8333-2922BFE926D3}.Debug|x86.ActiveCfg = Debug|x86
+		{F66024E8-383E-46A2-8333-2922BFE926D3}.Debug|x86.Build.0 = Debug|x86
+		{F66024E8-383E-46A2-8333-2922BFE926D3}.Release|x86.ActiveCfg = Release|x86
+		{F66024E8-383E-46A2-8333-2922BFE926D3}.Release|x86.Build.0 = Release|x86
+		{A2D42464-1E1C-472A-8F86-0C42F274998D}.Debug|x86.ActiveCfg = Debug|x86
+		{A2D42464-1E1C-472A-8F86-0C42F274998D}.Release|x86.ActiveCfg = Release|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Debug|x86.ActiveCfg = Debug|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Debug|x86.Build.0 = Debug|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|x86.ActiveCfg = Debug|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|x86.Build.0 = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

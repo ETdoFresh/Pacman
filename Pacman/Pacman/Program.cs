@@ -1,4 +1,6 @@
-namespace PacmanGame
+using System;
+
+namespace Pacman
 {
 #if WINDOWS || XBOX
     static class Program
