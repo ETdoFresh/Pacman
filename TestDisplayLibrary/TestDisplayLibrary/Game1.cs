@@ -10,12 +10,12 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using DisplayLibrary;
 
-namespace Pacman
+namespace TestDisplayLibrary
 {
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    class Game1 : Microsoft.Xna.Framework.Game
+    public class Game1 : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -24,7 +24,6 @@ namespace Pacman
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-
             IsMouseVisible = true;
         }
 
@@ -36,6 +35,7 @@ namespace Pacman
         /// </summary>
         protected override void Initialize()
         {
+            // TODO: Add your initialization logic here
             SpriteSheet.Initialize(Content);
             base.Initialize();
         }
@@ -49,7 +49,13 @@ namespace Pacman
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            var level = new Level();
+            var group = new GroupObject();
+            group.Position.X = 250;
+            group.Position.Y = 250;
+
+            var sprite = new Sprite(filename: "pacman", parent: group, position: new Position(300, 0));
+            var sprite2 = new AnimatedSprite(filename: "pacman", parent: group);
+            sprite2.Rotation.Value = MathHelper.ToRadians(90);
         }
 
         /// <summary>
@@ -72,9 +78,8 @@ namespace Pacman
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 this.Exit();
 
-            KeyboardListener.Update(gameTime);
-            Runtime.Update(gameTime);
-
+            DisplayRuntime.Update(gameTime);
+            
             base.Update(gameTime);
         }
 
@@ -87,7 +92,7 @@ namespace Pacman
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             spriteBatch.Begin();
-            Runtime.Draw(spriteBatch);
+            DisplayRuntime.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);

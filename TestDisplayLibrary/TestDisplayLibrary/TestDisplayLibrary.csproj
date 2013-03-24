@@ -1,21 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{F66024E8-383E-46A2-8333-2922BFE926D3}</ProjectGuid>
+    <ProjectGuid>{DB95FA73-677E-4371-98AC-0461A588EC25}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Pacman</RootNamespace>
-    <AssemblyName>Pacman</AssemblyName>
+    <RootNamespace>TestDisplayLibrary</RootNamespace>
+    <AssemblyName>TestDisplayLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>HiDef</XnaProfile>
-    <XnaCrossPlatformGroupID>cd28f5ad-4fb2-400e-9c55-ddd1f2d6cd2a</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>ba74ec82-ebfd-460e-b85b-75fc9a744e8c</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
@@ -59,6 +59,9 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <PlatformTarget>x86</PlatformTarget>
     <XnaCompressContent>true</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>TestDisplayLibrary.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
@@ -108,18 +111,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Collision.cs" />
-    <Compile Include="GameObject.cs" />
-    <Compile Include="Ghost.cs" />
-    <Compile Include="KeyboardListener.cs" />
-    <Compile Include="Level.cs" />
-    <Compile Include="Pacman.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
-    <Compile Include="Steering.cs" />
-    <Compile Include="Target.cs" />
-    <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
@@ -130,9 +124,14 @@
       <Project>{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}</Project>
       <Name>DisplayLibrary</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PacmanContent\PacmanContent.contentproj">
-      <Name>PacmanContent</Name>
+    <ProjectReference Include="..\..\Pacman\PacmanContent\PacmanContent.contentproj">
+      <Project>{A2D42464-1E1C-472A-8F86-0C42F274998D}</Project>
+      <Name>PacmanContent %28Content%29</Name>
       <XnaReferenceType>Content</XnaReferenceType>
+    </ProjectReference>
+    <ProjectReference Include="..\..\TextureAtlasPipeline\TextureAtlasPipeline.csproj">
+      <Project>{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}</Project>
+      <Name>TextureAtlasPipeline</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -164,7 +163,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

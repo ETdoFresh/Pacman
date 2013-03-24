@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DisplayLibrary;
 
 namespace Pacman
 {
-    public class Collision
+    class Collision : IDisposable
     {
-        private Kinematic position;
+        private Position position;
 
-        public Collision()
+        public Collision(Position position)
         {
-            throw new System.NotImplementedException();
+            this.position = position;
         }
 
-        public Collision(Kinematic position)
+        public void Dispose()
         {
-            // TODO: Complete member initialization
-            this.position = position;
         }
     }
 }

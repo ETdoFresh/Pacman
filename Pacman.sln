@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanContent", "Pacman\Pac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextureAtlasPipeline", "TextureAtlasPipeline\TextureAtlasPipeline.csproj", "{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDisplayLibrary", "TestDisplayLibrary\TestDisplayLibrary\TestDisplayLibrary.csproj", "{DB95FA73-677E-4371-98AC-0461A588EC25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayLibrary", "DisplayLibrary\DisplayLibrary.csproj", "{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -23,6 +27,14 @@ Global
 		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Debug|x86.Build.0 = Debug|x86
 		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|x86.ActiveCfg = Debug|x86
 		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|x86.Build.0 = Debug|x86
+		{DB95FA73-677E-4371-98AC-0461A588EC25}.Debug|x86.ActiveCfg = Debug|x86
+		{DB95FA73-677E-4371-98AC-0461A588EC25}.Debug|x86.Build.0 = Debug|x86
+		{DB95FA73-677E-4371-98AC-0461A588EC25}.Release|x86.ActiveCfg = Release|x86
+		{DB95FA73-677E-4371-98AC-0461A588EC25}.Release|x86.Build.0 = Release|x86
+		{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}.Debug|x86.ActiveCfg = Debug|x86
+		{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}.Debug|x86.Build.0 = Debug|x86
+		{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}.Release|x86.ActiveCfg = Release|x86
+		{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

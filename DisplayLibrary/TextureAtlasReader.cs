@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace Pacman
+namespace DisplayLibrary
 {
     /// <summary>
     /// This class will be instantiated by the XNA Framework Content

@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using DisplayLibrary;
 
 namespace Pacman
 {
-    public class Steering : IDisposable
+    class Steering : IDisposable
     {
-        private Kinematic character;
-        private Kinematic target;
+        private GameObject character;
+        private GameObject target;
         private KinematicSteeringOutput steeringOutput;
 
         public event EventHandler ArrivedAtTarget;
 
-        public Steering(Kinematic character, Kinematic target)
+        public Steering(GameObject character, GameObject target)
         {
             this.character = character;
             this.target = target;
@@ -27,7 +28,7 @@ namespace Pacman
         private void OnGameUpdate(GameTime gameTime)
         {
             steeringOutput = new KinematicSteeringOutput();
-            steeringOutput.velocity = target.Position - character.Position;
+            steeringOutput.velocity = target.Position.Value - character.Position.Value;
             
             if (steeringOutput.velocity != Vector2.Zero)
             {
@@ -38,11 +39,11 @@ namespace Pacman
             else
             {
                 if (ArrivedAtTarget != null) ArrivedAtTarget(this, EventArgs.Empty);
-                steeringOutput.orientation = character.Orienation;
+                steeringOutput.orientation = character.Rotation.Value;
             }
 
-            character.Velocity = steeringOutput.velocity;
-            character.Orienation = steeringOutput.orientation;
+            character.Velocity.Value = steeringOutput.velocity;
+            character.Rotation.Value = steeringOutput.orientation;
         }
 
         public float MaxSpeed { get; set; }
@@ -55,7 +56,7 @@ namespace Pacman
         public class SteeringOutput
         {
             public Vector2 linear = Vector2.Zero;
-            private float angular = 0;
+            public float angular = 0;
         }
 
         public class KinematicSteeringOutput

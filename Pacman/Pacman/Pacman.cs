@@ -5,33 +5,65 @@ using System.Text;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using DisplayLibrary;
 
 namespace Pacman
 {
-    public class Pacman
+    class Pacman : GameObject
     {
+        public enum State { Normal, Dead, Invisible }
 
-        public AnimatedSprite animatedSprite;
-        public Direction direction;
-        public Kinematic kinematic;
-        public Target keyboardTarget;
-        public Steering seekKeyboardTarget;
-        public Collision collision;
+        public AnimatedSprite AnimatedSprite { get; set; }
+        public Target KeyboardTarget { get; set; }
+        public Steering SeekKeyboardTarget { get; set; }
+        public Collision Collision { get; set; }
 
         public Pacman()
         {
-            kinematic = new Kinematic(x: 50, y: 50);
+            Position = new Position(x: 150, y: 150);
+            Rotation = new Rotation();
+            Velocity = new Velocity(Position);
+            setState(State.Normal);
 
-            animatedSprite = new AnimatedSprite(filename: "pacman", kinematic: kinematic);
-            animatedSprite.AddSequence(name: "still", frames: new int[] { 36 });
-            animatedSprite.AddSequence(name: "chomp", frames: new int[] { 36, 37, 36, 38 }, time: 200);
-            animatedSprite.SetSequence(name: "chomp");
+            disposables = new List<IDisposable>() { AnimatedSprite, Velocity, KeyboardTarget, SeekKeyboardTarget, Collision };
+        }
 
-            keyboardTarget = new Target(source: kinematic);
+        public void setState(State state)
+        {
+            ResetState();
+            if (state == State.Normal)
+            {
+                AnimatedSprite = new AnimatedSprite(filename: "pacman", position: Position, rotation: Rotation);
+                AnimatedSprite.AddSequence(name: "chomp", frames: new int[] { 36, 37, 36, 38 }, time: 200);
+                AnimatedSprite.AddSequence(name: "still", frames: new int[] { 36 });
+                AnimatedSprite.SetSequence("chomp");
+                KeyboardTarget = new Target(source: this);
+                SeekKeyboardTarget = new Steering(this, KeyboardTarget);
+                Collision = new Collision(Position);
+            }
+            else if (state == State.Dead)
+            {
+                AnimatedSprite = new AnimatedSprite(filename: "pacman", position: Position);
+                AnimatedSprite.AddSequence(name: "die", start: 39, count: 11, time: 1000);
+                AnimatedSprite.SetSequence("die");
+                AnimatedSprite.CurrentFrame = 0;
+                //animatedSprite.EndSequence += OnEndOfDeathSequence;
+            }
+            else if (state == State.Invisible)
+            {
+            }
+        }
 
-            seekKeyboardTarget = new Steering(kinematic, keyboardTarget);
+        private void OnEndOfDeathSequence(object sender, EventArgs eventArgs)
+        {
+            setState(State.Normal);
+        }
 
-            collision = new Collision(kinematic);
+        private void ResetState()
+        {
+            var position = Position;
+            Dispose();
+            Position = position;
         }
     }
 }

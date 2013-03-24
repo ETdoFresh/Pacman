@@ -5,17 +5,18 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
+using DisplayLibrary;
 
 namespace Pacman
 {
-    public class Target : Kinematic, IDisposable
+    class Target : GameObject, IDisposable
     {
         private Vector2 offsetFromSource;
-        private Kinematic source;
+        private GameObject source;
 
-        public Target(int x = 0, int y = 0, int orientation = 0, Kinematic source = null)
-            : base(x, y, orientation)
+        public Target(int x = 0, int y = 0, GameObject source = null)
         {
+            Position = new Position();
             if (source != null)
             {
                 this.source = source;
@@ -26,7 +27,7 @@ namespace Pacman
 
         private void OnGameUpdate(GameTime gameTime)
         {
-            Position = source.Position + offsetFromSource;
+            Position.Value = source.Position.Value + offsetFromSource;
         }
 
         private void OnKeyPress(Keys key)
@@ -38,7 +39,7 @@ namespace Pacman
             else offsetFromSource = Vector2.Zero;
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             KeyboardListener.Press -= OnKeyPress;
             Runtime.GameUpdate -= OnGameUpdate;

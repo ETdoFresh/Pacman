@@ -6,21 +6,21 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace Pacman
+namespace DisplayLibrary
 {
-    class SpriteSheet
+    public class SpriteSheet
     {
-        internal static Texture2D GetTexture(string filename)
+        public static Texture2D GetTexture(string filename)
         {
             return Content.Load<Texture2D>(filename);
         }
 
-        internal static List<Rectangle> GetRectangles(string filename)
+        public static List<Rectangle> GetRectangles(string filename)
         {
             return Content.Load<List<Rectangle>>(filename + "xml");
         }
 
-        internal static void Initialize(ContentManager Content)
+        public static void Initialize(ContentManager Content)
         {
             SpriteSheet.Content = Content;
         }
