@@ -9,12 +9,18 @@ namespace DisplayLibrary
 {
     public class Sprite : DisplayObject
     {
-        public Sprite(String filename, Position position = null, Rotation rotation = null, Scale scale = null, GroupObject parent = null)
+        protected List<Rectangle> sourceRectangles;
+
+        public Sprite(String filename, int index = 0, Position position = null, Rotation rotation = null, Scale scale = null, GroupObject parent = null)
             : base(parent, position, rotation, scale) 
         {
             texture = SpriteSheet.GetTexture(filename);
-            sourceRectangle = new Rectangle(0, 0, texture.Width, texture.Height);
+            sourceRectangles = SpriteSheet.GetRectangles(filename);
+
+            sourceRectangle = sourceRectangles[index];
             origin = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
+            Width = sourceRectangle.Width;
+            Height = sourceRectangle.Height;
         }
     }
 }

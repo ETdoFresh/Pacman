@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 
 namespace Pacman
 {
@@ -10,6 +11,9 @@ namespace Pacman
     {
         public Pacman pacman;
         public Ghost[] ghosts;
+        public Tile[,] tiles;
+
+        private const Int32 tileIndexOffset = 54;
 
         public Level()
         {
@@ -21,6 +25,46 @@ namespace Pacman
             //ghosts[3] = new Ghost(Ghost.CLYDE);
 
             KeyboardListener.Press += OnKeyPress;
+
+            TileEngine.Initialize("pacman", tileIndexOffset);
+            tiles = new Tile[outerWallData.GetLength(1), outerWallData.GetLength(0)];
+            for (var row = 0; row < tiles.GetLength(0); row++)
+            {
+                for (var column = 0; column < tiles.GetLength(1); column++)
+                {
+                    if (outerWallData[column, row] > 0)
+                    {
+                        var x = TileEngine.GetXCoordinates(tileX: row);
+                        var y = TileEngine.GetYCoordinates(tileY: column);
+                        var rotation = outerWallOrientation[column, row] * (float)Math.PI / 2;
+                        var index = outerWallData[column, row] + tileIndexOffset - 1;
+
+                        if (tiles[row, column] == null)
+                            tiles[row, column] = new Tile(x: x, y: y);
+
+                        tiles[row, column].AddLayer("pacman", index, rotation);
+                    }
+                }
+            }
+
+            for (var row = 0; row < tiles.GetLength(0); row++)
+            {
+                for (var column = 0; column < tiles.GetLength(1); column++)
+                {
+                    if (innerWallData[column, row] > 0)
+                    {
+                        var x = TileEngine.GetXCoordinates(tileX: row);
+                        var y = TileEngine.GetYCoordinates(tileY: column);
+                        var rotation = innerWallOrientation[column, row] * (float)Math.PI / 2;
+                        var index = innerWallData[column, row] + tileIndexOffset - 1;
+
+                        if (tiles[row, column] == null)
+                            tiles[row, column] = new Tile(x: x, y: y);
+
+                        tiles[row, column].AddLayer("pacman", index, rotation);
+                    }
+                }
+            }
         }
 
         private void OnKeyPress(Keys key)
@@ -29,6 +73,10 @@ namespace Pacman
             {
                 pacman.Dispose();
                 pacman = null;
+            }
+            else if (key == Keys.Space && pacman != null)
+            {
+                pacman.setState(Pacman.State.Dead);
             }
             else if (key == Keys.G && ghosts[0] != null)
             {

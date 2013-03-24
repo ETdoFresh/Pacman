@@ -60,6 +60,8 @@ namespace DisplayLibrary
         public Position Position { get; set; }
         public Rotation Rotation { get; set; }
         public Scale Scale { get; set; }
+        public float Width { get; set; }
+        public float Height { get; set; }
 
         public Vector2 ContentPosition
         {

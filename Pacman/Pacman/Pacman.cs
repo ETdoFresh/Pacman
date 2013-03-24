@@ -22,10 +22,7 @@ namespace Pacman
         {
             Position = new Position(x: 150, y: 150);
             Rotation = new Rotation();
-            Velocity = new Velocity(Position);
             setState(State.Normal);
-
-            disposables = new List<IDisposable>() { AnimatedSprite, Velocity, KeyboardTarget, SeekKeyboardTarget, Collision };
         }
 
         public void setState(State state)
@@ -37,9 +34,12 @@ namespace Pacman
                 AnimatedSprite.AddSequence(name: "chomp", frames: new int[] { 36, 37, 36, 38 }, time: 200);
                 AnimatedSprite.AddSequence(name: "still", frames: new int[] { 36 });
                 AnimatedSprite.SetSequence("chomp");
+                Velocity = new Velocity(Position);
                 KeyboardTarget = new Target(source: this);
                 SeekKeyboardTarget = new Steering(this, KeyboardTarget);
+                SeekKeyboardTarget.MaxSpeed = 150;
                 Collision = new Collision(Position);
+                disposables = new List<IDisposable>() { AnimatedSprite, Velocity, KeyboardTarget, SeekKeyboardTarget, Collision };
             }
             else if (state == State.Dead)
             {
@@ -48,6 +48,7 @@ namespace Pacman
                 AnimatedSprite.SetSequence("die");
                 AnimatedSprite.CurrentFrame = 0;
                 //animatedSprite.EndSequence += OnEndOfDeathSequence;
+                disposables = new List<IDisposable>() { AnimatedSprite };
             }
             else if (state == State.Invisible)
             {

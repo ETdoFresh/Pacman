@@ -119,6 +119,8 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Steering.cs" />
     <Compile Include="Target.cs" />
+    <Compile Include="Tile.cs" />
+    <Compile Include="TileEngine.cs" />
     <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>

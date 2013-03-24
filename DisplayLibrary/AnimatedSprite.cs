@@ -7,26 +7,18 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace DisplayLibrary
 {
-    public class AnimatedSprite : DisplayObject
+    public class AnimatedSprite : Sprite
     {
-        private List<Rectangle> sourceRectangles;
         private Dictionary<String, Sequence> sequences = new Dictionary<string, Sequence>();
-        private Sequence sequence;
+        private Sequence sequence = new Sequence() { frames = new int[] { 0 } };
         private double timeSinceLastFrame;
 
         public int CurrentFrame { get; set; }
         public int TotalFrames { get { return sequence.frames.Length; } }
 
         public AnimatedSprite(String filename, Position position = null, Rotation rotation = null, Scale scale = null, GroupObject parent = null)
-            : base(parent, position, rotation, scale)
+            : base(filename, 0, position, rotation, scale, parent)
         {
-            texture = SpriteSheet.GetTexture(filename);
-            sourceRectangles = SpriteSheet.GetRectangles(filename);
-
-            AddSequence("Default", 0, sourceRectangles.Count, time: 5000);
-            SetSequence("Default");
-            sourceRectangle = sourceRectangles[sequence.frames[0]];
-
             Runtime.GameUpdate += Update;
         }
 
@@ -61,6 +53,8 @@ namespace DisplayLibrary
 
             if (CurrentFrame > TotalFrames)
                 CurrentFrame = 0;
+
+            sourceRectangle = sourceRectangles[sequence.frames[CurrentFrame]];
         }
 
         public void AddSequence(string name, int start, int count = 1, int time = 1000, int loopCount = 0)
