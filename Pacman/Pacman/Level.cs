@@ -4,22 +4,26 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using DisplayLibrary;
 
 namespace Pacman
 {
     class Level
     {
+        public GroupObject group = new GroupObject();
         public Pacman pacman;
         public Ghost[] ghosts;
         public Tile[,] tiles;
+        public DebugInfo debugInfo;
 
         private const Int32 tileIndexOffset = 54;
 
         public Level()
         {
-            pacman = new Pacman();
+            group.Position.X = 300;
+            pacman = new Pacman(displayParent: group);
             ghosts = new Ghost[4];
-            ghosts[0] = new Ghost();
+            ghosts[0] = new Ghost(displayParent: group);
             //ghosts[1] = new Ghost(Ghost.PINKY);
             //ghosts[2] = new Ghost(Ghost.INKY);
             //ghosts[3] = new Ghost(Ghost.CLYDE);
@@ -40,7 +44,7 @@ namespace Pacman
                         var index = outerWallData[column, row] + tileIndexOffset - 1;
 
                         if (tiles[row, column] == null)
-                            tiles[row, column] = new Tile(x: x, y: y);
+                            tiles[row, column] = new Tile(x: x, y: y, displayParent: group);
 
                         tiles[row, column].AddLayer("pacman", index, rotation);
                     }
@@ -59,12 +63,18 @@ namespace Pacman
                         var index = innerWallData[column, row] + tileIndexOffset - 1;
 
                         if (tiles[row, column] == null)
-                            tiles[row, column] = new Tile(x: x, y: y);
+                            tiles[row, column] = new Tile(x: x, y: y, displayParent: group);
 
                         tiles[row, column].AddLayer("pacman", index, rotation);
                     }
                 }
             }
+
+            debugInfo = new DebugInfo();
+            debugInfo.addDebug("Pacman Position: ", pacman.Position);
+            debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
+            debugInfo.addDebug("Ghost Position: ", ghosts[0].Position);
+            //debugInfo.Dispose();
         }
 
         private void OnKeyPress(Keys key)

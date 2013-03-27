@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DisplayLibrary;
+using Microsoft.Xna.Framework;
 
 namespace Pacman
 {
@@ -27,6 +28,20 @@ namespace Pacman
         public static float GetYCoordinates(Int32 tileY)
         {
             return tileY * TileHeight + TileHeight / 2;
+        }
+    }
+
+    class TilePosition
+    {
+           private Position Position { get; set; }
+
+        public int X { get { return (int)Math.Floor(Position.X / TileEngine.TileWidth); } }
+        public int Y { get { return (int)Math.Floor(Position.Y / TileEngine.TileHeight); } }
+        public Vector2 Value { get { return new Vector2(X, Y); } }
+
+        public TilePosition(Position position)
+        {
+            Position = position;
         }
     }
 }

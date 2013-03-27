@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Collision.cs" />
+    <Compile Include="DebugInfo.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="Ghost.cs" />
     <Compile Include="KeyboardListener.cs" />

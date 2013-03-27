@@ -36,7 +36,7 @@ namespace Pacman
         /// </summary>
         protected override void Initialize()
         {
-            SpriteSheet.Initialize(Content);
+            ContentLoader.Initialize(Content);
             base.Initialize();
         }
 

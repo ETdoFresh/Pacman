@@ -8,10 +8,11 @@ using Microsoft.Xna.Framework.Content;
 
 namespace DisplayLibrary
 {
-    public class SpriteSheet
+    public class ContentLoader
     {
         public static Dictionary<String, Texture2D> textures = new Dictionary<String, Texture2D>();
         public static Dictionary<String, List<Rectangle>> rectangles = new Dictionary<string, List<Rectangle>>();
+        public static SpriteFont spriteFont;
 
         public static Texture2D GetTexture(string filename)
         {
@@ -29,9 +30,17 @@ namespace DisplayLibrary
             return rectangles[filename];
         }
 
+        public static SpriteFont GetSpriteFont()
+        {
+            if (spriteFont == null)
+                spriteFont = Content.Load<SpriteFont>("SpriteFont");
+
+            return spriteFont;
+        }
+
         public static void Initialize(ContentManager Content)
         {
-            SpriteSheet.Content = Content;
+            ContentLoader.Content = Content;
         }
 
         public static ContentManager Content { get; set; }

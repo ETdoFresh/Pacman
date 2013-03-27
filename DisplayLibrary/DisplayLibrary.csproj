@@ -103,7 +103,8 @@
     <Compile Include="Scale.cs" />
     <Compile Include="Sequence.cs" />
     <Compile Include="Sprite.cs" />
-    <Compile Include="SpriteSheet.cs" />
+    <Compile Include="ContentLoader.cs" />
+    <Compile Include="TextObject.cs" />
     <Compile Include="TextureAtlasReader.cs" />
   </ItemGroup>
   <ItemGroup>

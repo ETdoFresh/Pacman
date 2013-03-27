@@ -13,15 +13,21 @@ namespace Pacman
     {
         public enum State { Normal, Dead, Invisible }
 
+        public GroupObject DisplayParent { get; set; }
+        public TilePosition TilePosition { get; set; }
         public AnimatedSprite AnimatedSprite { get; set; }
         public Target KeyboardTarget { get; set; }
         public Steering SeekKeyboardTarget { get; set; }
         public Collision Collision { get; set; }
 
-        public Pacman()
+        public Pacman(GroupObject displayParent = null)
         {
+            DisplayParent = displayParent;
+
             Position = new Position(x: 150, y: 150);
             Rotation = new Rotation();
+            TilePosition = new TilePosition(Position);
+
             setState(State.Normal);
         }
 
@@ -30,7 +36,7 @@ namespace Pacman
             ResetState();
             if (state == State.Normal)
             {
-                AnimatedSprite = new AnimatedSprite(filename: "pacman", position: Position, rotation: Rotation);
+                AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: DisplayParent, position: Position, rotation: Rotation);
                 AnimatedSprite.AddSequence(name: "chomp", frames: new int[] { 36, 37, 36, 38 }, time: 200);
                 AnimatedSprite.AddSequence(name: "still", frames: new int[] { 36 });
                 AnimatedSprite.SetSequence("chomp");
@@ -43,7 +49,7 @@ namespace Pacman
             }
             else if (state == State.Dead)
             {
-                AnimatedSprite = new AnimatedSprite(filename: "pacman", position: Position);
+                AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: DisplayParent, position: Position);
                 AnimatedSprite.AddSequence(name: "die", start: 39, count: 11, time: 1000);
                 AnimatedSprite.SetSequence("die");
                 AnimatedSprite.CurrentFrame = 0;
@@ -64,6 +70,7 @@ namespace Pacman
         {
             var position = Position;
             Dispose();
+            disposables = new List<IDisposable>();
             Position = position;
         }
     }

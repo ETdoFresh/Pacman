@@ -14,8 +14,6 @@ namespace Pacman
         {
             foreach (var disposable in disposables)
                 disposable.Dispose();
-
-            disposables = new List<IDisposable>();
         }
 
         public Position Position { get; set; }
