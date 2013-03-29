@@ -16,6 +16,9 @@ namespace DisplayLibrary
         public int CurrentFrame { get; set; }
         public int TotalFrames { get { return sequence.frames.Length; } }
 
+        public delegate void EndSequenceHandler();
+        public event EndSequenceHandler EndSequence = delegate { };
+
         public AnimatedSprite(String filename, Position position = null, Rotation rotation = null, Scale scale = null, GroupObject parent = null)
             : base(filename, 0, position, rotation, scale, parent)
         {
@@ -33,7 +36,10 @@ namespace DisplayLibrary
                 timeSinceLastFrame = 0;
             }
             if (CurrentFrame >= TotalFrames)
+            {
                 CurrentFrame = 0;
+                EndSequence();
+            }
 
             if (CurrentFrame != previousFrame)
             {

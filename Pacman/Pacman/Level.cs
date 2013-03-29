@@ -21,12 +21,20 @@ namespace Pacman
         public Level()
         {
             group.Position.X = 300;
-            pacman = new Pacman(displayParent: group);
+
+            // Tile Positions
+            //Pacman X 13-14 Y 17
+            //Blinky X 13-14 Y 11
+            //Pinky X 13-14 Y 13-14
+            //Inky X 11-12 Y 14-15
+            //Clyde X 15-16 Y 14-15
+
+            pacman = new PacmanNormal(displayParent: group);
             ghosts = new Ghost[4];
-            ghosts[0] = new Ghost(displayParent: group);
-            //ghosts[1] = new Ghost(Ghost.PINKY);
-            //ghosts[2] = new Ghost(Ghost.INKY);
-            //ghosts[3] = new Ghost(Ghost.CLYDE);
+            ghosts[0] = new Blinky(displayParent: group);
+            ghosts[1] = new Pinky(displayParent: group);
+            ghosts[2] = new Inky(displayParent: group);
+            ghosts[3] = new Clyde(displayParent: group);
 
             KeyboardListener.Press += OnKeyPress;
 
@@ -70,11 +78,25 @@ namespace Pacman
                 }
             }
 
+
+            pacman.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2;
+            pacman.Position.Y = TileEngine.GetYCoordinates(17);
+            ghosts[0].Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2;
+            ghosts[0].Position.Y = TileEngine.GetYCoordinates(11);
+            ghosts[1].Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2;
+            ghosts[1].Position.Y = TileEngine.GetYCoordinates(13) + TileEngine.TileHeight / 2;
+            ghosts[2].Position.X = TileEngine.GetXCoordinates(11) + TileEngine.TileWidth / 2;
+            ghosts[2].Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
+            ghosts[3].Position.X = TileEngine.GetXCoordinates(15) + TileEngine.TileWidth / 2;
+            ghosts[3].Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
+
+
             var tileSelector = new TileSelector(displayParent: group);
             debugInfo = new DebugInfo();
             debugInfo.addDebug("Pacman Position: ", pacman.Position);
             debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
             debugInfo.addDebug("Ghost Position: ", ghosts[0].Position);
+            debugInfo.addDebug("Tile Selector: ", tileSelector.TilePosition);
             //debugInfo.Dispose();
         }
 
@@ -87,7 +109,9 @@ namespace Pacman
             }
             else if (key == Keys.Space && pacman != null)
             {
-                pacman.setState(Pacman.State.Dead);
+                pacman = new PacmanDead(pacman);
+                for (var i = 0; i < ghosts.Length; i++)
+                    ghosts[i] = new Frightened(ghosts[i]);
             }
             else if (key == Keys.G && ghosts[0] != null)
             {

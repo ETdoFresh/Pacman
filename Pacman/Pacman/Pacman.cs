@@ -9,10 +9,8 @@ using DisplayLibrary;
 
 namespace Pacman
 {
-    class Pacman : GameObject
+    abstract class Pacman : GameObject
     {
-        public enum State { Normal, Dead, Invisible }
-        
         public AnimatedSprite AnimatedSprite { get; set; }
         public Target KeyboardTarget { get; set; }
         public Steering SeekKeyboardTarget { get; set; }
@@ -21,55 +19,66 @@ namespace Pacman
         public Pacman(GroupObject displayParent = null)
         {
             DisplayParent = displayParent;
-
-            Position = new Position(x: 150, y: 150);
+            Position = new Position();
             Rotation = new Rotation();
             TilePosition = new TilePosition(Position);
-
-            setState(State.Normal);
         }
 
-        public void setState(State state)
+        public Pacman(Pacman old)
         {
-            ResetState();
-            if (state == State.Normal)
-            {
-                AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: DisplayParent, position: Position, rotation: Rotation);
-                AnimatedSprite.AddSequence(name: "chomp", frames: new int[] { 36, 37, 36, 38 }, time: 200);
-                AnimatedSprite.AddSequence(name: "still", frames: new int[] { 36 });
-                AnimatedSprite.SetSequence("chomp");
-                Velocity = new Velocity(Position);
-                KeyboardTarget = new Target(source: this);
-                SeekKeyboardTarget = new Steering(this, KeyboardTarget);
-                SeekKeyboardTarget.MaxSpeed = 150;
-                Collision = new Collision(this);
-                disposables = new List<IDisposable>() { AnimatedSprite, Velocity, KeyboardTarget, SeekKeyboardTarget, Collision };
-            }
-            else if (state == State.Dead)
-            {
-                AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: DisplayParent, position: Position);
-                AnimatedSprite.AddSequence(name: "die", start: 39, count: 11, time: 1000);
-                AnimatedSprite.SetSequence("die");
-                AnimatedSprite.CurrentFrame = 0;
-                //animatedSprite.EndSequence += OnEndOfDeathSequence;
-                disposables = new List<IDisposable>() { AnimatedSprite };
-            }
-            else if (state == State.Invisible)
-            {
-            }
+            DisplayParent = old.DisplayParent;
+            Position = old.Position;
+            Rotation = old.Rotation;
+            TilePosition = old.TilePosition;
+            old.Dispose();
+        }
+    }
+
+    class PacmanNormal : Pacman
+    {
+        public PacmanNormal(GroupObject displayParent = null) : base(displayParent) { Initialize(); }
+        public PacmanNormal(Pacman oldState) : base(oldState) { Initialize(); }
+
+        private void Initialize()
+        {
+            AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: DisplayParent, position: Position, rotation: Rotation);
+            AnimatedSprite.AddSequence(name: "chomp", frames: new int[] { 36, 37, 36, 38 }, time: 200);
+            AnimatedSprite.AddSequence(name: "still", frames: new int[] { 36 });
+            AnimatedSprite.SetSequence("chomp");
+            Velocity = new Velocity(Position);
+            KeyboardTarget = new Target(source: this);
+            SeekKeyboardTarget = new Steering(this, KeyboardTarget);
+            SeekKeyboardTarget.MaxSpeed = 150;
+            Collision = new Collision(this);
+            disposables = new List<IDisposable>() { AnimatedSprite, Velocity, KeyboardTarget, SeekKeyboardTarget, Collision };
+        }
+    }
+
+    class PacmanDead : Pacman
+    {
+        public PacmanDead(GroupObject displayParent = null) : base(displayParent) { Initialize(); }
+        public PacmanDead(Pacman oldState) : base(oldState) { Initialize(); }
+
+        private void Initialize()
+        {
+            AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: DisplayParent, position: Position);
+            AnimatedSprite.AddSequence(name: "die", start: 39, count: 11, time: 1000);
+            AnimatedSprite.SetSequence("die");
+            AnimatedSprite.CurrentFrame = 0;
+            disposables = new List<IDisposable>() { AnimatedSprite };
+
+            AnimatedSprite.EndSequence += OnEndOfDeathSequence;
         }
 
-        private void OnEndOfDeathSequence(object sender, EventArgs eventArgs)
+        private void OnEndOfDeathSequence()
         {
-            setState(State.Normal);
-        }
-
-        private void ResetState()
-        {
-            var position = Position;
             Dispose();
-            disposables = new List<IDisposable>();
-            Position = position;
+        }
+
+        public override void Dispose()
+        {
+            AnimatedSprite.EndSequence -= OnEndOfDeathSequence;
+            base.Dispose();
         }
     }
 }

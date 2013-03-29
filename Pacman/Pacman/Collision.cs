@@ -10,7 +10,7 @@ namespace Pacman
     class Collision : IDisposable
     {
         public delegate void CollisionHandler(Object sender, Object target);
-        public event CollisionHandler Collide;
+        public event CollisionHandler Collide = delegate { };
 
         private static List<GameObject> gameObjects = new List<GameObject>();
 
