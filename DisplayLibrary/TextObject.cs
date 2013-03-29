@@ -24,15 +24,15 @@ namespace DisplayLibrary
                 {
                     text = value;
                     var measureFont = spriteFont.MeasureString(text);
-                    Width = measureFont.X;
-                    Height = measureFont.Y;
-                    origin = new Vector2(Width / 2, Height / 2);
+                    Dimension.Width = measureFont.X;
+                    Dimension.Height = measureFont.Y;
+                    origin = new Vector2(Dimension.Width / 2, Dimension.Height / 2);
                 }
             }
         }
 
         public TextObject(String text, GroupObject parent = null, Position position = null, Rotation rotation = null, Scale scale = null)
-            : base(parent, position, rotation, scale)
+            : base(parent, position, null, rotation, scale)
         {
             spriteFont = ContentLoader.GetSpriteFont();
             Text = text;

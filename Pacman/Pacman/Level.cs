@@ -70,6 +70,7 @@ namespace Pacman
                 }
             }
 
+            var tileSelector = new TileSelector(displayParent: group);
             debugInfo = new DebugInfo();
             debugInfo.addDebug("Pacman Position: ", pacman.Position);
             debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
@@ -92,6 +93,13 @@ namespace Pacman
             {
                 ghosts[0].Dispose();
                 ghosts[0] = null;
+            }
+            else if (key == Keys.S && pacman != null)
+            {
+                if (pacman.AnimatedSprite.IsVisible)
+                    pacman.AnimatedSprite.IsVisible = false;
+                else
+                    pacman.AnimatedSprite.IsVisible = true;
             }
         }
 

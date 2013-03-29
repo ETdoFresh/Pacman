@@ -16,9 +16,10 @@ namespace Pacman
                 disposable.Dispose();
         }
 
+        public GroupObject DisplayParent { get; set; }
         public Position Position { get; set; }
         public Rotation Rotation { get; set; }
         public Velocity Velocity { get; set; }
-
+        public TilePosition TilePosition { get; set; }
     }
 }

@@ -94,6 +94,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimatedSprite.cs" />
+    <Compile Include="Dimension.cs" />
+    <Compile Include="RectangleObject.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="DisplayObject.cs" />
     <Compile Include="GroupObject.cs" />

@@ -122,6 +122,7 @@
     <Compile Include="Target.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileEngine.cs" />
+    <Compile Include="TileSelector.cs" />
     <Compile Include="Velocity.cs" />
   </ItemGroup>
   <ItemGroup>

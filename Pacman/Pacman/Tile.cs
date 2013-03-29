@@ -8,7 +8,6 @@ namespace Pacman
 {
     class Tile : GameObject
     {
-        public GroupObject DisplayParent { get; set; }
         public GroupObject TileGroup { get; set; }
 
         private List<Sprite> sprites = new List<Sprite>();

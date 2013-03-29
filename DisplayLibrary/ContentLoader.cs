@@ -38,11 +38,13 @@ namespace DisplayLibrary
             return spriteFont;
         }
 
-        public static void Initialize(ContentManager Content)
+        public static void Initialize(ContentManager Content, GraphicsDevice GraphicsDevice)
         {
             ContentLoader.Content = Content;
+            ContentLoader.GraphicsDevice = GraphicsDevice;
         }
 
         public static ContentManager Content { get; set; }
+        public static GraphicsDevice GraphicsDevice { get; set; }
     }
 }

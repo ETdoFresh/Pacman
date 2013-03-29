@@ -8,7 +8,6 @@ namespace Pacman
 {
     class Ghost : GameObject
     {
-        public GroupObject DisplayParent { get; set; }
         public AnimatedSprite AnimatedSprite { get; set; }
         public Target KeyboardTarget { get; set; }
         public Steering SeekKeyboardTarget { get; set; }

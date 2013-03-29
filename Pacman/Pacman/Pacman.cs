@@ -12,9 +12,7 @@ namespace Pacman
     class Pacman : GameObject
     {
         public enum State { Normal, Dead, Invisible }
-
-        public GroupObject DisplayParent { get; set; }
-        public TilePosition TilePosition { get; set; }
+        
         public AnimatedSprite AnimatedSprite { get; set; }
         public Target KeyboardTarget { get; set; }
         public Steering SeekKeyboardTarget { get; set; }
@@ -44,7 +42,7 @@ namespace Pacman
                 KeyboardTarget = new Target(source: this);
                 SeekKeyboardTarget = new Steering(this, KeyboardTarget);
                 SeekKeyboardTarget.MaxSpeed = 150;
-                Collision = new Collision(Position);
+                Collision = new Collision(this);
                 disposables = new List<IDisposable>() { AnimatedSprite, Velocity, KeyboardTarget, SeekKeyboardTarget, Collision };
             }
             else if (state == State.Dead)

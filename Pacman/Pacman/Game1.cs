@@ -36,7 +36,7 @@ namespace Pacman
         /// </summary>
         protected override void Initialize()
         {
-            ContentLoader.Initialize(Content);
+            ContentLoader.Initialize(Content, graphics.GraphicsDevice);
             base.Initialize();
         }
 

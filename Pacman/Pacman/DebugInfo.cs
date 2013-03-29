@@ -29,15 +29,17 @@ namespace Pacman
 
                 if (types[i] == typeof(Position))
                     updatedString += "X: " + ((Position)objects[i]).X + " Y: " + ((Position)objects[i]).Y + "\n";
-                if (types[i] == typeof(TilePosition))
+                else if (types[i] == typeof(TilePosition))
                     updatedString += "X: " + ((TilePosition)objects[i]).X + " Y: " + ((TilePosition)objects[i]).Y + "\n";
+                else if (types[i] == typeof(Dimension))
+                    updatedString += "Width: " + ((Dimension)objects[i]).Width + " Height: " + ((Dimension)objects[i]).Height + "\n";
                 else
                     updatedString += "\n";
 
             }
             text.Text = updatedString;
-            text.Position.X = text.Width / 2;
-            text.Position.Y = text.Height / 2;
+            text.Position.X = text.Dimension.Width / 2;
+            text.Position.Y = text.Dimension.Height / 2;
         }
 
         public void addDebug(String label, Object position)
