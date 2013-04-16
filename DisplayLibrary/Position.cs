@@ -15,6 +15,11 @@ namespace DisplayLibrary
 
         public Position(float x = 0, float y = 0) : this(value: new Vector2(x, y)) { }
 
+        public Position Copy()
+        {
+            return new Position(Value);
+        }
+
         public Vector2 Value { get; set; }
         public float X { get { return Value.X; } set { Value = new Vector2(value, Value.Y); } }
         public float Y { get { return Value.Y; } set { Value = new Vector2(Value.X, value); } }

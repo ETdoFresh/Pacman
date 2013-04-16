@@ -9,6 +9,8 @@ namespace Pacman
     class Tile : GameObject
     {
         public GroupObject TileGroup { get; set; }
+        public Boolean IsPassable { get; set; }
+        public Collision Collision { get; set; }
 
         private List<Sprite> sprites = new List<Sprite>();
 
@@ -18,6 +20,7 @@ namespace Pacman
 
             Position = new Position(x, y);
             Rotation = new Rotation();
+            TilePosition = new TilePosition(Position);
 
             TileGroup = new GroupObject(parent: displayParent);
             TileGroup.Position = Position;
@@ -25,6 +28,8 @@ namespace Pacman
 
             if (filename != null)
                 AddLayer(filename, index);
+
+            //Collision.AddGameObject(this);
         }
 
         public void AddLayer(String filename, Int32 index, float rotation = 0)
@@ -47,6 +52,7 @@ namespace Pacman
 
         public override void Dispose()
         {
+            Collision.RemoveGameObject(this);
             foreach (var sprite in sprites)
                 sprite.Dispose();
 

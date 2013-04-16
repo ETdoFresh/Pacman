@@ -4,53 +4,54 @@ using System.Linq;
 using System.Text;
 using DisplayLibrary;
 using Microsoft.Xna.Framework;
+using System.Collections;
 
 namespace Pacman
 {
     class Collision : IDisposable
     {
         public delegate void CollisionHandler(Object sender, Object target);
-        public event CollisionHandler Collide = delegate { };
+        public static event CollisionHandler Collide = delegate { };
 
         private static List<GameObject> gameObjects = new List<GameObject>();
 
-        public GameObject GameObject { get; set; }
-        private TilePosition previousTilePosition;
-
-        public Collision(GameObject gameObject)
+        public static void AddGameObject(GameObject gameObject)
         {
-            GameObject = gameObject;
-
-            if (GameObject != null)
-            {
-                previousTilePosition = GameObject.TilePosition.Copy();
-                gameObjects.Add(GameObject);
-                Runtime.GameUpdate += CheckCollisions;
-            }
+            if (gameObject != null)
+                Collision.gameObjects.Add(gameObject);
         }
 
-        private void CheckCollisions(GameTime gameTime)
+        public static void AddGameObjects(IEnumerable<GameObject> gameObjects)
         {
-            foreach (var otherObject in gameObjects)
-            {
-                if (otherObject != GameObject)
-                {
-                    if (otherObject.TilePosition.Value == GameObject.TilePosition.Value)
-                    {
-                        Collide(this, otherObject);
-                    }
-                }
-            }
+            if (gameObjects != null)
+                Collision.gameObjects.AddRange(gameObjects);
+        }
+
+        public static void RemoveGameObject(GameObject gameObject)
+        {
+            if (gameObject != null)
+                Collision.gameObjects.Remove(gameObject);
+        }
+
+        public Collision(List<GameObject> gameObjects = null)
+        {
+            if (gameObjects != null)
+                Collision.gameObjects.AddRange(gameObjects);
+
+            Runtime.GameUpdate += CheckCollisions;
+        }
+
+        public void CheckCollisions(GameTime gameTime)
+        {
+            for (var i = 0; i < gameObjects.Count; i++)
+                for (var j = i + 1; j < gameObjects.Count; j++)
+                    if (gameObjects[i].TilePosition.Value == gameObjects[j].TilePosition.Value)
+                        Collide(gameObjects[i], gameObjects[j]);
         }
 
         public void Dispose()
         {
-            if (GameObject != null)
-            {
-                previousTilePosition = null;
-                gameObjects.Remove(GameObject);
-                Runtime.GameUpdate -= CheckCollisions;
-            }
+            Runtime.GameUpdate -= CheckCollisions;
         }
     }
 }

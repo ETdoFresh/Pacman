@@ -36,22 +36,41 @@ namespace Pacman
         }
     }
 
-    class TilePosition
+    class TilePosition : IDisposable
     {
         private Position Position { get; set; }
+        private Position OldPosition { get; set; }
 
-        public int X { get { return (int)Math.Floor(Position.X / TileEngine.TileWidth); } }
-        public int Y { get { return (int)Math.Floor(Position.Y / TileEngine.TileHeight); } }
-        public Vector2 Value { get { return new Vector2(X, Y); } }
+        public Vector2 Value { get; set; }
+        public int X { get { return (int)Value.X; } set { Value = new Vector2(value, Value.Y); } }
+        public int Y { get { return (int)Value.Y; } set { Value = new Vector2(Value.X, value); } }
 
         public TilePosition(Position position)
         {
             Position = position;
+            OldPosition = Position.Copy();
+            Runtime.GameUpdate += UpdateTilePosition;
+        }
+
+        public void UpdateTilePosition(GameTime gameTime)
+        {
+            if (Position.Value != OldPosition.Value)
+            {
+                var x = (int)Math.Floor(Position.X / TileEngine.TileWidth);
+                var y = (int)Math.Floor(Position.Y / TileEngine.TileHeight);
+                Value = new Vector2(x, y);
+                OldPosition = Position.Copy();
+            }
+        }
+
+        public void Dispose()
+        {
+            Runtime.GameUpdate -= UpdateTilePosition;
         }
 
         public TilePosition Copy()
         {
-            return new TilePosition(new Position(Position.Value));
+            return new TilePosition(Position.Copy());
         }
     }
 }

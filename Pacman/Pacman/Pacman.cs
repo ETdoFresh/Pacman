@@ -12,9 +12,9 @@ namespace Pacman
     abstract class Pacman : GameObject
     {
         public AnimatedSprite AnimatedSprite { get; set; }
-        public Target KeyboardTarget { get; set; }
-        public Steering SeekKeyboardTarget { get; set; }
-        public Collision Collision { get; set; }
+        public PacmanTarget Target { get; set; }
+        public Steering Steering { get; set; }
+        public SnapToTarget SnapToTarget { get; set; }
 
         public Pacman(GroupObject displayParent = null)
         {
@@ -22,6 +22,8 @@ namespace Pacman
             Position = new Position();
             Rotation = new Rotation();
             TilePosition = new TilePosition(Position);
+            Target = new PacmanTarget();
+            Collision.AddGameObject(this);
         }
 
         public Pacman(Pacman old)
@@ -31,6 +33,12 @@ namespace Pacman
             Rotation = old.Rotation;
             TilePosition = old.TilePosition;
             old.Dispose();
+        }
+
+        public override void Dispose()
+        {
+            Collision.RemoveGameObject(this);
+            base.Dispose();
         }
     }
 
@@ -46,11 +54,9 @@ namespace Pacman
             AnimatedSprite.AddSequence(name: "still", frames: new int[] { 36 });
             AnimatedSprite.SetSequence("chomp");
             Velocity = new Velocity(Position);
-            KeyboardTarget = new Target(source: this);
-            SeekKeyboardTarget = new Steering(this, KeyboardTarget);
-            SeekKeyboardTarget.MaxSpeed = 150;
-            Collision = new Collision(this);
-            disposables = new List<IDisposable>() { AnimatedSprite, Velocity, KeyboardTarget, SeekKeyboardTarget, Collision };
+            Steering = new Steering(this, Target);
+            SnapToTarget = new SnapToTarget(this, Target, maxSpeed: 100);
+            disposables = new List<IDisposable>() { AnimatedSprite, Steering, Velocity, SnapToTarget };
         }
     }
 

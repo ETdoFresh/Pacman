@@ -9,8 +9,8 @@ namespace Pacman
     abstract class Ghost : GameObject
     {
         public AnimatedSprite AnimatedSprite { get; set; }
-        public Target KeyboardTarget { get; set; }
         public Steering SeekKeyboardTarget { get; set; }
+        public Collision Collision { get; set; }
 
         public Ghost(GroupObject displayParent = null)
         {
@@ -18,6 +18,7 @@ namespace Pacman
             Position = new Position();
             Rotation = new Rotation();
             TilePosition = new TilePosition(Position);
+            Collision.AddGameObject(this);
         }
 
         public Ghost(Ghost old)
@@ -27,6 +28,12 @@ namespace Pacman
             Rotation = old.Rotation;
             TilePosition = old.TilePosition;
             old.Dispose();
+        }
+
+        public override void Dispose()
+        {
+            Collision.RemoveGameObject(this);
+            base.Dispose();
         }
     }
 
@@ -41,8 +48,7 @@ namespace Pacman
             AnimatedSprite.AddSequence(name: "move", frames: new int[] { 0, 1 }, time: 150);
             AnimatedSprite.SetSequence(name: "move");
             Velocity = new Velocity(Position);
-            //Collision = new Collision(Position);
-            disposables = new List<IDisposable>() { AnimatedSprite, Velocity };
+            disposables = new List<IDisposable>() { AnimatedSprite, Velocity, };
         }
     }
 
@@ -57,7 +63,6 @@ namespace Pacman
             AnimatedSprite.AddSequence(name: "move", start: 8, count: 2, time: 150);
             AnimatedSprite.SetSequence(name: "move");
             Velocity = new Velocity(Position);
-            //Collision = new Collision(Position);
             disposables = new List<IDisposable>() { AnimatedSprite, Velocity };
         }
     }
@@ -73,7 +78,6 @@ namespace Pacman
             AnimatedSprite.AddSequence(name: "move", start: 16, count: 2, time: 150);
             AnimatedSprite.SetSequence(name: "move");
             Velocity = new Velocity(Position);
-            //Collision = new Collision(Position);
             disposables = new List<IDisposable>() { AnimatedSprite, Velocity };
         }
     }
@@ -89,7 +93,6 @@ namespace Pacman
             AnimatedSprite.AddSequence(name: "move", start: 24, count: 2, time: 150);
             AnimatedSprite.SetSequence(name: "move");
             Velocity = new Velocity(Position);
-            //Collision = new Collision(Position);
             disposables = new List<IDisposable>() { AnimatedSprite, Velocity };
         }
     }
@@ -105,7 +108,6 @@ namespace Pacman
             AnimatedSprite.AddSequence(name: "move", start: 32, count: 2, time: 150);
             AnimatedSprite.SetSequence(name: "move");
             Velocity = new Velocity(Position);
-            //Collision = new Collision(Position);
             disposables = new List<IDisposable>() { AnimatedSprite, Velocity };
         }
     }

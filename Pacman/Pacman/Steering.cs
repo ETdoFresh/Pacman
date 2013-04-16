@@ -29,7 +29,7 @@ namespace Pacman
         {
             steeringOutput = new KinematicSteeringOutput();
             steeringOutput.velocity = target.Position.Value - character.Position.Value;
-            
+
             if (steeringOutput.velocity != Vector2.Zero)
             {
                 steeringOutput.velocity.Normalize();

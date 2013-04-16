@@ -12,7 +12,11 @@ namespace Pacman
     {
         public GroupObject group = new GroupObject();
         public Pacman pacman;
-        public Ghost[] ghosts;
+        public Ghost blinky;
+        public Ghost pinky;
+        public Ghost inky;
+        public Ghost clyde;
+        private Collision collision;
         public Tile[,] tiles;
         public DebugInfo debugInfo;
 
@@ -22,19 +26,13 @@ namespace Pacman
         {
             group.Position.X = 300;
 
-            // Tile Positions
-            //Pacman X 13-14 Y 17
-            //Blinky X 13-14 Y 11
-            //Pinky X 13-14 Y 13-14
-            //Inky X 11-12 Y 14-15
-            //Clyde X 15-16 Y 14-15
-
             pacman = new PacmanNormal(displayParent: group);
-            ghosts = new Ghost[4];
-            ghosts[0] = new Blinky(displayParent: group);
-            ghosts[1] = new Pinky(displayParent: group);
-            ghosts[2] = new Inky(displayParent: group);
-            ghosts[3] = new Clyde(displayParent: group);
+            blinky = new Blinky(displayParent: group);
+            pinky = new Pinky(displayParent: group);
+            inky = new Inky(displayParent: group);
+            clyde = new Clyde(displayParent: group);
+
+            collision = new Collision();
 
             KeyboardListener.Press += OnKeyPress;
 
@@ -78,26 +76,33 @@ namespace Pacman
                 }
             }
 
-
-            pacman.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2;
+            pacman.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 17
             pacman.Position.Y = TileEngine.GetYCoordinates(17);
-            ghosts[0].Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2;
-            ghosts[0].Position.Y = TileEngine.GetYCoordinates(11);
-            ghosts[1].Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2;
-            ghosts[1].Position.Y = TileEngine.GetYCoordinates(13) + TileEngine.TileHeight / 2;
-            ghosts[2].Position.X = TileEngine.GetXCoordinates(11) + TileEngine.TileWidth / 2;
-            ghosts[2].Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
-            ghosts[3].Position.X = TileEngine.GetXCoordinates(15) + TileEngine.TileWidth / 2;
-            ghosts[3].Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
-
+            blinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13, 11
+            blinky.Position.Y = TileEngine.GetYCoordinates(11);
+            pinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 13.5
+            pinky.Position.Y = TileEngine.GetYCoordinates(13) + TileEngine.TileHeight / 2;
+            inky.Position.X = TileEngine.GetXCoordinates(11) + TileEngine.TileWidth / 2; //11.5, 14.5
+            inky.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
+            clyde.Position.X = TileEngine.GetXCoordinates(15) + TileEngine.TileWidth / 2; //15.5, 14.5
+            clyde.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
 
             var tileSelector = new TileSelector(displayParent: group);
+            pacman.Target.Position = tileSelector.Position;
             debugInfo = new DebugInfo();
             debugInfo.addDebug("Pacman Position: ", pacman.Position);
             debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
-            debugInfo.addDebug("Ghost Position: ", ghosts[0].Position);
+            debugInfo.addDebug("Blinky Position: ", blinky.Position);
             debugInfo.addDebug("Tile Selector: ", tileSelector.TilePosition);
             //debugInfo.Dispose();
+        }
+
+        private void PacmanCollide(Object pacman, Object other)
+        {
+            if (other.GetType() == typeof(Frightened))
+            {
+                System.Console.WriteLine("Collide with Frightened");
+            }
         }
 
         private void OnKeyPress(Keys key)
@@ -109,14 +114,15 @@ namespace Pacman
             }
             else if (key == Keys.Space && pacman != null)
             {
-                pacman = new PacmanDead(pacman);
-                for (var i = 0; i < ghosts.Length; i++)
-                    ghosts[i] = new Frightened(ghosts[i]);
+                blinky = new Frightened(blinky);
+                pinky = new Frightened(pinky);
+                inky = new Frightened(inky);
+                clyde = new Frightened(clyde);
             }
-            else if (key == Keys.G && ghosts[0] != null)
+            else if (key == Keys.G && blinky != null)
             {
-                ghosts[0].Dispose();
-                ghosts[0] = null;
+                blinky.Dispose();
+                blinky = null;
             }
             else if (key == Keys.S && pacman != null)
             {

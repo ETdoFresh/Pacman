@@ -115,13 +115,16 @@
     <Compile Include="KeyboardListener.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Pacman.cs" />
+    <Compile Include="PacmanTarget.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="SnapToTarget.cs" />
     <Compile Include="Steering.cs" />
-    <Compile Include="Target.cs" />
     <Compile Include="Tile.cs" />
-    <Compile Include="TileEngine.cs" />
+    <Compile Include="TileEngine.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="TileSelector.cs" />
     <Compile Include="Velocity.cs" />
   </ItemGroup>
