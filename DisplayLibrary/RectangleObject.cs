@@ -10,14 +10,13 @@ namespace DisplayLibrary
     public class RectangleObject : DisplayObject
     {
         private Rectangle rectangle = new Rectangle();
-        public float Alpha { get; set; }
+        
 
         public RectangleObject(GroupObject parent = null, Position position = null, Dimension dimension = null, Rotation rotation = null, Scale scale = null)
             : base(parent, position, dimension, rotation, scale)
         {
             texture = new Texture2D(ContentLoader.GraphicsDevice, 1, 1);
             texture.SetData(new Color[1] { Color.White });
-            Alpha = 1;
 
             Runtime.GameUpdate += UpdateRectangle;
         }
@@ -31,7 +30,7 @@ namespace DisplayLibrary
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, rectangle, null, Color.White * Alpha, 0, Vector2.Zero, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, rectangle, null, Color * Alpha, 0, Vector2.Zero, SpriteEffects.None, 0);
         }
 
         public override void Dispose()

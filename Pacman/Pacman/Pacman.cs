@@ -22,7 +22,7 @@ namespace Pacman
             Position = new Position();
             Rotation = new Rotation();
             TilePosition = new TilePosition(Position);
-            Target = new PacmanTarget();
+            Target = new PacmanTarget(pacman: this, displayParent: DisplayParent);
             Collision.AddGameObject(this);
         }
 

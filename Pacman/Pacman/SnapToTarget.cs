@@ -25,7 +25,8 @@ namespace Pacman
         private void UpdateSnap(GameTime gameTime)
         {
             var distance = (source.Position.Value - target.Position.Value).Length();
-            if (distance < maxSpeed * gameTime.ElapsedGameTime.TotalSeconds)
+            var littleExtraSnapDistanceFactor = 1.5;
+            if (distance < maxSpeed * gameTime.ElapsedGameTime.TotalSeconds * littleExtraSnapDistanceFactor)
             {
                 source.Position.Value = target.Position.Value;
                 source.Velocity.Value = Vector2.Zero;

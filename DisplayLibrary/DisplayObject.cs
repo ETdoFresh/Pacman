@@ -34,6 +34,8 @@ namespace DisplayLibrary
             Dimension = dimension;
             Rotation = rotation;
             Scale = scale;
+            Alpha = 1;
+            Color = Color.White;
 
             IsVisible = true;
 
@@ -43,7 +45,7 @@ namespace DisplayLibrary
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(texture, ContentPosition, sourceRectangle, Color.White, ContentRotation, origin, ContentScale, SpriteEffects.None, 0);
+            spriteBatch.Draw(texture, ContentPosition, sourceRectangle, Color * Alpha, ContentRotation, origin, ContentScale, SpriteEffects.None, 0);
         }
 
         public virtual void Dispose()
@@ -62,6 +64,8 @@ namespace DisplayLibrary
             Scale = null;
         }
 
+        public float Alpha { get; set; }
+        public Color Color { get; set; }
         public GroupObject Parent { get; set; }
         public Position Position { get; set; }
         public Rotation Rotation { get; set; }

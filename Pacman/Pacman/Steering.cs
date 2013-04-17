@@ -22,7 +22,7 @@ namespace Pacman
 
             Runtime.GameUpdate += OnGameUpdate;
 
-            MaxSpeed = 100;
+            MaxSpeed = 150;
         }
 
         private void OnGameUpdate(GameTime gameTime)

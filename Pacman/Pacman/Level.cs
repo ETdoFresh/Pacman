@@ -24,6 +24,8 @@ namespace Pacman
 
         public Level()
         {
+            TileEngine.Initialize("pacman", tileIndexOffset);
+            
             group.Position.X = 300;
 
             pacman = new PacmanNormal(displayParent: group);
@@ -36,7 +38,6 @@ namespace Pacman
 
             KeyboardListener.Press += OnKeyPress;
 
-            TileEngine.Initialize("pacman", tileIndexOffset);
             tiles = new Tile[outerWallData.GetLength(1), outerWallData.GetLength(0)];
             for (var row = 0; row < tiles.GetLength(0); row++)
             {
@@ -87,8 +88,9 @@ namespace Pacman
             clyde.Position.X = TileEngine.GetXCoordinates(15) + TileEngine.TileWidth / 2; //15.5, 14.5
             clyde.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
 
+            pacman.Target.Tiles = tiles;
+
             var tileSelector = new TileSelector(displayParent: group);
-            pacman.Target.Position = tileSelector.Position;
             debugInfo = new DebugInfo();
             debugInfo.addDebug("Pacman Position: ", pacman.Position);
             debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
