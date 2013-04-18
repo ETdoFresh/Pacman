@@ -20,11 +20,14 @@ namespace Pacman
         public Tile[,] tiles;
         public DebugInfo debugInfo;
 
+        public WrapAroundScreen WrapAroundScreen;
+
         private const Int32 tileIndexOffset = 54;
 
         public Level()
         {
             TileEngine.Initialize("pacman", tileIndexOffset);
+            collision = new Collision();
             
             group.Position.X = 300;
 
@@ -34,11 +37,38 @@ namespace Pacman
             inky = new Inky(displayParent: group);
             clyde = new Clyde(displayParent: group);
 
-            collision = new Collision();
+            tiles = new Tile[outerWallData.GetLength(1), outerWallData.GetLength(0)];
+            CreateTiles();
+
+            pacman.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 17
+            pacman.Position.Y = TileEngine.GetYCoordinates(17);
+            blinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13, 11
+            blinky.Position.Y = TileEngine.GetYCoordinates(11);
+            pinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 13.5
+            pinky.Position.Y = TileEngine.GetYCoordinates(13) + TileEngine.TileHeight / 2;
+            inky.Position.X = TileEngine.GetXCoordinates(11) + TileEngine.TileWidth / 2; //11.5, 14.5
+            inky.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
+            clyde.Position.X = TileEngine.GetXCoordinates(15) + TileEngine.TileWidth / 2; //15.5, 14.5
+            clyde.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
+
+            pacman.Target.Tiles = tiles;
+            var mapWidth = TileEngine.TileWidth * tiles.GetLength(0);
+            var mapHeight = TileEngine.TileHeight * tiles.GetLength(1);
+            WrapAroundScreen = new WrapAroundScreen(mapWidth, mapHeight, pacman.Position);
+
+            var tileSelector = new TileSelector(displayParent: group);
+            debugInfo = new DebugInfo();
+            debugInfo.addDebug("Pacman Position: ", pacman.Position);
+            debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
+            debugInfo.addDebug("Blinky Position: ", blinky.Position);
+            debugInfo.addDebug("Tile Selector: ", tileSelector.TilePosition);
+            //debugInfo.Dispose();
 
             KeyboardListener.Press += OnKeyPress;
+        }
 
-            tiles = new Tile[outerWallData.GetLength(1), outerWallData.GetLength(0)];
+        private void CreateTiles()
+        {
             for (var row = 0; row < tiles.GetLength(0); row++)
             {
                 for (var column = 0; column < tiles.GetLength(1); column++)
@@ -76,27 +106,6 @@ namespace Pacman
                     }
                 }
             }
-
-            pacman.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 17
-            pacman.Position.Y = TileEngine.GetYCoordinates(17);
-            blinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13, 11
-            blinky.Position.Y = TileEngine.GetYCoordinates(11);
-            pinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 13.5
-            pinky.Position.Y = TileEngine.GetYCoordinates(13) + TileEngine.TileHeight / 2;
-            inky.Position.X = TileEngine.GetXCoordinates(11) + TileEngine.TileWidth / 2; //11.5, 14.5
-            inky.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
-            clyde.Position.X = TileEngine.GetXCoordinates(15) + TileEngine.TileWidth / 2; //15.5, 14.5
-            clyde.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
-
-            pacman.Target.Tiles = tiles;
-
-            var tileSelector = new TileSelector(displayParent: group);
-            debugInfo = new DebugInfo();
-            debugInfo.addDebug("Pacman Position: ", pacman.Position);
-            debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
-            debugInfo.addDebug("Blinky Position: ", blinky.Position);
-            debugInfo.addDebug("Tile Selector: ", tileSelector.TilePosition);
-            //debugInfo.Dispose();
         }
 
         private void PacmanCollide(Object pacman, Object other)

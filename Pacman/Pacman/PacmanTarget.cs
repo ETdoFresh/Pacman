@@ -70,6 +70,12 @@ namespace Pacman
                         }
                     }
                 }
+
+                if ((newPosition.X == -1 || newPosition.X == Tiles.GetLength(0)) && newPosition.Y == 14)
+                {
+                    Position.Value = TileEngine.GetPosition(newPosition).Value;
+                    return;
+                }
             }
         }
 

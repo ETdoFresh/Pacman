@@ -127,6 +127,7 @@
     </Compile>
     <Compile Include="TileSelector.cs" />
     <Compile Include="Velocity.cs" />
+    <Compile Include="WrapAroundScreen.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
