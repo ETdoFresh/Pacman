@@ -123,7 +123,7 @@ namespace Pacman
             Clyde.WrapAroundScreen = new WrapAroundScreen(Clyde, Board);
 
             TileSelector = new TileSelector();
-            TileSelector.Position = TileEngine.GetPosition(13.5f, 17);
+            TileSelector.Position = TileEngine.GetPosition(13, 17);
             TileSelector.TilePosition = new TilePosition(TileSelector.Position);
             TileSelector.Rectangle = new RectangleObject(Board.Group, TileSelector.Position, new Dimension(TileEngine.TileWidth, TileEngine.TileHeight));
             TileSelector.Rectangle.Alpha = 0.5f;

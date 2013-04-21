@@ -37,6 +37,7 @@ namespace Pacman
 
             var currentTilePosition = ghost.TilePosition.Value;
             var newTilePosition = currentTilePosition + direction.GetVectorOffset();
+
             if (tiles != null)
             {
                 var closestPosition = new Vector2(1000, 1000);
@@ -46,20 +47,23 @@ namespace Pacman
                     var test = newTilePosition + offset;
                     if (test != currentTilePosition)
                     {
-                        if (0 <= test.X && test.X < tiles.GetLength(0))
+                        if (SafeZoneCheck(test, currentTilePosition))
                         {
-                            if (0 <= test.Y && test.Y < tiles.GetLength(1))
+                            if (0 <= test.X && test.X < tiles.GetLength(0))
                             {
-                                var tile = tiles[(int)test.X, (int)test.Y];
-                                if (tile == null || tile.IsPassable)
+                                if (0 <= test.Y && test.Y < tiles.GetLength(1))
                                 {
-                                    if (Vector2.DistanceSquared(endTarget.TilePosition.Value, test) < Vector2.DistanceSquared(endTarget.TilePosition.Value, closestPosition))
+                                    var tile = tiles[(int)test.X, (int)test.Y];
+                                    if (tile == null || tile.IsPassable)
                                     {
-                                        closestPosition = test;
-                                        if (i == 0) pendingDirection.Value = Direction.Left;
-                                        else if (i == 1) pendingDirection.Value = Direction.Right;
-                                        else if (i == 2) pendingDirection.Value = Direction.Up;
-                                        else if (i == 3) pendingDirection.Value = Direction.Down;
+                                        if (Vector2.DistanceSquared(endTarget.TilePosition.Value, test) < Vector2.DistanceSquared(endTarget.TilePosition.Value, closestPosition))
+                                        {
+                                            closestPosition = test;
+                                            if (i == 0) pendingDirection.Value = Direction.Left;
+                                            else if (i == 1) pendingDirection.Value = Direction.Right;
+                                            else if (i == 2) pendingDirection.Value = Direction.Up;
+                                            else if (i == 3) pendingDirection.Value = Direction.Down;
+                                        }
                                     }
                                 }
                             }
@@ -67,6 +71,18 @@ namespace Pacman
                     }
                 }
             }
+        }
+
+        private bool SafeZoneCheck(Vector2 Destination, Vector2 CurrentPosition)
+        {
+            if (CurrentPosition.Y == 11 && (Destination.X == 12 || Destination.X == 15) && Destination.Y == 10)
+                return false;
+            if (CurrentPosition.Y == 23 && (Destination.X == 12 || Destination.X == 15) && Destination.Y == 22)
+                return false;
+            else if (CurrentPosition.Y == 11 && (Destination.X == 13 || Destination.X == 14) && Destination.Y == 12)
+                return false;
+            else
+                return true;
         }
 
         public void Dispose()
