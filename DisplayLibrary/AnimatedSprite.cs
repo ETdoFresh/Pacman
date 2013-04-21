@@ -48,6 +48,17 @@ namespace DisplayLibrary
             }
         }
 
+        public void Play()
+        {
+            Runtime.GameUpdate -= Update;
+            Runtime.GameUpdate += Update;
+        }
+
+        public void Pause()
+        {
+            Runtime.GameUpdate -= Update;
+        }
+
         private double SecondsBetweenFrames()
         {
             return sequence.time / 1000.0 / TotalFrames;

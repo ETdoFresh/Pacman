@@ -8,27 +8,37 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
-    class PacmanTarget : GameObject
+    abstract class Target : GameObject
     {
-        private RectangleObject graphic;
-        private Pacman pacman;
-        private Keys lastSuccessfulKey = Keys.Left;
-        private Keys lastKey = Keys.Left;
+        protected RectangleObject rectangleGraphic;
+        protected GameObject source;
 
-        public Tile[,] Tiles { get; set; }
-
-        public PacmanTarget(Pacman pacman, GroupObject displayParent = null)
+        public Target(GameObject source, GroupObject displayParent = null)
         {
-            this.pacman = pacman;
-            Position = TileEngine.GetPosition(1, 1);
+            this.source = source;
+            Position = new Position();
             TilePosition = new TilePosition(Position);
-            DisplayParent = displayParent;
 
             var dimension = new Dimension(TileEngine.TileWidth, TileEngine.TileHeight);
-            graphic = new RectangleObject(parent: DisplayParent, position: Position, dimension: dimension);
-            graphic.Color = Color.Yellow;
-            graphic.Alpha = 0.15f;
-            disposables.Add(graphic);
+            rectangleGraphic = new RectangleObject(parent: displayParent, position: Position, dimension: dimension);
+            disposables.Add(rectangleGraphic);
+        }
+    }
+
+
+    class PacmanTarget : Target
+    {
+        private Keys lastSuccessfulKey = Keys.Left;
+        private Keys lastKey = Keys.Left;
+        private Tile[,] tiles;
+
+        public PacmanTarget(GameObject source, Tile[,] tiles, GroupObject displayParent = null)
+            : base(source, displayParent)
+        {
+            this.tiles = tiles;
+
+            rectangleGraphic.Color = Color.Yellow;
+            rectangleGraphic.Alpha = 0.15f;
 
             KeyboardListener.Press += UpdateLastKey;
             Runtime.GameUpdate += UpdatePacmanTarget;
@@ -42,15 +52,15 @@ namespace Pacman
 
         private void UpdatePacmanTarget(GameTime gameTime)
         {
-            var tilePosition = pacman.TilePosition.Value;
-            if (Tiles != null)
+            var tilePosition = source.TilePosition.Value;
+            if (tiles != null)
             {
                 var newPosition = tilePosition + GetTileOffsetFromKey(lastKey);
-                if (0 <= newPosition.X && newPosition.X < Tiles.GetLength(0))
+                if (0 <= newPosition.X && newPosition.X < tiles.GetLength(0))
                 {
-                    if (0 <= newPosition.Y && newPosition.Y < Tiles.GetLength(1))
+                    if (0 <= newPosition.Y && newPosition.Y < tiles.GetLength(1))
                     {
-                        if (Tiles[(int)newPosition.X, (int)newPosition.Y] == null || Tiles[(int)newPosition.X, (int)newPosition.Y].IsPassable)
+                        if (tiles[(int)newPosition.X, (int)newPosition.Y] == null || tiles[(int)newPosition.X, (int)newPosition.Y].IsPassable)
                         {
                             lastSuccessfulKey = lastKey;
                             Position.Value = TileEngine.GetPosition(newPosition).Value;
@@ -59,11 +69,11 @@ namespace Pacman
                     }
                 }
                 newPosition = tilePosition + GetTileOffsetFromKey(lastSuccessfulKey);
-                if (0 <= newPosition.X && newPosition.X < Tiles.GetLength(0))
+                if (0 <= newPosition.X && newPosition.X < tiles.GetLength(0))
                 {
-                    if (0 <= newPosition.Y && newPosition.Y < Tiles.GetLength(1))
+                    if (0 <= newPosition.Y && newPosition.Y < tiles.GetLength(1))
                     {
-                        if (Tiles[(int)newPosition.X, (int)newPosition.Y] == null || Tiles[(int)newPosition.X, (int)newPosition.Y].IsPassable)
+                        if (tiles[(int)newPosition.X, (int)newPosition.Y] == null || tiles[(int)newPosition.X, (int)newPosition.Y].IsPassable)
                         {
                             Position.Value = TileEngine.GetPosition(newPosition).Value;
                             return;
@@ -71,7 +81,7 @@ namespace Pacman
                     }
                 }
 
-                if ((newPosition.X == -1 || newPosition.X == Tiles.GetLength(0)) && newPosition.Y == 14)
+                if ((newPosition.X == -1 || newPosition.X == tiles.GetLength(0)) && newPosition.Y == 14)
                 {
                     Position.Value = TileEngine.GetPosition(newPosition).Value;
                     return;

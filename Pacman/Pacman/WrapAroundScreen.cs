@@ -9,21 +9,23 @@ namespace Pacman
 {
     class WrapAroundScreen : IDisposable
     {
-        private float width;
-        private float height;
-        private Position position;
+        private GameObject gameObject;
+        private Board board;
 
-        public WrapAroundScreen(float width, float height, DisplayLibrary.Position position)
+        public WrapAroundScreen(GameObject gameObject, Board board)
         {
-            this.width = width;
-            this.height = height;
-            this.position = position;
+            this.gameObject = gameObject;
+            this.board = board;
 
             Runtime.GameUpdate += WrapPosition;
         }
 
         private void WrapPosition(GameTime gameTime)
         {
+            var position = gameObject.Position;
+            var width = board.Width;
+            var height = board.Height;
+
             if (position.X < 0)
                 position.X = width - 1;
             else if (position.X >= width)

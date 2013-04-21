@@ -16,8 +16,6 @@ namespace Pacman
 
         public Tile(float x = 0, float y = 0, String filename = null, Int32 index = 0, GroupObject displayParent = null)
         {
-            DisplayParent = displayParent;
-
             Position = new Position(x, y);
             Rotation = new Rotation();
             TilePosition = new TilePosition(Position);

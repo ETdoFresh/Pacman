@@ -20,17 +20,17 @@ namespace Pacman
             sprite.Dispose();
         }
 
-        public static float GetXCoordinates(Int32 tileX)
+        public static float GetXCoordinates(float tileX)
         {
             return tileX * TileWidth + TileWidth / 2;
         }
 
-        public static float GetYCoordinates(Int32 tileY)
+        public static float GetYCoordinates(float tileY)
         {
             return tileY * TileHeight + TileHeight / 2;
         }
 
-        public static Position GetPosition(Int32 tileX, Int32 tileY)
+        public static Position GetPosition(float tileX, float tileY)
         {
             return new Position(GetXCoordinates(tileX), GetYCoordinates(tileY));
         }

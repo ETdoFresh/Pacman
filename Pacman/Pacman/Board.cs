@@ -2,73 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework;
 using DisplayLibrary;
 
 namespace Pacman
 {
-    class Level
+    class Board
     {
-        public GroupObject group = new GroupObject();
-        public Pacman pacman;
-        public Ghost blinky;
-        public Ghost pinky;
-        public Ghost inky;
-        public Ghost clyde;
-        private Collision collision;
-        public Tile[,] tiles;
-        public DebugInfo debugInfo;
+        public Position Position { get; set; }
+        public GroupObject Group { get; set; }
+        public Tile[,] Tiles { get; set; }
+        public float Width { get; set; }
+        public float Height { get; set; }
 
-        public WrapAroundScreen WrapAroundScreen;
-
-        private const Int32 tileIndexOffset = 54;
-
-        public Level()
+        public Board()
         {
-            TileEngine.Initialize("pacman", tileIndexOffset);
-            collision = new Collision();
-            
-            group.Position.X = 300;
-
-            pacman = new PacmanNormal(displayParent: group);
-            blinky = new Blinky(displayParent: group);
-            pinky = new Pinky(displayParent: group);
-            inky = new Inky(displayParent: group);
-            clyde = new Clyde(displayParent: group);
-
-            tiles = new Tile[outerWallData.GetLength(1), outerWallData.GetLength(0)];
-            CreateTiles();
-
-            pacman.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 17
-            pacman.Position.Y = TileEngine.GetYCoordinates(17);
-            blinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13, 11
-            blinky.Position.Y = TileEngine.GetYCoordinates(11);
-            pinky.Position.X = TileEngine.GetXCoordinates(13) + TileEngine.TileWidth / 2; //13.5, 13.5
-            pinky.Position.Y = TileEngine.GetYCoordinates(13) + TileEngine.TileHeight / 2;
-            inky.Position.X = TileEngine.GetXCoordinates(11) + TileEngine.TileWidth / 2; //11.5, 14.5
-            inky.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
-            clyde.Position.X = TileEngine.GetXCoordinates(15) + TileEngine.TileWidth / 2; //15.5, 14.5
-            clyde.Position.Y = TileEngine.GetYCoordinates(14) + TileEngine.TileHeight / 2;
-
-            pacman.Target.Tiles = tiles;
-            var mapWidth = TileEngine.TileWidth * tiles.GetLength(0);
-            var mapHeight = TileEngine.TileHeight * tiles.GetLength(1);
-            WrapAroundScreen = new WrapAroundScreen(mapWidth, mapHeight, pacman.Position);
-
-            var tileSelector = new TileSelector(displayParent: group);
-            debugInfo = new DebugInfo();
-            debugInfo.addDebug("Pacman Position: ", pacman.Position);
-            debugInfo.addDebug("Pacman Tile: ", pacman.TilePosition);
-            debugInfo.addDebug("Blinky Position: ", blinky.Position);
-            debugInfo.addDebug("Tile Selector: ", tileSelector.TilePosition);
-            //debugInfo.Dispose();
-
-            KeyboardListener.Press += OnKeyPress;
         }
 
-        private void CreateTiles()
+        public Tile[,] GenerateTiles(Int32 firstTileIndex = 0)
         {
+            var numberOfXTiles = outerWallData.GetLength(1);
+            var numberOfYTiles = outerWallData.GetLength(0);
+            var tiles = new Tile[numberOfXTiles, numberOfYTiles];
+
+            Width = numberOfXTiles * TileEngine.TileWidth;
+            Height = numberOfYTiles * TileEngine.TileHeight;
+
             for (var row = 0; row < tiles.GetLength(0); row++)
             {
                 for (var column = 0; column < tiles.GetLength(1); column++)
@@ -78,10 +36,10 @@ namespace Pacman
                         var x = TileEngine.GetXCoordinates(tileX: row);
                         var y = TileEngine.GetYCoordinates(tileY: column);
                         var rotation = outerWallOrientation[column, row] * (float)Math.PI / 2;
-                        var index = outerWallData[column, row] + tileIndexOffset - 1;
+                        var index = outerWallData[column, row] + firstTileIndex - 1;
 
                         if (tiles[row, column] == null)
-                            tiles[row, column] = new Tile(x: x, y: y, displayParent: group);
+                            tiles[row, column] = new Tile(x: x, y: y, displayParent: Group);
 
                         tiles[row, column].AddLayer("pacman", index, rotation);
                     }
@@ -97,51 +55,17 @@ namespace Pacman
                         var x = TileEngine.GetXCoordinates(tileX: row);
                         var y = TileEngine.GetYCoordinates(tileY: column);
                         var rotation = innerWallOrientation[column, row] * (float)Math.PI / 2;
-                        var index = innerWallData[column, row] + tileIndexOffset - 1;
+                        var index = innerWallData[column, row] + firstTileIndex - 1;
 
                         if (tiles[row, column] == null)
-                            tiles[row, column] = new Tile(x: x, y: y, displayParent: group);
+                            tiles[row, column] = new Tile(x: x, y: y, displayParent: Group);
 
                         tiles[row, column].AddLayer("pacman", index, rotation);
                     }
                 }
             }
-        }
 
-        private void PacmanCollide(Object pacman, Object other)
-        {
-            if (other.GetType() == typeof(Frightened))
-            {
-                System.Console.WriteLine("Collide with Frightened");
-            }
-        }
-
-        private void OnKeyPress(Keys key)
-        {
-            if (key == Keys.P && pacman != null)
-            {
-                pacman.Dispose();
-                pacman = null;
-            }
-            else if (key == Keys.Space && pacman != null)
-            {
-                blinky = new Frightened(blinky);
-                pinky = new Frightened(pinky);
-                inky = new Frightened(inky);
-                clyde = new Frightened(clyde);
-            }
-            else if (key == Keys.G && blinky != null)
-            {
-                blinky.Dispose();
-                blinky = null;
-            }
-            else if (key == Keys.S && pacman != null)
-            {
-                if (pacman.AnimatedSprite.IsVisible)
-                    pacman.AnimatedSprite.IsVisible = false;
-                else
-                    pacman.AnimatedSprite.IsVisible = true;
-            }
+            return tiles;
         }
 
         private static byte[,] outerWallData = new byte[,]
