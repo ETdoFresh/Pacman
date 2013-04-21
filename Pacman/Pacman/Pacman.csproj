@@ -108,6 +108,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AnimatedTowardDirection.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="EndTarget.cs" />
     <Compile Include="Board.cs" />

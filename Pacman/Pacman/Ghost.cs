@@ -15,11 +15,11 @@ namespace Pacman
         public Steering Steering { get; set; }
         public GetToEndTarget GetToEndTarget { get; set; }
         public SnapToTarget SnapToTarget { get; set; }
+        public WrapAroundScreen WrapAroundScreen { get; set; }
+        public AnimatedTowardDirection AnimatedTowardDirection { get; set; }
 
         public Ghost(GroupObject displayParent = null)
         {
         }
-
-        public WrapAroundScreen WrapAroundScreen { get; set; }
     }
 }

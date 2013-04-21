@@ -48,8 +48,12 @@ namespace Pacman
             Blinky.Direction = new Direction(Direction.Left);
             Blinky.Rotation = new Rotation();
             Blinky.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Blinky.Position);
-            Blinky.AnimatedSprite.AddSequence(name: "move", frames: new int[] { 0, 1 }, time: 150);
-            Blinky.AnimatedSprite.SetSequence(name: "move");
+            Blinky.AnimatedSprite.AddSequence(name: "Up", start: 0, count: 2, time: 150);
+            Blinky.AnimatedSprite.AddSequence(name: "Down", start: 2, count: 2, time: 150);
+            Blinky.AnimatedSprite.AddSequence(name: "Left", start: 4, count: 2, time: 150);
+            Blinky.AnimatedSprite.AddSequence(name: "Right", start: 6, count: 2, time: 150);
+            Blinky.AnimatedSprite.SetSequence(name: "Up");
+            Blinky.AnimatedTowardDirection = new AnimatedTowardDirection(Blinky.Direction, Blinky.AnimatedSprite);
             Blinky.Velocity = new Velocity(Blinky.Position);
             Blinky.Target = new NextTile(Blinky, Blinky.Direction, Board.Tiles, Board.Group);
             Blinky.Steering = new Steering(Blinky, Blinky.Target);
@@ -64,8 +68,12 @@ namespace Pacman
             Pinky.Direction = new Direction(Direction.Left);
             Pinky.Rotation = new Rotation();
             Pinky.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Pinky.Position);
-            Pinky.AnimatedSprite.AddSequence(name: "move", start: 8, count: 2, time: 150);
-            Pinky.AnimatedSprite.SetSequence(name: "move");
+            Pinky.AnimatedSprite.AddSequence(name: "Up", start: 8, count: 2, time: 150);
+            Pinky.AnimatedSprite.AddSequence(name: "Down", start: 10, count: 2, time: 150);
+            Pinky.AnimatedSprite.AddSequence(name: "Left", start: 12, count: 2, time: 150);
+            Pinky.AnimatedSprite.AddSequence(name: "Right", start: 14, count: 2, time: 150);
+            Pinky.AnimatedSprite.SetSequence(name: "Up");
+            Pinky.AnimatedTowardDirection = new AnimatedTowardDirection(Pinky.Direction, Pinky.AnimatedSprite);
             Pinky.Velocity = new Velocity(Pinky.Position);
             Pinky.Target = new NextTile(Pinky, Pinky.Direction, Board.Tiles, Board.Group);
             Pinky.Steering = new Steering(Pinky, Pinky.Target);
@@ -80,8 +88,12 @@ namespace Pacman
             Inky.Direction = new Direction(Direction.Right);
             Inky.Rotation = new Rotation();
             Inky.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Inky.Position);
-            Inky.AnimatedSprite.AddSequence(name: "move", start: 16, count: 2, time: 150);
-            Inky.AnimatedSprite.SetSequence(name: "move");
+            Inky.AnimatedSprite.AddSequence(name: "Up", start: 16, count: 2, time: 150);
+            Inky.AnimatedSprite.AddSequence(name: "Down", start: 18, count: 2, time: 150);
+            Inky.AnimatedSprite.AddSequence(name: "Left", start: 20, count: 2, time: 150);
+            Inky.AnimatedSprite.AddSequence(name: "Right", start: 22, count: 2, time: 150);
+            Inky.AnimatedSprite.SetSequence(name: "Up");
+            Inky.AnimatedTowardDirection = new AnimatedTowardDirection(Inky.Direction, Inky.AnimatedSprite);
             Inky.Velocity = new Velocity(Inky.Position);
             Inky.Target = new NextTile(Inky, Inky.Direction, Board.Tiles, Board.Group);
             Inky.Steering = new Steering(Inky, Inky.Target);
@@ -96,8 +108,12 @@ namespace Pacman
             Clyde.Direction = new Direction(Direction.Left);
             Clyde.Rotation = new Rotation();
             Clyde.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Clyde.Position);
-            Clyde.AnimatedSprite.AddSequence(name: "move", start: 24, count: 2, time: 150);
-            Clyde.AnimatedSprite.SetSequence(name: "move");
+            Clyde.AnimatedSprite.AddSequence(name: "Up", start: 24, count: 2, time: 150);
+            Clyde.AnimatedSprite.AddSequence(name: "Down", start: 26, count: 2, time: 150);
+            Clyde.AnimatedSprite.AddSequence(name: "Left", start: 28, count: 2, time: 150);
+            Clyde.AnimatedSprite.AddSequence(name: "Right", start: 30, count: 2, time: 150);
+            Clyde.AnimatedSprite.SetSequence(name: "Up");
+            Clyde.AnimatedTowardDirection = new AnimatedTowardDirection(Clyde.Direction, Clyde.AnimatedSprite);
             Clyde.Velocity = new Velocity(Clyde.Position);
             Clyde.Target = new NextTile(Clyde, Clyde.Direction, Board.Tiles, Board.Group);
             Clyde.Steering = new Steering(Clyde, Clyde.Target);
@@ -117,6 +133,12 @@ namespace Pacman
             DebugInfo.addDebug("Pacman Tile: ", Pacman.TilePosition);
             DebugInfo.addDebug("Blinky Position: ", Blinky.Position);
             DebugInfo.addDebug("Blinky Tile: ", Blinky.TilePosition);
+            DebugInfo.addDebug("Pinky Position: ", Pinky.Position);
+            DebugInfo.addDebug("Pinky Tile: ", Pinky.TilePosition);
+            DebugInfo.addDebug("Inky Position: ", Inky.Position);
+            DebugInfo.addDebug("Inky Tile: ", Inky.TilePosition);
+            DebugInfo.addDebug("Clyde Position: ", Clyde.Position);
+            DebugInfo.addDebug("Clyde Tile: ", Clyde.TilePosition);
             DebugInfo.addDebug("Tile Selector: ", TileSelector.TilePosition);
         }
 
