@@ -12,6 +12,7 @@ namespace Pacman
     class Pacman : GameObject
     {
         public AnimatedSprite AnimatedSprite { get; set; }
+        public Direction Direction { get; set; }
         public PacmanTarget Target { get; set; }
         public Steering Steering { get; set; }
         public SnapToTarget SnapToTarget { get; set; }

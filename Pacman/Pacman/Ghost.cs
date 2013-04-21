@@ -9,11 +9,17 @@ namespace Pacman
     class Ghost : GameObject
     {
         public AnimatedSprite AnimatedSprite { get; set; }
-        public GhostTarget Target { get; set; }
-     
+        public EndTarget EndTarget { get; set; }
+        public NextTile Target { get; set; }
+        public Direction Direction { get; set; }
+        public Steering Steering { get; set; }
+        public GetToEndTarget GetToEndTarget { get; set; }
+        public SnapToTarget SnapToTarget { get; set; }
+
         public Ghost(GroupObject displayParent = null)
         {
         }
 
+        public WrapAroundScreen WrapAroundScreen { get; set; }
     }
 }

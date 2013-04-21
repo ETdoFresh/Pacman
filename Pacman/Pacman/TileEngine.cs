@@ -35,47 +35,14 @@ namespace Pacman
             return new Position(GetXCoordinates(tileX), GetYCoordinates(tileY));
         }
 
+        public static Dimension GetDimension()
+        {
+            return new Dimension(TileWidth, TileHeight);
+        }
+
         public static Position GetPosition(Vector2 tile)
         {
             return new Position(GetXCoordinates((int)Math.Floor(tile.X)), GetYCoordinates((int)Math.Floor(tile.Y)));
-        }
-    }
-
-    class TilePosition : IDisposable
-    {
-        private Position position;
-        private Position oldPosition;
-
-        public Vector2 Value { get; private set; }
-        public int X { get { return (int)Value.X; } }
-        public int Y { get { return (int)Value.Y; } }
-
-        public TilePosition(Position position)
-        {
-            this.position = position;
-            oldPosition = position.Copy();
-            Runtime.GameUpdate += UpdateTilePosition;
-        }
-
-        public void UpdateTilePosition(GameTime gameTime)
-        {
-            if (position.Value != oldPosition.Value)
-            {
-                var x = (int)Math.Floor(position.X / TileEngine.TileWidth);
-                var y = (int)Math.Floor(position.Y / TileEngine.TileHeight);
-                Value = new Vector2(x, y);
-                oldPosition = position.Copy();
-            }
-        }
-
-        public void Dispose()
-        {
-            Runtime.GameUpdate -= UpdateTilePosition;
-        }
-
-        public TilePosition Copy()
-        {
-            return new TilePosition(position.Copy());
         }
     }
 }

@@ -28,14 +28,17 @@ namespace Pacman
 
     class PacmanTarget : Target
     {
-        private Keys lastSuccessfulKey = Keys.Left;
-        private Keys lastKey = Keys.Left;
+        private Direction lastSuccessfulDirection;
+        private Direction lastDirection;
         private Tile[,] tiles;
 
-        public PacmanTarget(GameObject source, Tile[,] tiles, GroupObject displayParent = null)
+        public PacmanTarget(GameObject source, Direction direction, Tile[,] tiles, GroupObject displayParent = null)
             : base(source, displayParent)
         {
             this.tiles = tiles;
+            
+            lastSuccessfulDirection = direction;
+            lastDirection = new Direction(Direction.Left);
 
             rectangleGraphic.Color = Color.Yellow;
             rectangleGraphic.Alpha = 0.15f;
@@ -47,7 +50,7 @@ namespace Pacman
         private void UpdateLastKey(Keys key)
         {
             if (key == Keys.Right || key == Keys.Left || key == Keys.Up || key == Keys.Down)
-                lastKey = key;
+                lastDirection.Key = key;
         }
 
         private void UpdatePacmanTarget(GameTime gameTime)
@@ -55,20 +58,20 @@ namespace Pacman
             var tilePosition = source.TilePosition.Value;
             if (tiles != null)
             {
-                var newPosition = tilePosition + GetTileOffsetFromKey(lastKey);
+                var newPosition = tilePosition + lastDirection.GetVectorOffset();
                 if (0 <= newPosition.X && newPosition.X < tiles.GetLength(0))
                 {
                     if (0 <= newPosition.Y && newPosition.Y < tiles.GetLength(1))
                     {
                         if (tiles[(int)newPosition.X, (int)newPosition.Y] == null || tiles[(int)newPosition.X, (int)newPosition.Y].IsPassable)
                         {
-                            lastSuccessfulKey = lastKey;
+                            lastSuccessfulDirection.Value = lastDirection.Value;
                             Position.Value = TileEngine.GetPosition(newPosition).Value;
                             return;
                         }
                     }
                 }
-                newPosition = tilePosition + GetTileOffsetFromKey(lastSuccessfulKey);
+                newPosition = tilePosition + lastSuccessfulDirection.GetVectorOffset();
                 if (0 <= newPosition.X && newPosition.X < tiles.GetLength(0))
                 {
                     if (0 <= newPosition.Y && newPosition.Y < tiles.GetLength(1))
@@ -87,22 +90,6 @@ namespace Pacman
                     return;
                 }
             }
-        }
-
-        private Vector2 GetTileOffsetFromKey(Keys key)
-        {
-            var offset = Vector2.Zero;
-
-            if (key == Keys.Up)
-                offset.Y--;
-            else if (key == Keys.Down)
-                offset.Y++;
-            else if (key == Keys.Left)
-                offset.X--;
-            else if (key == Keys.Right)
-                offset.X++;
-
-            return offset;
         }
 
         public override void Dispose()
