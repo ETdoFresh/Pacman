@@ -41,7 +41,10 @@ namespace Pacman
         {
             Target.Color = Color.Red;
             Target.Alpha = 0.75f;
-            Runtime.GameUpdate += UpdateTarget;
+            Position.Value = TileEngine.GetPosition(27, 5).Value;
+
+            if (blinky.State == GhostState.Chase)
+                Runtime.GameUpdate += UpdateTarget;
         }
 
         private void UpdateTarget(GameTime gameTime)
@@ -63,8 +66,10 @@ namespace Pacman
         {
             Target.Color = Color.Pink;
             Target.Alpha = 0.75f;
+            Position.Value = TileEngine.GetPosition(0, 5).Value;
 
-            Runtime.GameUpdate += UpdateTarget;
+            if (pinky.State == GhostState.Chase)
+                Runtime.GameUpdate += UpdateTarget;
         }
 
         private void UpdateTarget(GameTime gameTime)
@@ -90,8 +95,10 @@ namespace Pacman
 
             Target.Color = Color.Cyan;
             Target.Alpha = 0.75f;
+            Position.Value = TileEngine.GetPosition(26, 29).Value;
 
-            Runtime.GameUpdate += UpdateTarget;
+            if (inky.State == GhostState.Chase)
+                Runtime.GameUpdate += UpdateTarget;
         }
 
         private void UpdateTarget(GameTime gameTime)
@@ -115,8 +122,10 @@ namespace Pacman
         {
             Target.Color = Color.Orange;
             Target.Alpha = 0.75f;
+            Position.Value = TileEngine.GetPosition(1, 29).Value;
 
-            Runtime.GameUpdate += UpdateTarget;
+            if (clyde.State == GhostState.Chase)
+                Runtime.GameUpdate += UpdateTarget;
         }
 
         private void UpdateTarget(GameTime gameTime)

@@ -11,6 +11,7 @@ namespace Pacman
 {
     class Pacman : GameObject
     {
+        public Position StartPosition { get; set; }
         public AnimatedSprite AnimatedSprite { get; set; }
         public Direction Direction { get; set; }
         public PacmanTarget Target { get; set; }
@@ -22,6 +23,7 @@ namespace Pacman
         public Pacman()
         {
         }
+
 
     }
 }

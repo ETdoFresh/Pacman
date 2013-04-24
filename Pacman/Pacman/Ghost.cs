@@ -8,6 +8,7 @@ namespace Pacman
 {
     class Ghost : GameObject
     {
+        public Position StartPosition { get; set; }
         public AnimatedSprite AnimatedSprite { get; set; }
         public EndTarget EndTarget { get; set; }
         public NextTile Target { get; set; }
@@ -21,5 +22,7 @@ namespace Pacman
         public Ghost(GroupObject displayParent = null)
         {
         }
+
+        public GhostState State { get; set; }
     }
 }

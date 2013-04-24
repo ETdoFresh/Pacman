@@ -118,6 +118,7 @@
     <Compile Include="GameObject.cs" />
     <Compile Include="GetToEndTarget.cs" />
     <Compile Include="Ghost.cs" />
+    <Compile Include="GhostState.cs" />
     <Compile Include="KeyboardListener.cs" />
     <Compile Include="NextTile.cs" />
     <Compile Include="Pacman.cs" />

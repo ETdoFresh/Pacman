@@ -8,21 +8,15 @@ namespace Pacman
 {
     class GetToEndTarget : IDisposable
     {
-        private NextTile nextTile;
-        private EndTarget endTarget;
-        private Direction direction;
         private Direction pendingDirection;
         private Tile[,] tiles;
         private Ghost ghost;
 
         private static List<Vector2> offsets = new List<Vector2> { new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1) };
 
-        public GetToEndTarget(Ghost ghost, Direction direction, NextTile nextTile, EndTarget endTarget, Tile[,] tiles)
+        public GetToEndTarget(Ghost ghost, Tile[,] tiles)
         {
             this.ghost = ghost;
-            this.direction = direction;
-            this.nextTile = nextTile;
-            this.endTarget = endTarget;
             this.tiles = tiles;
 
             pendingDirection = new Direction(Direction.Left);
@@ -32,6 +26,10 @@ namespace Pacman
 
         private void CalculateNextMoves()
         {
+            var direction = ghost.Direction;
+            var nextTile = ghost.Target;
+            var endTarget = ghost.EndTarget;
+
             direction.Value = pendingDirection.Value;
             nextTile.UpdateNextTile();
 

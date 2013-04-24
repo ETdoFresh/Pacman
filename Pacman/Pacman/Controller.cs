@@ -4,12 +4,24 @@ using System.Linq;
 using System.Text;
 using DisplayLibrary;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 namespace Pacman
 {
     class Controller
     {
+        public Board Board { get; set; }
+        public Pacman Pacman { get; set; }
+        public Ghost Blinky { get; set; }
+        public Ghost Pinky { get; set; }
+        public Ghost Inky { get; set; }
+        public Ghost Clyde { get; set; }
+        public TileSelector TileSelector { get; set; }
+        public DebugInfo DebugInfo { get; set; }
+        public Collision collision { get; set; }
+
         private const Int32 firstTileIndex = 54;
+        private bool isScatter;
 
         public Controller()
         {
@@ -27,7 +39,8 @@ namespace Pacman
             Board.Tiles = Board.GenerateTiles(firstTileIndex);
 
             Pacman = new Pacman();
-            Pacman.Position = TileEngine.GetPosition(13.5f, 17);
+            Pacman.StartPosition = TileEngine.GetPosition(13.5f, 17);
+            Pacman.Position = Pacman.StartPosition.Copy();
             Pacman.TilePosition = new TilePosition(Pacman.Position);
             Pacman.Direction = new Direction(Direction.Left);
             Pacman.Rotation = new Rotation();
@@ -43,7 +56,9 @@ namespace Pacman
             Pacman.WrapAroundScreen = new WrapAroundScreen(Pacman, Board);
 
             Blinky = new Ghost();
-            Blinky.Position = TileEngine.GetPosition(13.5f, 11);
+            Blinky.State = GhostState.Chase;
+            Blinky.StartPosition = TileEngine.GetPosition(13.5f, 11);
+            Blinky.Position = Blinky.StartPosition.Copy();
             Blinky.TilePosition = new TilePosition(Blinky.Position);
             Blinky.Direction = new Direction(Direction.Left);
             Blinky.Rotation = new Rotation();
@@ -58,12 +73,14 @@ namespace Pacman
             Blinky.Target = new NextTile(Blinky, Blinky.Direction, Board.Tiles, Board.Group);
             Blinky.Steering = new Steering(Blinky, Blinky.Target);
             Blinky.EndTarget = new BlinkyTarget(Blinky, Pacman, Board.Group);
-            Blinky.GetToEndTarget = new GetToEndTarget(Blinky, Blinky.Direction, Blinky.Target, Blinky.EndTarget, Board.Tiles);
+            Blinky.GetToEndTarget = new GetToEndTarget(Blinky, Board.Tiles);
             Blinky.SnapToTarget = new SnapToTarget(Blinky, Blinky.Target, 150);
             Blinky.WrapAroundScreen = new WrapAroundScreen(Blinky, Board);
 
             Pinky = new Ghost();
-            Pinky.Position = TileEngine.GetPosition(13.5f, 13.5f);
+            Pinky.State = GhostState.Chase;
+            Pinky.StartPosition = TileEngine.GetPosition(13.5f, 13.5f);
+            Pinky.Position = Pinky.StartPosition.Copy();
             Pinky.TilePosition = new TilePosition(Pinky.Position);
             Pinky.Direction = new Direction(Direction.Left);
             Pinky.Rotation = new Rotation();
@@ -78,12 +95,14 @@ namespace Pacman
             Pinky.Target = new NextTile(Pinky, Pinky.Direction, Board.Tiles, Board.Group);
             Pinky.Steering = new Steering(Pinky, Pinky.Target);
             Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
-            Pinky.GetToEndTarget = new GetToEndTarget(Pinky, Pinky.Direction, Pinky.Target, Pinky.EndTarget, Board.Tiles);
+            Pinky.GetToEndTarget = new GetToEndTarget(Pinky, Board.Tiles);
             Pinky.SnapToTarget = new SnapToTarget(Pinky, Pinky.Target, 150);
             Pinky.WrapAroundScreen = new WrapAroundScreen(Pinky, Board);
 
             Inky = new Ghost();
-            Inky.Position = TileEngine.GetPosition(11.5f, 14.5f);
+            Inky.State = GhostState.Chase;
+            Inky.StartPosition = TileEngine.GetPosition(11.5f, 14.5f);
+            Inky.Position = Inky.StartPosition.Copy();
             Inky.TilePosition = new TilePosition(Inky.Position);
             Inky.Direction = new Direction(Direction.Right);
             Inky.Rotation = new Rotation();
@@ -98,12 +117,14 @@ namespace Pacman
             Inky.Target = new NextTile(Inky, Inky.Direction, Board.Tiles, Board.Group);
             Inky.Steering = new Steering(Inky, Inky.Target);
             Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
-            Inky.GetToEndTarget = new GetToEndTarget(Inky, Inky.Direction, Inky.Target, Inky.EndTarget, Board.Tiles);
+            Inky.GetToEndTarget = new GetToEndTarget(Inky, Board.Tiles);
             Inky.SnapToTarget = new SnapToTarget(Inky, Inky.Target, 150);
             Inky.WrapAroundScreen = new WrapAroundScreen(Inky, Board);
 
             Clyde = new Ghost();
-            Clyde.Position = TileEngine.GetPosition(15.5f, 14.5f);
+            Clyde.State = GhostState.Chase;
+            Clyde.StartPosition = TileEngine.GetPosition(15.5f, 14.5f);
+            Clyde.Position = Clyde.StartPosition.Copy();
             Clyde.TilePosition = new TilePosition(Clyde.Position);
             Clyde.Direction = new Direction(Direction.Left);
             Clyde.Rotation = new Rotation();
@@ -118,10 +139,10 @@ namespace Pacman
             Clyde.Target = new NextTile(Clyde, Clyde.Direction, Board.Tiles, Board.Group);
             Clyde.Steering = new Steering(Clyde, Clyde.Target);
             Clyde.EndTarget = new ClydeTarget(Clyde, Pacman, Board.Group);
-            Clyde.GetToEndTarget = new GetToEndTarget(Clyde, Clyde.Direction, Clyde.Target, Clyde.EndTarget, Board.Tiles);
+            Clyde.GetToEndTarget = new GetToEndTarget(Clyde, Board.Tiles);
             Clyde.SnapToTarget = new SnapToTarget(Clyde, Clyde.Target, 150);
             Clyde.WrapAroundScreen = new WrapAroundScreen(Clyde, Board);
-
+            
             TileSelector = new TileSelector();
             TileSelector.Position = TileEngine.GetPosition(13, 17);
             TileSelector.TilePosition = new TilePosition(TileSelector.Position);
@@ -140,17 +161,36 @@ namespace Pacman
             DebugInfo.addDebug("Clyde Position: ", Clyde.Position);
             DebugInfo.addDebug("Clyde Tile: ", Clyde.TilePosition);
             DebugInfo.addDebug("Tile Selector: ", TileSelector.TilePosition);
+
+            KeyboardListener.Press += ChangeBlinkyTarget;
         }
 
-        public Board Board { get; set; }
-        public Pacman Pacman { get; set; }
-        public Ghost Blinky { get; set; }
-        public Ghost Pinky { get; set; }
-        public Ghost Inky { get; set; }
-        public Ghost Clyde { get; set; }
-        public TileSelector TileSelector { get; set; }
-        public DebugInfo DebugInfo { get; set; }
+        private void ChangeBlinkyTarget(Keys key)
+        {
+            if (key == Keys.Space)
+            {
+                if (Blinky.EndTarget != null)
+                    Blinky.EndTarget.Dispose();
+                if (Pinky.EndTarget != null)
+                    Pinky.EndTarget.Dispose();
+                if (Inky.EndTarget != null)
+                    Inky.EndTarget.Dispose();
+                if (Clyde.EndTarget != null)
+                    Clyde.EndTarget.Dispose();
 
-        public Collision collision { get; set; }
+                var state = isScatter ? GhostState.Scatter : GhostState.Chase;
+                isScatter = isScatter ? false : true;
+                
+                Blinky.State = state;
+                Pinky.State = state;
+                Inky.State = state;
+                Clyde.State = state;
+
+                Blinky.EndTarget = new BlinkyTarget(Blinky, Pacman, Board.Group);
+                Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
+                Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
+                Clyde.EndTarget = new ClydeTarget(Clyde, Pacman, Board.Group);
+            }
+        }
     }
 }
