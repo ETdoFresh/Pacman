@@ -18,11 +18,19 @@ namespace Pacman
         public SnapToTarget SnapToTarget { get; set; }
         public WrapAroundScreen WrapAroundScreen { get; set; }
         public AnimatedTowardDirection AnimatedTowardDirection { get; set; }
+        private GhostState state;
+        public GhostState State { get { return state; } set { state = value; ChangeGhostState(this, state); } }
+        public delegate void ChangeGhostStateHandler(Ghost ghost, GhostState state);
+        public event ChangeGhostStateHandler ChangeGhostState = delegate { };
 
         public Ghost(GroupObject displayParent = null)
         {
         }
 
-        public GhostState State { get; set; }
+        public override void Dispose()
+        {
+            ChangeGhostState = null;
+            base.Dispose();
+        }
     }
 }

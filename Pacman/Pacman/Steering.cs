@@ -50,6 +50,7 @@ namespace Pacman
 
         public void Dispose()
         {
+            ArrivedAtTarget = null;
             Runtime.GameUpdate -= OnGameUpdate;
         }
 

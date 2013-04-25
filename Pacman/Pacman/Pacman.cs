@@ -19,11 +19,10 @@ namespace Pacman
         public SnapToTarget SnapToTarget { get; set; }
         public WrapAroundScreen WrapAroundScreen { get; set; }
         public StartStopAnimation StartStopAnimation { get; set; }
+        public Collision Collision { get; set; }
 
         public Pacman()
         {
         }
-
-
     }
 }

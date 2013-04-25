@@ -44,6 +44,7 @@ namespace Pacman
 
         public void Dispose()
         {
+            ChangeTile = null;
             Runtime.GameUpdate -= UpdateTilePosition;
         }
 

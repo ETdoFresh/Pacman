@@ -44,17 +44,17 @@ namespace Pacman
             Position.Value = TileEngine.GetPosition(27, 5).Value;
 
             if (blinky.State == GhostState.Chase)
-                Runtime.GameUpdate += UpdateTarget;
+                Runtime.GameUpdate += UpdateChaseTarget;
         }
 
-        private void UpdateTarget(GameTime gameTime)
+        private void UpdateChaseTarget(GameTime gameTime)
         {
             Position.Value = Pacman.Position.Value;
         }
 
         public override void Dispose()
         {
-            Runtime.GameUpdate -= UpdateTarget;
+            Runtime.GameUpdate -= UpdateChaseTarget;
             base.Dispose();
         }
     }
@@ -69,17 +69,17 @@ namespace Pacman
             Position.Value = TileEngine.GetPosition(0, 5).Value;
 
             if (pinky.State == GhostState.Chase)
-                Runtime.GameUpdate += UpdateTarget;
+                Runtime.GameUpdate += UpdateChaseTarget;
         }
 
-        private void UpdateTarget(GameTime gameTime)
+        private void UpdateChaseTarget(GameTime gameTime)
         {
             Position.Value = Pacman.Position.Value + Pacman.Direction.GetVectorOffset() * 4 * TileEngine.TileWidth;
         }
 
         public override void Dispose()
         {
-            Runtime.GameUpdate -= UpdateTarget;
+            Runtime.GameUpdate -= UpdateChaseTarget;
             base.Dispose();
         }
     }
@@ -98,10 +98,10 @@ namespace Pacman
             Position.Value = TileEngine.GetPosition(26, 29).Value;
 
             if (inky.State == GhostState.Chase)
-                Runtime.GameUpdate += UpdateTarget;
+                Runtime.GameUpdate += UpdateChaseTarget;
         }
 
-        private void UpdateTarget(GameTime gameTime)
+        private void UpdateChaseTarget(GameTime gameTime)
         {
             var pacmanOffset = Pacman.Position.Value + Pacman.Direction.GetVectorOffset() * 2 * TileEngine.TileWidth;
             var blinkyOffset = pacmanOffset - blinky.Position.Value;
@@ -110,7 +110,7 @@ namespace Pacman
 
         public override void Dispose()
         {
-            Runtime.GameUpdate -= UpdateTarget;
+            Runtime.GameUpdate -= UpdateChaseTarget;
             base.Dispose();
         }
     }
@@ -125,10 +125,10 @@ namespace Pacman
             Position.Value = TileEngine.GetPosition(1, 29).Value;
 
             if (clyde.State == GhostState.Chase)
-                Runtime.GameUpdate += UpdateTarget;
+                Runtime.GameUpdate += UpdateChaseTarget;
         }
 
-        private void UpdateTarget(GameTime gameTime)
+        private void UpdateChaseTarget(GameTime gameTime)
         {
             if (Vector2.Distance(Ghost.Position.Value, Pacman.Position.Value) > 8 * TileEngine.TileWidth)
                 Position.Value = Pacman.Position.Value;
@@ -138,7 +138,7 @@ namespace Pacman
 
         public override void Dispose()
         {
-            Runtime.GameUpdate -= UpdateTarget;
+            Runtime.GameUpdate -= UpdateChaseTarget;
             base.Dispose();
         }
     }

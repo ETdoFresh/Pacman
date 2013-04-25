@@ -91,6 +91,7 @@ namespace DisplayLibrary
 
         public override void Dispose()
         {
+            EndSequence = null;
             Runtime.GameUpdate -= Update;
             base.Dispose();
         }

@@ -33,6 +33,8 @@ namespace Pacman
                     updatedString += "X: " + ((TilePosition)objects[i]).X + " Y: " + ((TilePosition)objects[i]).Y + "\n";
                 else if (types[i] == typeof(Dimension))
                     updatedString += "Width: " + ((Dimension)objects[i]).Width + " Height: " + ((Dimension)objects[i]).Height + "\n";
+                else if (types[i] == typeof(Score))
+                    updatedString += ((Score)objects[i]).Value + "\n";
                 else
                     updatedString += "\n";
 

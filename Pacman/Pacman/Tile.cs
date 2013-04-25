@@ -26,8 +26,6 @@ namespace Pacman
 
             if (filename != null)
                 AddLayer(filename, index);
-
-            //Collision.AddGameObject(this);
         }
 
         public void AddLayer(String filename, Int32 index, float rotation = 0)
@@ -50,7 +48,6 @@ namespace Pacman
 
         public override void Dispose()
         {
-            Collision.RemoveGameObject(this);
             foreach (var sprite in sprites)
                 sprite.Dispose();
 

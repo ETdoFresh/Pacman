@@ -19,9 +19,9 @@ namespace Pacman
         public TileSelector TileSelector { get; set; }
         public DebugInfo DebugInfo { get; set; }
         public Collision collision { get; set; }
+        public Score Score { get; set; }
 
         private const Int32 firstTileIndex = 54;
-        private bool isScatter;
 
         public Controller()
         {
@@ -31,12 +31,12 @@ namespace Pacman
         private void Initialize()
         {
             TileEngine.Initialize("pacman", firstTileIndex);
-            collision = new Collision();
 
             Board = new Board();
             Board.Position = new Position(300, 0);
             Board.Group = new GroupObject(Board.Position);
             Board.Tiles = Board.GenerateTiles(firstTileIndex);
+            Board.Pellets = Board.GeneratePellets();
 
             Pacman = new Pacman();
             Pacman.StartPosition = TileEngine.GetPosition(13.5f, 17);
@@ -54,6 +54,7 @@ namespace Pacman
             Pacman.SnapToTarget = new SnapToTarget(Pacman, Pacman.Target, 100);
             Pacman.StartStopAnimation = new StartStopAnimation(Pacman.Velocity, Pacman.AnimatedSprite);
             Pacman.WrapAroundScreen = new WrapAroundScreen(Pacman, Board);
+            Pacman.Collision = new Collision(Pacman);
 
             Blinky = new Ghost();
             Blinky.State = GhostState.Chase;
@@ -149,6 +150,8 @@ namespace Pacman
             TileSelector.Rectangle = new RectangleObject(Board.Group, TileSelector.Position, new Dimension(TileEngine.TileWidth, TileEngine.TileHeight));
             TileSelector.Rectangle.Alpha = 0.5f;
 
+            Score = new Score();
+
             DebugInfo = new DebugInfo();
             DebugInfo.addDebug("Pacman Position: ", Pacman.Position);
             DebugInfo.addDebug("Pacman Tile: ", Pacman.TilePosition);
@@ -161,35 +164,52 @@ namespace Pacman
             DebugInfo.addDebug("Clyde Position: ", Clyde.Position);
             DebugInfo.addDebug("Clyde Tile: ", Clyde.TilePosition);
             DebugInfo.addDebug("Tile Selector: ", TileSelector.TilePosition);
+            DebugInfo.addDebug("Score: ", Score);
 
-            KeyboardListener.Press += ChangeBlinkyTarget;
+            KeyboardListener.Press += ToggleStates;
+            Blinky.ChangeGhostState += OnChangeGhostState;
+            Pinky.ChangeGhostState += OnChangeGhostState;
+            Inky.ChangeGhostState += OnChangeGhostState;
+            Clyde.ChangeGhostState += OnChangeGhostState;
+            Collision.Collide += onCollision;
         }
 
-        private void ChangeBlinkyTarget(Keys key)
+        private void OnChangeGhostState(Ghost ghost, GhostState state)
+        {
+            if (ghost.EndTarget != null)
+                ghost.EndTarget.Dispose();
+
+            if (ghost == Blinky) Blinky.EndTarget = new BlinkyTarget(Blinky, Pacman, Board.Group);
+            else if (ghost == Pinky) Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
+            else if (ghost == Inky) Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
+            else if (ghost == Clyde) Clyde.EndTarget = new ClydeTarget(Clyde, Pacman, Board.Group);
+        }
+
+        private void ToggleStates(Keys key)
         {
             if (key == Keys.Space)
             {
-                if (Blinky.EndTarget != null)
-                    Blinky.EndTarget.Dispose();
-                if (Pinky.EndTarget != null)
-                    Pinky.EndTarget.Dispose();
-                if (Inky.EndTarget != null)
-                    Inky.EndTarget.Dispose();
-                if (Clyde.EndTarget != null)
-                    Clyde.EndTarget.Dispose();
-
-                var state = isScatter ? GhostState.Scatter : GhostState.Chase;
-                isScatter = isScatter ? false : true;
-                
+                var state = Blinky.State == GhostState.Chase ? GhostState.Scatter : GhostState.Chase;
                 Blinky.State = state;
                 Pinky.State = state;
                 Inky.State = state;
                 Clyde.State = state;
+            }
+        }
 
-                Blinky.EndTarget = new BlinkyTarget(Blinky, Pacman, Board.Group);
-                Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
-                Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
-                Clyde.EndTarget = new ClydeTarget(Clyde, Pacman, Board.Group);
+        private void onCollision(Pacman pacman, GameObject gameObject)
+        {
+            if (Board.Pellets.Contains(gameObject))
+            {
+                var pellet = gameObject as Pellet;
+                
+                if (pellet.IsPowerPellet)
+                    Score.Value += 50;
+                else
+                    Score.Value += 10;
+
+                pellet.Dispose();
+                Board.Pellets.Remove(pellet);
             }
         }
     }

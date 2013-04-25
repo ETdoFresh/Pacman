@@ -10,48 +10,49 @@ namespace Pacman
 {
     class Collision : IDisposable
     {
-        public delegate void CollisionHandler(Object sender, Object target);
+        public delegate void CollisionHandler(Pacman pacman, GameObject gameObject);
         public static event CollisionHandler Collide = delegate { };
 
+        private static Pacman pacman;
         private static List<GameObject> gameObjects = new List<GameObject>();
+        private GameObject gameObject;
 
-        public static void AddGameObject(GameObject gameObject)
+        public Collision(Pacman pacman)
         {
-            if (gameObject != null)
-                Collision.gameObjects.Add(gameObject);
-        }
-
-        public static void AddGameObjects(IEnumerable<GameObject> gameObjects)
-        {
-            if (gameObjects != null)
-                Collision.gameObjects.AddRange(gameObjects);
-        }
-
-        public static void RemoveGameObject(GameObject gameObject)
-        {
-            if (gameObject != null)
-                Collision.gameObjects.Remove(gameObject);
-        }
-
-        public Collision(List<GameObject> gameObjects = null)
-        {
-            if (gameObjects != null)
-                Collision.gameObjects.AddRange(gameObjects);
-
+            Collision.pacman = pacman;
+            gameObject = pacman;
             Runtime.GameUpdate += CheckCollisions;
         }
 
+        public Collision(GameObject gameObject)
+        {
+            Collision.gameObjects.Add(gameObject);
+            this.gameObject = gameObject;
+        }
+    
         public void CheckCollisions(GameTime gameTime)
         {
-            for (var i = 0; i < gameObjects.Count; i++)
-                for (var j = i + 1; j < gameObjects.Count; j++)
-                    if (gameObjects[i].TilePosition.Value == gameObjects[j].TilePosition.Value)
-                        Collide(gameObjects[i], gameObjects[j]);
+            for (var i = gameObjects.Count - 1; i >= 0; i--)
+            {
+                var gameObject = gameObjects[i];
+                if (pacman.TilePosition.Value == gameObject.TilePosition.Value)
+                {
+                    Collide(pacman, gameObject);
+                }
+            }
         }
 
         public void Dispose()
         {
-            Runtime.GameUpdate -= CheckCollisions;
+            if (pacman == gameObject)
+            {
+                pacman = null;
+                Runtime.GameUpdate -= CheckCollisions;
+            }
+            else
+            {
+                gameObjects.Remove(gameObject);
+            }
         }
     }
 }
