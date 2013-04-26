@@ -39,7 +39,7 @@ namespace Pacman
             Board.Pellets = Board.GeneratePellets();
 
             Pacman = new Pacman();
-            Pacman.StartPosition = TileEngine.GetPosition(13.5f, 17);
+            Pacman.StartPosition = TileEngine.GetPosition(13.5f, 23);
             Pacman.Position = Pacman.StartPosition.Copy();
             Pacman.TilePosition = new TilePosition(Pacman.Position);
             Pacman.Direction = new Direction(Direction.Left);
@@ -71,7 +71,7 @@ namespace Pacman
             Blinky.AnimatedSprite.SetSequence(name: "Up");
             Blinky.AnimatedTowardDirection = new AnimatedTowardDirection(Blinky.Direction, Blinky.AnimatedSprite);
             Blinky.Velocity = new Velocity(Blinky.Position);
-            Blinky.Target = new NextTile(Blinky, Blinky.Direction, Board.Tiles, Board.Group);
+            Blinky.Target = new GeneralTarget(Board.Group);
             Blinky.Steering = new Steering(Blinky, Blinky.Target);
             Blinky.EndTarget = new BlinkyTarget(Blinky, Pacman, Board.Group);
             Blinky.GetToEndTarget = new GetToEndTarget(Blinky, Board.Tiles);
@@ -79,8 +79,9 @@ namespace Pacman
             Blinky.WrapAroundScreen = new WrapAroundScreen(Blinky, Board);
 
             Pinky = new Ghost();
-            Pinky.State = GhostState.Chase;
+            Pinky.State = GhostState.Home;
             Pinky.StartPosition = TileEngine.GetPosition(13.5f, 13.5f);
+            Pinky.StartPosition2 = TileEngine.GetPosition(13.5f, 14.5f);
             Pinky.Position = Pinky.StartPosition.Copy();
             Pinky.TilePosition = new TilePosition(Pinky.Position);
             Pinky.Direction = new Direction(Direction.Left);
@@ -93,16 +94,20 @@ namespace Pacman
             Pinky.AnimatedSprite.SetSequence(name: "Up");
             Pinky.AnimatedTowardDirection = new AnimatedTowardDirection(Pinky.Direction, Pinky.AnimatedSprite);
             Pinky.Velocity = new Velocity(Pinky.Position);
-            Pinky.Target = new NextTile(Pinky, Pinky.Direction, Board.Tiles, Board.Group);
+            Pinky.Target = new GeneralTarget(Board.Group);
             Pinky.Steering = new Steering(Pinky, Pinky.Target);
             Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
-            Pinky.GetToEndTarget = new GetToEndTarget(Pinky, Board.Tiles);
+            Pinky.BounceInHome = new BounceInHome(Pinky);
+            //Pinky.GetToEndTarget = new GetToEndTarget(Pinky, Board.Tiles);
             Pinky.SnapToTarget = new SnapToTarget(Pinky, Pinky.Target, 150);
             Pinky.WrapAroundScreen = new WrapAroundScreen(Pinky, Board);
+            Pinky.StopWatch = new StopWatch(start: true);
+            Pinky.DotCounter = new DotCounter();
 
             Inky = new Ghost();
-            Inky.State = GhostState.Chase;
+            Inky.State = GhostState.Home;
             Inky.StartPosition = TileEngine.GetPosition(11.5f, 14.5f);
+            Inky.StartPosition2 = TileEngine.GetPosition(11.5f, 13.5f);
             Inky.Position = Inky.StartPosition.Copy();
             Inky.TilePosition = new TilePosition(Inky.Position);
             Inky.Direction = new Direction(Direction.Right);
@@ -115,16 +120,19 @@ namespace Pacman
             Inky.AnimatedSprite.SetSequence(name: "Up");
             Inky.AnimatedTowardDirection = new AnimatedTowardDirection(Inky.Direction, Inky.AnimatedSprite);
             Inky.Velocity = new Velocity(Inky.Position);
-            Inky.Target = new NextTile(Inky, Inky.Direction, Board.Tiles, Board.Group);
+            Inky.Target = new GeneralTarget(Board.Group);
             Inky.Steering = new Steering(Inky, Inky.Target);
             Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
-            Inky.GetToEndTarget = new GetToEndTarget(Inky, Board.Tiles);
+            Inky.BounceInHome = new BounceInHome(Inky);
+            //Inky.GetToEndTarget = new GetToEndTarget(Inky, Board.Tiles);
             Inky.SnapToTarget = new SnapToTarget(Inky, Inky.Target, 150);
             Inky.WrapAroundScreen = new WrapAroundScreen(Inky, Board);
+            Inky.DotCounter = new DotCounter();
 
             Clyde = new Ghost();
-            Clyde.State = GhostState.Chase;
+            Clyde.State = GhostState.Home;
             Clyde.StartPosition = TileEngine.GetPosition(15.5f, 14.5f);
+            Clyde.StartPosition2 = TileEngine.GetPosition(15.5f, 13.5f);
             Clyde.Position = Clyde.StartPosition.Copy();
             Clyde.TilePosition = new TilePosition(Clyde.Position);
             Clyde.Direction = new Direction(Direction.Left);
@@ -137,13 +145,15 @@ namespace Pacman
             Clyde.AnimatedSprite.SetSequence(name: "Up");
             Clyde.AnimatedTowardDirection = new AnimatedTowardDirection(Clyde.Direction, Clyde.AnimatedSprite);
             Clyde.Velocity = new Velocity(Clyde.Position);
-            Clyde.Target = new NextTile(Clyde, Clyde.Direction, Board.Tiles, Board.Group);
-            Clyde.Steering = new Steering(Clyde, Clyde.Target);
+            Clyde.Target = new GeneralTarget(Board.Group);
+            Clyde.Steering = new Steering(Clyde, Clyde.Target);            
             Clyde.EndTarget = new ClydeTarget(Clyde, Pacman, Board.Group);
-            Clyde.GetToEndTarget = new GetToEndTarget(Clyde, Board.Tiles);
+            Clyde.BounceInHome = new BounceInHome(Clyde);
+            //Clyde.GetToEndTarget = new GetToEndTarget(Clyde, Board.Tiles);
             Clyde.SnapToTarget = new SnapToTarget(Clyde, Clyde.Target, 150);
             Clyde.WrapAroundScreen = new WrapAroundScreen(Clyde, Board);
-            
+            Clyde.DotCounter = new DotCounter();
+
             TileSelector = new TileSelector();
             TileSelector.Position = TileEngine.GetPosition(13, 17);
             TileSelector.TilePosition = new TilePosition(TileSelector.Position);
@@ -159,6 +169,7 @@ namespace Pacman
             DebugInfo.addDebug("Blinky Tile: ", Blinky.TilePosition);
             DebugInfo.addDebug("Pinky Position: ", Pinky.Position);
             DebugInfo.addDebug("Pinky Tile: ", Pinky.TilePosition);
+            DebugInfo.addDebug("Pinky StopWatch: ", Pinky.StopWatch);
             DebugInfo.addDebug("Inky Position: ", Inky.Position);
             DebugInfo.addDebug("Inky Tile: ", Inky.TilePosition);
             DebugInfo.addDebug("Clyde Position: ", Clyde.Position);
@@ -202,7 +213,7 @@ namespace Pacman
             if (Board.Pellets.Contains(gameObject))
             {
                 var pellet = gameObject as Pellet;
-                
+
                 if (pellet.IsPowerPellet)
                     Score.Value += 50;
                 else

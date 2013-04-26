@@ -31,6 +31,11 @@ namespace Pacman
             SetByDirection(value);
         }
 
+        public Direction Copy()
+        {
+            return new Direction(Value);
+        }
+
         private void SetByKey(Keys key)
         {
             this.key = key;

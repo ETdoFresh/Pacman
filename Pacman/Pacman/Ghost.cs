@@ -9,9 +9,10 @@ namespace Pacman
     class Ghost : GameObject
     {
         public Position StartPosition { get; set; }
+        public Position StartPosition2 { get; set; }
         public AnimatedSprite AnimatedSprite { get; set; }
         public EndTarget EndTarget { get; set; }
-        public NextTile Target { get; set; }
+        public GeneralTarget Target { get; set; }
         public Direction Direction { get; set; }
         public Steering Steering { get; set; }
         public GetToEndTarget GetToEndTarget { get; set; }
@@ -22,6 +23,9 @@ namespace Pacman
         public GhostState State { get { return state; } set { state = value; ChangeGhostState(this, state); } }
         public delegate void ChangeGhostStateHandler(Ghost ghost, GhostState state);
         public event ChangeGhostStateHandler ChangeGhostState = delegate { };
+        public BounceInHome BounceInHome;
+        public StopWatch StopWatch { get; set; }
+        public DotCounter DotCounter { get; set; }
 
         public Ghost(GroupObject displayParent = null)
         {

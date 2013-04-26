@@ -19,7 +19,7 @@ namespace Pacman
             this.ghost = ghost;
             this.tiles = tiles;
 
-            pendingDirection = new Direction(Direction.Left);
+            pendingDirection = ghost.Direction.Copy();
 
             ghost.TilePosition.ChangeTile += CalculateNextMoves;
         }
@@ -27,11 +27,11 @@ namespace Pacman
         private void CalculateNextMoves()
         {
             var direction = ghost.Direction;
-            var nextTile = ghost.Target;
+            var target = ghost.Target;
             var endTarget = ghost.EndTarget;
 
             direction.Value = pendingDirection.Value;
-            nextTile.UpdateNextTile();
+            target.Position.Value = UpdateNextTile();
 
             var currentTilePosition = ghost.TilePosition.Value;
             var newTilePosition = currentTilePosition + direction.GetVectorOffset();
@@ -69,6 +69,13 @@ namespace Pacman
                     }
                 }
             }
+        }
+
+        private Vector2 UpdateNextTile()
+        {
+            var currentTile = ghost.TilePosition.Value;
+            var newPosition = currentTile + ghost.Direction.GetVectorOffset();
+            return TileEngine.GetPosition(newPosition).Value;
         }
 
         private bool SafeZoneCheck(Vector2 Destination, Vector2 CurrentPosition)

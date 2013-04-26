@@ -110,17 +110,19 @@
   <ItemGroup>
     <Compile Include="AnimatedTowardDirection.cs" />
     <Compile Include="Direction.cs" />
+    <Compile Include="DotCounter.cs" />
     <Compile Include="EndTarget.cs" />
     <Compile Include="Board.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Controller.cs" />
     <Compile Include="DebugInfo.cs" />
+    <Compile Include="BounceInHome.cs" />
     <Compile Include="GameObject.cs" />
     <Compile Include="GetToEndTarget.cs" />
     <Compile Include="Ghost.cs" />
     <Compile Include="GhostState.cs" />
     <Compile Include="KeyboardListener.cs" />
-    <Compile Include="NextTile.cs" />
+    <Compile Include="GeneralTarget.cs" />
     <Compile Include="Pacman.cs" />
     <Compile Include="PacmanTarget.cs" />
     <Compile Include="Pellet.cs" />
@@ -131,6 +133,8 @@
     <Compile Include="SnapToTarget.cs" />
     <Compile Include="StartStopAnimation.cs" />
     <Compile Include="Steering.cs" />
+    <Compile Include="StopWatch.cs" />
+    <Compile Include="Target.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileEngine.cs">
       <SubType>Code</SubType>

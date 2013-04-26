@@ -5,5 +5,5 @@ using System.Text;
 
 namespace Pacman
 {
-    public enum GhostState { Chase, Scatter, Frightened }
+    public enum GhostState { Chase, Scatter, Frightened, Home }
 }
