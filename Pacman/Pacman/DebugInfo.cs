@@ -37,6 +37,8 @@ namespace Pacman
                     updatedString += "Seconds: " + ((StopWatch)objects[i]).Second + " Milliseconds: " + ((StopWatch)objects[i]).Milliseconds + "\n";
                 else if (types[i] == typeof(Score))
                     updatedString += ((Score)objects[i]).Value + "\n";
+                else if (types[i] == typeof(Ghost))
+                    updatedString += ((Ghost)objects[i]).State + "\n";
                 else
                     updatedString += "\n";
 

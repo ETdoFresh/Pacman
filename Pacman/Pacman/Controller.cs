@@ -167,13 +167,17 @@ namespace Pacman
             DebugInfo.addDebug("Pacman Tile: ", Pacman.TilePosition);
             DebugInfo.addDebug("Blinky Position: ", Blinky.Position);
             DebugInfo.addDebug("Blinky Tile: ", Blinky.TilePosition);
+            DebugInfo.addDebug("Blinky State: ", Blinky);
             DebugInfo.addDebug("Pinky Position: ", Pinky.Position);
             DebugInfo.addDebug("Pinky Tile: ", Pinky.TilePosition);
+            DebugInfo.addDebug("Pinky State: ", Pinky);
             DebugInfo.addDebug("Pinky StopWatch: ", Pinky.StopWatch);
             DebugInfo.addDebug("Inky Position: ", Inky.Position);
             DebugInfo.addDebug("Inky Tile: ", Inky.TilePosition);
+            DebugInfo.addDebug("Inky State: ", Inky);
             DebugInfo.addDebug("Clyde Position: ", Clyde.Position);
             DebugInfo.addDebug("Clyde Tile: ", Clyde.TilePosition);
+            DebugInfo.addDebug("Clyde State: ", Clyde);
             DebugInfo.addDebug("Tile Selector: ", TileSelector.TilePosition);
             DebugInfo.addDebug("Score: ", Score);
 
@@ -194,18 +198,46 @@ namespace Pacman
             else if (ghost == Pinky) Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
             else if (ghost == Inky) Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
             else if (ghost == Clyde) Clyde.EndTarget = new ClydeTarget(Clyde, Pacman, Board.Group);
+
+            if (state == GhostState.LeaveHome)
+            {
+                if (ghost.BounceInHome != null) ghost.BounceInHome.Dispose();
+                ghost.BounceInHome = null;
+                if (ghost.LeaveHome == null) ghost.LeaveHome = new LeaveHome(ghost);
+            }
+            else if (state == GhostState.Scatter || state == GhostState.Chase)
+            {
+                if (ghost.LeaveHome != null) ghost.LeaveHome.Dispose();
+                ghost.LeaveHome = null;
+                if (ghost.GetToEndTarget == null)
+                {
+                    ghost.GetToEndTarget = new GetToEndTarget(ghost, Board.Tiles);
+                    ghost.GetToEndTarget.CalculateNextMoves();
+                }
+            }
         }
 
         private void ToggleStates(Keys key)
         {
             if (key == Keys.Space)
             {
-                var state = Blinky.State == GhostState.Chase ? GhostState.Scatter : GhostState.Chase;
-                Blinky.State = state;
-                Pinky.State = state;
-                Inky.State = state;
-                Clyde.State = state;
+                setNextState(Blinky);
+                setNextState(Pinky);
+                setNextState(Inky);
+                setNextState(Clyde);
             }
+        }
+
+        private void setNextState(Ghost ghost)
+        {
+            if (ghost.State == GhostState.Home)
+                ghost.State = GhostState.LeaveHome;
+            else if (ghost.State == GhostState.LeaveHome)
+                ghost.State = GhostState.Scatter;
+            else if (ghost.State == GhostState.Scatter)
+                ghost.State = GhostState.Chase;
+            else if (ghost.State == GhostState.Chase)
+                ghost.State = GhostState.Scatter;
         }
 
         private void onCollision(Pacman pacman, GameObject gameObject)

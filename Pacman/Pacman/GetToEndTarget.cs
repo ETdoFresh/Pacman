@@ -24,7 +24,7 @@ namespace Pacman
             ghost.TilePosition.ChangeTile += CalculateNextMoves;
         }
 
-        private void CalculateNextMoves()
+        public void CalculateNextMoves()
         {
             var direction = ghost.Direction;
             var target = ghost.Target;

@@ -36,5 +36,7 @@ namespace Pacman
             ChangeGhostState = null;
             base.Dispose();
         }
+
+        public LeaveHome LeaveHome { get; set; }
     }
 }

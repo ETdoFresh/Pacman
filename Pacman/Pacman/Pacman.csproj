@@ -123,6 +123,7 @@
     <Compile Include="GhostState.cs" />
     <Compile Include="KeyboardListener.cs" />
     <Compile Include="GeneralTarget.cs" />
+    <Compile Include="LeaveHome.cs" />
     <Compile Include="Pacman.cs" />
     <Compile Include="PacmanTarget.cs" />
     <Compile Include="Pellet.cs" />
