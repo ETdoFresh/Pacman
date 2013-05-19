@@ -12,6 +12,7 @@ namespace Pacman
         public Rotation Rotation { get; set; }
         public Velocity Velocity { get; set; }
         public TilePosition TilePosition { get; set; }
+        public Speed Speed { get; set; }
 
         protected List<IDisposable> disposables = new List<IDisposable>();
 

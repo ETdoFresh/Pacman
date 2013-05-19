@@ -133,6 +133,7 @@
     <Compile Include="Game1.cs" />
     <Compile Include="Score.cs" />
     <Compile Include="SnapToTarget.cs" />
+    <Compile Include="Speed.cs" />
     <Compile Include="StartStopAnimation.cs" />
     <Compile Include="Steering.cs" />
     <Compile Include="StopWatch.cs" />

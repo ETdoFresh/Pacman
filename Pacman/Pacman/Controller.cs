@@ -22,6 +22,7 @@ namespace Pacman
         public Score Score { get; set; }
 
         private const Int32 firstTileIndex = 54;
+        private const float maxSpeed = 150;
 
         public Controller()
         {
@@ -32,6 +33,7 @@ namespace Pacman
         {
             TileEngine.Initialize("pacman", firstTileIndex);
             var level = new Level();
+            System.Console.WriteLine(level.bonusSymbol + " " + level.pacmanSpeed.ToString());
 
             Board = new Board();
             Board.Position = new Position(300, 0);
@@ -40,6 +42,7 @@ namespace Pacman
             Board.Pellets = Board.GeneratePellets();
 
             Pacman = new Pacman();
+            Pacman.Speed = new Speed(150, level.pacmanSpeed);
             Pacman.StartPosition = TileEngine.GetPosition(13.5f, 23);
             Pacman.Position = Pacman.StartPosition.Copy();
             Pacman.TilePosition = new TilePosition(Pacman.Position);
@@ -59,6 +62,7 @@ namespace Pacman
 
             Blinky = new Ghost();
             Blinky.State = GhostState.Scatter;
+            Blinky.Speed = new Speed(150, level.ghostSpeed);
             Blinky.StartPosition = TileEngine.GetPosition(13.5f, 11);
             Blinky.Position = Blinky.StartPosition.Copy();
             Blinky.TilePosition = new TilePosition(Blinky.Position);
@@ -81,6 +85,7 @@ namespace Pacman
 
             Pinky = new Ghost();
             Pinky.State = GhostState.Home;
+            Pinky.Speed = new Speed(150, level.ghostTunnelSpeed);
             Pinky.StartPosition = TileEngine.GetPosition(13.5f, 13.5f);
             Pinky.StartPosition2 = TileEngine.GetPosition(13.5f, 14.5f);
             Pinky.Position = Pinky.StartPosition.Copy();
@@ -106,6 +111,7 @@ namespace Pacman
 
             Inky = new Ghost();
             Inky.State = GhostState.Home;
+            Inky.Speed = new Speed(150, level.ghostTunnelSpeed);
             Inky.StartPosition = TileEngine.GetPosition(11.5f, 14.5f);
             Inky.StartPosition2 = TileEngine.GetPosition(11.5f, 13.5f);
             Inky.Position = Inky.StartPosition.Copy();
@@ -130,6 +136,7 @@ namespace Pacman
 
             Clyde = new Ghost();
             Clyde.State = GhostState.Home;
+            Clyde.Speed = new Speed(150, level.ghostTunnelSpeed);
             Clyde.StartPosition = TileEngine.GetPosition(15.5f, 14.5f);
             Clyde.StartPosition2 = TileEngine.GetPosition(15.5f, 13.5f);
             Clyde.Position = Clyde.StartPosition.Copy();

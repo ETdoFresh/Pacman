@@ -11,6 +11,7 @@ namespace Pacman
     {
         private GameObject character;
         private GameObject target;
+        private Speed MaxSpeed;
         private KinematicSteeringOutput steeringOutput;
 
         public event EventHandler ArrivedAtTarget;
@@ -22,7 +23,8 @@ namespace Pacman
 
             Runtime.GameUpdate += OnGameUpdate;
 
-            MaxSpeed = 150;
+            if (character.Speed == null) character.Speed = new Speed(150);
+            MaxSpeed = character.Speed;
         }
 
         private void OnGameUpdate(GameTime gameTime)
@@ -33,7 +35,7 @@ namespace Pacman
             if (steeringOutput.velocity != Vector2.Zero)
             {
                 steeringOutput.velocity.Normalize();
-                steeringOutput.velocity *= MaxSpeed;
+                steeringOutput.velocity *= MaxSpeed.Value;
                 steeringOutput.orientation = (float)Math.Atan2(-steeringOutput.velocity.Y, -steeringOutput.velocity.X);
             }
             else
@@ -45,8 +47,6 @@ namespace Pacman
             character.Velocity.Value = steeringOutput.velocity;
             character.Rotation.Value = steeringOutput.orientation;
         }
-
-        public float MaxSpeed { get; set; }
 
         public void Dispose()
         {
