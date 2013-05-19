@@ -24,5 +24,16 @@ namespace Pacman
         public Pacman()
         {
         }
+
+        public override void Dispose()
+        {
+            if (AnimatedSprite != null) AnimatedSprite.Dispose();
+            if (Target != null) Target.Dispose();
+            if (Steering != null) Steering.Dispose();
+            if (SnapToTarget != null) SnapToTarget.Dispose();
+            if (WrapAroundScreen != null) WrapAroundScreen.Dispose();
+            if (StartStopAnimation != null) StartStopAnimation.Dispose();
+            if (Collision != null) Collision.Dispose();
+        }
     }
 }

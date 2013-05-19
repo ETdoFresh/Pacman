@@ -30,6 +30,7 @@ namespace Pacman
 
         public override void Dispose()
         {
+            if (Rectangle != null) Rectangle.Dispose();
             KeyboardListener.Press -= UpdateRectangle;
             base.Dispose();
         }

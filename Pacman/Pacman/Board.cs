@@ -6,7 +6,7 @@ using DisplayLibrary;
 
 namespace Pacman
 {
-    class Board
+    class Board : IDisposable
     {
         public Position Position { get; set; }
         public GroupObject Group { get; set; }
@@ -91,6 +91,21 @@ namespace Pacman
                 }
             }
             return pellets;
+        }
+
+        public void Dispose()
+        {
+            Group.Dispose();
+            foreach (var tile in Tiles)
+                if (tile != null)
+                    tile.Dispose();
+            foreach (var pellet in Pellets)
+                if (pellet != null)
+                    pellet.Dispose();
+
+            Group = null;
+            Tiles = null;
+            Pellets = null;
         }
 
         private static byte[,] outerWallData = new byte[,]

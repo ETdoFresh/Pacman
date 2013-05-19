@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDisplayLibrary", "TestD
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DisplayLibrary", "DisplayLibrary\DisplayLibrary.csproj", "{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSVPipeline", "CSVPipeline\CSVPipeline.csproj", "{F374328D-3118-480E-90F1-56270200AD04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -35,6 +37,10 @@ Global
 		{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}.Debug|x86.Build.0 = Debug|x86
 		{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}.Release|x86.ActiveCfg = Release|x86
 		{CD2751F8-008B-453D-AB5F-B6A287FEC1D8}.Release|x86.Build.0 = Release|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Debug|x86.ActiveCfg = Debug|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Debug|x86.Build.0 = Debug|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Release|x86.ActiveCfg = Release|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

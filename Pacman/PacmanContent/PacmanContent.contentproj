@@ -54,6 +54,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\CSVPipeline\CSVPipeline.csproj">
+      <Project>{F374328D-3118-480E-90F1-56270200AD04}</Project>
+      <Name>CSVPipeline</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\TextureAtlasPipeline\TextureAtlasPipeline.csproj">
       <Project>{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}</Project>
       <Name>TextureAtlasPipeline</Name>
@@ -64,6 +68,13 @@
       <Name>SpriteFont</Name>
       <Importer>FontDescriptionImporter</Importer>
       <Processor>FontDescriptionProcessor</Processor>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="levels.csv">
+      <Name>levels</Name>
+      <Importer>CSVImporter</Importer>
+      <Processor>CSVProcessor</Processor>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\$(XnaFrameworkVersion)\Microsoft.Xna.GameStudio.ContentPipeline.targets" />

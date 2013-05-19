@@ -31,6 +31,7 @@ namespace Pacman
         private void Initialize()
         {
             TileEngine.Initialize("pacman", firstTileIndex);
+            var level = new Level();
 
             Board = new Board();
             Board.Position = new Position(300, 0);
@@ -57,7 +58,7 @@ namespace Pacman
             Pacman.Collision = new Collision(Pacman);
 
             Blinky = new Ghost();
-            Blinky.State = GhostState.Chase;
+            Blinky.State = GhostState.Scatter;
             Blinky.StartPosition = TileEngine.GetPosition(13.5f, 11);
             Blinky.Position = Blinky.StartPosition.Copy();
             Blinky.TilePosition = new TilePosition(Blinky.Position);
@@ -98,7 +99,6 @@ namespace Pacman
             Pinky.Steering = new Steering(Pinky, Pinky.Target);
             Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
             Pinky.BounceInHome = new BounceInHome(Pinky);
-            //Pinky.GetToEndTarget = new GetToEndTarget(Pinky, Board.Tiles);
             Pinky.SnapToTarget = new SnapToTarget(Pinky, Pinky.Target, 150);
             Pinky.WrapAroundScreen = new WrapAroundScreen(Pinky, Board);
             Pinky.StopWatch = new StopWatch(start: true);
@@ -124,7 +124,6 @@ namespace Pacman
             Inky.Steering = new Steering(Inky, Inky.Target);
             Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
             Inky.BounceInHome = new BounceInHome(Inky);
-            //Inky.GetToEndTarget = new GetToEndTarget(Inky, Board.Tiles);
             Inky.SnapToTarget = new SnapToTarget(Inky, Inky.Target, 150);
             Inky.WrapAroundScreen = new WrapAroundScreen(Inky, Board);
             Inky.DotCounter = new DotCounter();
@@ -146,10 +145,9 @@ namespace Pacman
             Clyde.AnimatedTowardDirection = new AnimatedTowardDirection(Clyde.Direction, Clyde.AnimatedSprite);
             Clyde.Velocity = new Velocity(Clyde.Position);
             Clyde.Target = new GeneralTarget(Board.Group);
-            Clyde.Steering = new Steering(Clyde, Clyde.Target);            
+            Clyde.Steering = new Steering(Clyde, Clyde.Target);
             Clyde.EndTarget = new ClydeTarget(Clyde, Pacman, Board.Group);
             Clyde.BounceInHome = new BounceInHome(Clyde);
-            //Clyde.GetToEndTarget = new GetToEndTarget(Clyde, Board.Tiles);
             Clyde.SnapToTarget = new SnapToTarget(Clyde, Clyde.Target, 150);
             Clyde.WrapAroundScreen = new WrapAroundScreen(Clyde, Board);
             Clyde.DotCounter = new DotCounter();
@@ -211,6 +209,7 @@ namespace Pacman
                 ghost.LeaveHome = null;
                 if (ghost.GetToEndTarget == null)
                 {
+                    ghost.Direction.Value = Direction.Left;
                     ghost.GetToEndTarget = new GetToEndTarget(ghost, Board.Tiles);
                     ghost.GetToEndTarget.CalculateNextMoves();
                 }
@@ -226,6 +225,30 @@ namespace Pacman
                 setNextState(Inky);
                 setNextState(Clyde);
             }
+            else if (key == Keys.R)
+            {
+                Dispose();
+                Initialize();
+            }
+        }
+
+        private void Dispose()
+        {
+            KeyboardListener.Press -= ToggleStates;
+            Blinky.ChangeGhostState -= OnChangeGhostState;
+            Pinky.ChangeGhostState -= OnChangeGhostState;
+            Inky.ChangeGhostState -= OnChangeGhostState;
+            Clyde.ChangeGhostState -= OnChangeGhostState;
+            Collision.Collide -= onCollision;
+
+            Board.Dispose();
+            Pacman.Dispose();
+            Blinky.Dispose();
+            Pinky.Dispose();
+            Inky.Dispose();
+            Clyde.Dispose();
+            TileSelector.Dispose();
+            DebugInfo.Dispose();
         }
 
         private void setNextState(Ghost ghost)

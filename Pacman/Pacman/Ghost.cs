@@ -34,6 +34,17 @@ namespace Pacman
         public override void Dispose()
         {
             ChangeGhostState = null;
+            if (AnimatedSprite != null) AnimatedSprite.Dispose();
+            if (EndTarget != null) EndTarget.Dispose();
+            if (Target != null) Target.Dispose();
+            if (Steering != null) Steering.Dispose();
+            if (SnapToTarget != null) SnapToTarget.Dispose();
+            if (WrapAroundScreen != null) WrapAroundScreen.Dispose();
+            if (GetToEndTarget != null) GetToEndTarget.Dispose();
+            if (AnimatedTowardDirection != null) AnimatedTowardDirection.Dispose();
+            if (BounceInHome != null) BounceInHome.Dispose();
+            if (StopWatch != null) StopWatch.Dispose();
+            if (DotCounter != null) DotCounter.Dispose();
             base.Dispose();
         }
 
