@@ -22,7 +22,7 @@ namespace Pacman
 
         private void CheckLimit()
         {
-            if (Value == Limit)
+            if (Value >= Limit)
                 LimitReached();
         }
 

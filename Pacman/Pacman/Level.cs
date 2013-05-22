@@ -9,6 +9,7 @@ namespace Pacman
     class Level
     {
         private List<Dictionary<String, String>> levels;
+        private List<Dictionary<String, String>> home;
 
         public int current;
         public string bonusSymbol;
@@ -27,9 +28,19 @@ namespace Pacman
         public int frightTime;
         public int numFlashes;
 
+        public int pinkyLimit;
+        public int inkyLimit;
+        public int clydeLimit;
+        public int globalPinkyLimit;
+        public int globalInkyLimit;
+        public int globalClydeLimit;
+        public int timerLimit;
+
+
         public Level(int level = 1)
         {
             levels = ContentLoader.Content.Load<List<Dictionary<String, String>>>("levels");
+            home = ContentLoader.Content.Load<List<Dictionary<String, String>>>("home");
             Load(level);
         }
 
@@ -52,6 +63,14 @@ namespace Pacman
             frightGhostSpeed = (float)Convert.ToDecimal(levels[level]["Fright Ghost Speed"].Replace("%", "")) / 100;
             frightTime = Convert.ToInt32(levels[level]["Fright. Time (in sec.)"]);
             numFlashes = Convert.ToInt32(levels[level]["# of Flashes"]);
+
+            pinkyLimit = Convert.ToInt32(home[level]["Pinky Dot Limit"]);
+            inkyLimit = Convert.ToInt32(home[level]["Inky Dot Limit"]);
+            clydeLimit = Convert.ToInt32(home[level]["Clyde Dot Limit"]);
+            globalPinkyLimit = Convert.ToInt32(home[level]["Global Pinky"]);
+            globalInkyLimit = Convert.ToInt32(home[level]["Global Inky"]);
+            globalClydeLimit = Convert.ToInt32(home[level]["Global Clyde"]);
+            timerLimit = Convert.ToInt32(home[level]["Timer Limit"]);
         }
 
         public void Next()

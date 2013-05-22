@@ -16,7 +16,7 @@ namespace Pacman
             ghost.Steering.ArrivedAtTarget += SwitchTarget;
         }
 
-        void SwitchTarget(object sender, EventArgs e)
+        void SwitchTarget()
         {
             if (ghost.Position.Value == ghost.StartPosition.Value)
             {

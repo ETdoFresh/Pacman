@@ -34,6 +34,7 @@ namespace Pacman
             if (WrapAroundScreen != null) WrapAroundScreen.Dispose();
             if (StartStopAnimation != null) StartStopAnimation.Dispose();
             if (Collision != null) Collision.Dispose();
+            base.Dispose();
         }
     }
 }

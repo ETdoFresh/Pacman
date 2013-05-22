@@ -23,9 +23,12 @@ namespace DisplayLibrary
 
         private void UpdateRectangle(GameTime gameTime)
         {
-            var rectX = ContentPosition.X - Dimension.Width / 2;
-            var rectY = ContentPosition.Y - Dimension.Height / 2;
-            rectangle = new Rectangle((int)rectX, (int)rectY, (int)Dimension.Width, (int)Dimension.Height);
+            if (Position != null)
+            {
+                var rectX = ContentPosition.X - Dimension.Width / 2;
+                var rectY = ContentPosition.Y - Dimension.Height / 2;
+                rectangle = new Rectangle((int)rectX, (int)rectY, (int)Dimension.Width, (int)Dimension.Height);
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch)

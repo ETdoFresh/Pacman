@@ -14,7 +14,8 @@ namespace Pacman
         private Speed MaxSpeed;
         private KinematicSteeringOutput steeringOutput;
 
-        public event EventHandler ArrivedAtTarget;
+        public delegate void ArrivedAtTargetHandler();
+        public event ArrivedAtTargetHandler ArrivedAtTarget;
 
         public Steering(GameObject character, GameObject target)
         {
@@ -40,7 +41,7 @@ namespace Pacman
             }
             else
             {
-                if (ArrivedAtTarget != null) ArrivedAtTarget(this, EventArgs.Empty);
+                if (ArrivedAtTarget != null) ArrivedAtTarget();
                 steeringOutput.orientation = character.Rotation.Value;
             }
 

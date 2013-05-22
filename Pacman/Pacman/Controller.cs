@@ -20,6 +20,9 @@ namespace Pacman
         public DebugInfo DebugInfo { get; set; }
         public Collision collision { get; set; }
         public Score Score { get; set; }
+        public Ghost ActiveGhost { get; set; }
+        public Clock ActiveTimer { get; set; }
+        public Level Level { get; set; }
 
         private const Int32 firstTileIndex = 54;
         private const float maxSpeed = 150;
@@ -32,8 +35,8 @@ namespace Pacman
         private void Initialize()
         {
             TileEngine.Initialize("pacman", firstTileIndex);
-            var level = new Level();
-            System.Console.WriteLine(level.bonusSymbol + " " + level.pacmanSpeed.ToString());
+            
+            Level = new Level();
 
             Board = new Board();
             Board.Position = new Position(300, 0);
@@ -42,7 +45,7 @@ namespace Pacman
             Board.Pellets = Board.GeneratePellets();
 
             Pacman = new Pacman();
-            Pacman.Speed = new Speed(150, level.pacmanSpeed);
+            Pacman.Speed = new Speed(150, Level.pacmanSpeed);
             Pacman.StartPosition = TileEngine.GetPosition(13.5f, 23);
             Pacman.Position = Pacman.StartPosition.Copy();
             Pacman.TilePosition = new TilePosition(Pacman.Position);
@@ -62,7 +65,7 @@ namespace Pacman
 
             Blinky = new Ghost();
             Blinky.State = GhostState.Scatter;
-            Blinky.Speed = new Speed(150, level.ghostSpeed);
+            Blinky.Speed = new Speed(150, Level.ghostSpeed);
             Blinky.StartPosition = TileEngine.GetPosition(13.5f, 11);
             Blinky.Position = Blinky.StartPosition.Copy();
             Blinky.TilePosition = new TilePosition(Blinky.Position);
@@ -85,7 +88,7 @@ namespace Pacman
 
             Pinky = new Ghost();
             Pinky.State = GhostState.Home;
-            Pinky.Speed = new Speed(150, level.ghostTunnelSpeed);
+            Pinky.Speed = new Speed(150, Level.ghostTunnelSpeed);
             Pinky.StartPosition = TileEngine.GetPosition(13.5f, 13.5f);
             Pinky.StartPosition2 = TileEngine.GetPosition(13.5f, 14.5f);
             Pinky.Position = Pinky.StartPosition.Copy();
@@ -107,11 +110,11 @@ namespace Pacman
             Pinky.SnapToTarget = new SnapToTarget(Pinky, Pinky.Target, 150);
             Pinky.WrapAroundScreen = new WrapAroundScreen(Pinky, Board);
             Pinky.StopWatch = new StopWatch(start: true);
-            Pinky.DotCounter = new DotCounter();
+            Pinky.DotCounter = new DotCounter(Level.pinkyLimit);
 
             Inky = new Ghost();
             Inky.State = GhostState.Home;
-            Inky.Speed = new Speed(150, level.ghostTunnelSpeed);
+            Inky.Speed = new Speed(150, Level.ghostTunnelSpeed);
             Inky.StartPosition = TileEngine.GetPosition(11.5f, 14.5f);
             Inky.StartPosition2 = TileEngine.GetPosition(11.5f, 13.5f);
             Inky.Position = Inky.StartPosition.Copy();
@@ -132,11 +135,11 @@ namespace Pacman
             Inky.BounceInHome = new BounceInHome(Inky);
             Inky.SnapToTarget = new SnapToTarget(Inky, Inky.Target, 150);
             Inky.WrapAroundScreen = new WrapAroundScreen(Inky, Board);
-            Inky.DotCounter = new DotCounter();
+            Inky.DotCounter = new DotCounter(Level.inkyLimit);
 
             Clyde = new Ghost();
             Clyde.State = GhostState.Home;
-            Clyde.Speed = new Speed(150, level.ghostTunnelSpeed);
+            Clyde.Speed = new Speed(150, Level.ghostTunnelSpeed);
             Clyde.StartPosition = TileEngine.GetPosition(15.5f, 14.5f);
             Clyde.StartPosition2 = TileEngine.GetPosition(15.5f, 13.5f);
             Clyde.Position = Clyde.StartPosition.Copy();
@@ -157,7 +160,7 @@ namespace Pacman
             Clyde.BounceInHome = new BounceInHome(Clyde);
             Clyde.SnapToTarget = new SnapToTarget(Clyde, Clyde.Target, 150);
             Clyde.WrapAroundScreen = new WrapAroundScreen(Clyde, Board);
-            Clyde.DotCounter = new DotCounter();
+            Clyde.DotCounter = new DotCounter(Level.clydeLimit);
 
             TileSelector = new TileSelector();
             TileSelector.Position = TileEngine.GetPosition(13, 17);
@@ -192,6 +195,41 @@ namespace Pacman
             Inky.ChangeGhostState += OnChangeGhostState;
             Clyde.ChangeGhostState += OnChangeGhostState;
             Collision.Collide += onCollision;
+
+            ActiveGhost = Pinky;
+            Pinky.DotCounter.LimitReached += LeaveHome;
+            Inky.DotCounter.LimitReached += LeaveHome;
+            Clyde.DotCounter.LimitReached += LeaveHome;
+            ActiveTimer = new Clock(4000);
+            ActiveTimer.ClockReachedLimit += LeaveHome;
+        }
+
+        private void LeaveHome()
+        {
+            if (ActiveTimer != null)
+                ActiveTimer.Reset();
+
+            if (ActiveGhost == Pinky)
+            {
+                Pinky.State = GhostState.LeaveHome;
+                Pinky.DotCounter.Dispose();
+                ActiveGhost = Inky;
+            }
+            else if (ActiveGhost == Inky)
+            {
+                Inky.State = GhostState.LeaveHome;
+                Inky.DotCounter.Dispose();
+                ActiveGhost = Clyde;
+            }
+            else if (ActiveGhost == Clyde)
+            {
+                Clyde.State = GhostState.LeaveHome;
+                Clyde.DotCounter.Dispose();
+                ActiveGhost = null;
+                ActiveTimer.Dispose();
+                ActiveTimer = null;
+            }
+            
         }
 
         private void OnChangeGhostState(Ghost ghost, GhostState state)
@@ -209,6 +247,7 @@ namespace Pacman
                 if (ghost.BounceInHome != null) ghost.BounceInHome.Dispose();
                 ghost.BounceInHome = null;
                 if (ghost.LeaveHome == null) ghost.LeaveHome = new LeaveHome(ghost);
+                ghost.LeaveHome.FinishLeaving += OnFinishLeavingHome;
             }
             else if (state == GhostState.Scatter || state == GhostState.Chase)
             {
@@ -221,6 +260,12 @@ namespace Pacman
                     ghost.GetToEndTarget.CalculateNextMoves();
                 }
             }
+        }
+
+        private void OnFinishLeavingHome(Ghost ghost)
+        {
+            ghost.Speed.Factor = Level.ghostSpeed;
+            ghost.State = GhostState.Scatter;
         }
 
         private void ToggleStates(Keys key)
@@ -277,9 +322,14 @@ namespace Pacman
                 var pellet = gameObject as Pellet;
 
                 if (pellet.IsPowerPellet)
+                {
                     Score.Value += 50;
+                }
                 else
+                {
                     Score.Value += 10;
+                    if (ActiveGhost != null) ActiveGhost.DotCounter.Value++;
+                }
 
                 pellet.Dispose();
                 Board.Pellets.Remove(pellet);

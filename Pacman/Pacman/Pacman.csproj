@@ -109,6 +109,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnimatedTowardDirection.cs" />
+    <Compile Include="Clock.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="DotCounter.cs" />
     <Compile Include="EndTarget.cs" />

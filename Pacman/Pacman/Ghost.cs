@@ -21,11 +21,15 @@ namespace Pacman
         public AnimatedTowardDirection AnimatedTowardDirection { get; set; }
         private GhostState state;
         public GhostState State { get { return state; } set { state = value; ChangeGhostState(this, state); } }
+
         public delegate void ChangeGhostStateHandler(Ghost ghost, GhostState state);
         public event ChangeGhostStateHandler ChangeGhostState = delegate { };
+
         public BounceInHome BounceInHome;
         public StopWatch StopWatch { get; set; }
         public DotCounter DotCounter { get; set; }
+        public LeaveHome LeaveHome { get; set; }
+
 
         public Ghost(GroupObject displayParent = null)
         {
@@ -47,7 +51,5 @@ namespace Pacman
             if (DotCounter != null) DotCounter.Dispose();
             base.Dispose();
         }
-
-        public LeaveHome LeaveHome { get; set; }
     }
 }
