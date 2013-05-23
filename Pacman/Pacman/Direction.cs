@@ -54,6 +54,14 @@ namespace Pacman
             else if (direction == Right) key = Keys.Right;
         }
 
+        private void SetByOffset(Vector2 offset)
+        {
+            if (offset.X > 0) direction = Right;
+            else if (offset.X < 0) direction = Left;
+            else if (offset.Y < 0) direction = Up;
+            else if (offset.Y > 0) direction = Down;
+        }
+
         public Vector2 GetVectorOffset()
         {
             var offset = Vector2.Zero;
@@ -62,8 +70,16 @@ namespace Pacman
             else if (direction == Down) offset.Y++;
             else if (direction == Left) offset.X--;
             else if (direction == Right) offset.X++;
-            
+
             return offset;
+        }
+
+        public void Reverse()
+        {
+            if (direction == Up) direction = Down;
+            else if (direction == Down) direction = Up;
+            else if (direction == Left) direction = Right;
+            else if (direction == Right) direction = Left;
         }
     }
 }

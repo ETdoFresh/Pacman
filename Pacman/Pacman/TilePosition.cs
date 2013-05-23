@@ -37,7 +37,7 @@ namespace Pacman
                 Value = new Vector2(x, y);
                 oldPosition = position.Copy();
                 
-                if (oldValue != Value)
+                if (oldValue != Value && ChangeTile != null)
                     ChangeTile();
             }
         }

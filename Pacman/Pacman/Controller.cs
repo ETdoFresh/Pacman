@@ -259,6 +259,13 @@ namespace Pacman
                     ghost.GetToEndTarget = new GetToEndTarget(ghost, Board.Tiles);
                     ghost.GetToEndTarget.CalculateNextMoves();
                 }
+                else
+                {
+                    ghost.Direction.Reverse();
+                    ghost.GetToEndTarget.Dispose();
+                    ghost.GetToEndTarget = new GetToEndTarget(ghost, Board.Tiles);
+                    ghost.GetToEndTarget.CalculateNextMoves();
+                }
             }
         }
 
