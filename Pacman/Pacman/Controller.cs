@@ -23,6 +23,9 @@ namespace Pacman
         public Ghost ActiveGhost { get; set; }
         public Clock ActiveTimer { get; set; }
         public Level Level { get; set; }
+        public GhostState LevelState { get; set; }
+        public Clock StateTimer { get; set; }
+        public int StateTimerCount { get; set; }
 
         private const Int32 firstTileIndex = 54;
         private const float maxSpeed = 150;
@@ -35,7 +38,7 @@ namespace Pacman
         private void Initialize()
         {
             TileEngine.Initialize("pacman", firstTileIndex);
-            
+
             Level = new Level();
 
             Board = new Board();
@@ -202,6 +205,64 @@ namespace Pacman
             Clyde.DotCounter.LimitReached += LeaveHome;
             ActiveTimer = new Clock(4000);
             ActiveTimer.ClockReachedLimit += LeaveHome;
+
+            LevelState = GhostState.Scatter;
+            StateTimer = new Clock(Level.Scatter1 * 1000);
+            StateTimer.ClockReachedLimit += OnStateTimer;
+        }
+
+        private void OnStateTimer()
+        {
+            StateTimer.Dispose();
+            if (StateTimerCount == 0)
+            {
+                StateTimer = new Clock(Level.Chase1 * 1000);
+                LevelState = GhostState.Chase;
+            }
+            else if (StateTimerCount == 1)
+            {
+                StateTimer = new Clock(Level.Scatter2 * 1000);
+                LevelState = GhostState.Scatter;
+            }
+            else if (StateTimerCount == 2)
+            {
+                StateTimer = new Clock(Level.Chase2 * 1000);
+                LevelState = GhostState.Chase;
+            }
+            else if (StateTimerCount == 3)
+            {
+                StateTimer = new Clock(Level.Scatter3 * 1000);
+                LevelState = GhostState.Scatter;
+            }
+            else if (StateTimerCount == 4)
+            {
+                StateTimer = new Clock(Level.Chase3 * 1000);
+                LevelState = GhostState.Chase;
+            }
+            else if (StateTimerCount == 5)
+            {
+                StateTimer = new Clock(Level.Scatter4 * 1000);
+                LevelState = GhostState.Scatter;
+            }
+            else
+            {
+                StateTimer = null;
+                LevelState = GhostState.Chase;
+            }
+
+            if (Blinky.State == GhostState.Chase || Blinky.State == GhostState.Scatter)
+                Blinky.State = LevelState;
+            if (Pinky.State == GhostState.Chase || Pinky.State == GhostState.Scatter)
+                Pinky.State = LevelState;
+            if (Inky.State == GhostState.Chase || Inky.State == GhostState.Scatter)
+                Inky.State = LevelState;
+            if (Clyde.State == GhostState.Chase || Clyde.State == GhostState.Scatter)
+                Clyde.State = LevelState;
+
+            if (StateTimer != null)
+                StateTimer.ClockReachedLimit += OnStateTimer;
+
+            StateTimerCount++;
         }
 
         private void LeaveHome()
@@ -229,7 +290,7 @@ namespace Pacman
                 ActiveTimer.Dispose();
                 ActiveTimer = null;
             }
-            
+
         }
 
         private void OnChangeGhostState(Ghost ghost, GhostState state)
@@ -272,7 +333,7 @@ namespace Pacman
         private void OnFinishLeavingHome(Ghost ghost)
         {
             ghost.Speed.Factor = Level.ghostSpeed;
-            ghost.State = GhostState.Scatter;
+            ghost.State = LevelState;
         }
 
         private void ToggleStates(Keys key)
@@ -294,10 +355,6 @@ namespace Pacman
         private void Dispose()
         {
             KeyboardListener.Press -= ToggleStates;
-            Blinky.ChangeGhostState -= OnChangeGhostState;
-            Pinky.ChangeGhostState -= OnChangeGhostState;
-            Inky.ChangeGhostState -= OnChangeGhostState;
-            Clyde.ChangeGhostState -= OnChangeGhostState;
             Collision.Collide -= onCollision;
 
             Board.Dispose();
@@ -308,6 +365,8 @@ namespace Pacman
             Clyde.Dispose();
             TileSelector.Dispose();
             DebugInfo.Dispose();
+            ActiveTimer.Dispose();
+            StateTimer.Dispose();
         }
 
         private void setNextState(Ghost ghost)

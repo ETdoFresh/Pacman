@@ -17,8 +17,19 @@ namespace Pacman
 
         public Clock(float limit = 0)
         {
-            Runtime.GameUpdate += OnGameUpdate;
             this.limit = limit;
+            Play();
+        }
+
+        public void Pause()
+        {
+            Runtime.GameUpdate -= OnGameUpdate;
+        }
+
+        public void Play()
+        {
+            Runtime.GameUpdate -= OnGameUpdate;
+            Runtime.GameUpdate += OnGameUpdate;
         }
 
         public void Reset()
@@ -36,6 +47,7 @@ namespace Pacman
 
         public void Dispose()
         {
+            ClockReachedLimit = null;
             Runtime.GameUpdate -= OnGameUpdate;
         }
     }
