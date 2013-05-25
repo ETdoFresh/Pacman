@@ -26,10 +26,9 @@ namespace Pacman
         public event ChangeGhostStateHandler ChangeGhostState = delegate { };
 
         public BounceInHome BounceInHome;
-        public StopWatch StopWatch { get; set; }
         public DotCounter DotCounter { get; set; }
         public LeaveHome LeaveHome { get; set; }
-
+        public TunnelSpeed TunnelSpeed { get; set; }
 
         public Ghost(GroupObject displayParent = null)
         {
@@ -47,7 +46,6 @@ namespace Pacman
             if (GetToEndTarget != null) GetToEndTarget.Dispose();
             if (AnimatedTowardDirection != null) AnimatedTowardDirection.Dispose();
             if (BounceInHome != null) BounceInHome.Dispose();
-            if (StopWatch != null) StopWatch.Dispose();
             if (DotCounter != null) DotCounter.Dispose();
             base.Dispose();
         }

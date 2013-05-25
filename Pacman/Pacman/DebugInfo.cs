@@ -33,12 +33,12 @@ namespace Pacman
                     updatedString += "X: " + ((TilePosition)objects[i]).X + " Y: " + ((TilePosition)objects[i]).Y + "\n";
                 else if (types[i] == typeof(Dimension))
                     updatedString += "Width: " + ((Dimension)objects[i]).Width + " Height: " + ((Dimension)objects[i]).Height + "\n";
-                else if (types[i] == typeof(StopWatch))
-                    updatedString += "Seconds: " + ((StopWatch)objects[i]).Second + " Milliseconds: " + ((StopWatch)objects[i]).Milliseconds + "\n";
                 else if (types[i] == typeof(Score))
                     updatedString += ((Score)objects[i]).Value + "\n";
                 else if (types[i] == typeof(Ghost))
                     updatedString += ((Ghost)objects[i]).State + "\n";
+                else if (types[i] == typeof(Speed))
+                    updatedString += ((Speed)objects[i]).Value + "(" + ((Speed)objects[i]).Factor + ")\n";
                 else
                     updatedString += "\n";
 

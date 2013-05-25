@@ -48,10 +48,12 @@ namespace Pacman
             Board.Pellets = Board.GeneratePellets();
 
             Pacman = new Pacman();
-            Pacman.Speed = new Speed(150, Level.pacmanSpeed);
+            Pacman.Speed = new Speed(maxSpeed, Level.pacmanSpeed);
             Pacman.StartPosition = TileEngine.GetPosition(13.5f, 23);
             Pacman.Position = Pacman.StartPosition.Copy();
             Pacman.TilePosition = new TilePosition(Pacman.Position);
+            Pacman.ChangeSpeeds = new PacmanChangeSpeeds(Pacman.Speed, Pacman.TilePosition, Level.pacmanSpeed);
+            Pacman.Collision = new Collision(Pacman);
             Pacman.Direction = new Direction(Direction.Left);
             Pacman.Rotation = new Rotation();
             Pacman.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Pacman.Position, rotation: Pacman.Rotation);
@@ -64,16 +66,16 @@ namespace Pacman
             Pacman.SnapToTarget = new SnapToTarget(Pacman, Pacman.Target, 100);
             Pacman.StartStopAnimation = new StartStopAnimation(Pacman.Velocity, Pacman.AnimatedSprite);
             Pacman.WrapAroundScreen = new WrapAroundScreen(Pacman, Board);
-            Pacman.Collision = new Collision(Pacman);
 
             Blinky = new Ghost();
             Blinky.State = GhostState.Scatter;
-            Blinky.Speed = new Speed(150, Level.ghostSpeed);
+            Blinky.Speed = new Speed(maxSpeed, Level.ghostSpeed);
             Blinky.StartPosition = TileEngine.GetPosition(13.5f, 11);
             Blinky.Position = Blinky.StartPosition.Copy();
             Blinky.TilePosition = new TilePosition(Blinky.Position);
             Blinky.Direction = new Direction(Direction.Left);
             Blinky.Rotation = new Rotation();
+            Blinky.TunnelSpeed = new TunnelSpeed(Blinky.Speed, Blinky.TilePosition, Level.ghostTunnelSpeed);
             Blinky.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Blinky.Position);
             Blinky.AnimatedSprite.AddSequence(name: "Up", start: 0, count: 2, time: 150);
             Blinky.AnimatedSprite.AddSequence(name: "Down", start: 2, count: 2, time: 150);
@@ -91,13 +93,14 @@ namespace Pacman
 
             Pinky = new Ghost();
             Pinky.State = GhostState.Home;
-            Pinky.Speed = new Speed(150, Level.ghostTunnelSpeed);
+            Pinky.Speed = new Speed(maxSpeed, Level.ghostTunnelSpeed);
             Pinky.StartPosition = TileEngine.GetPosition(13.5f, 13.5f);
             Pinky.StartPosition2 = TileEngine.GetPosition(13.5f, 14.5f);
             Pinky.Position = Pinky.StartPosition.Copy();
             Pinky.TilePosition = new TilePosition(Pinky.Position);
             Pinky.Direction = new Direction(Direction.Left);
             Pinky.Rotation = new Rotation();
+            Pinky.TunnelSpeed = new TunnelSpeed(Pinky.Speed, Pinky.TilePosition, Level.ghostTunnelSpeed);
             Pinky.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Pinky.Position);
             Pinky.AnimatedSprite.AddSequence(name: "Up", start: 8, count: 2, time: 150);
             Pinky.AnimatedSprite.AddSequence(name: "Down", start: 10, count: 2, time: 150);
@@ -112,18 +115,18 @@ namespace Pacman
             Pinky.BounceInHome = new BounceInHome(Pinky);
             Pinky.SnapToTarget = new SnapToTarget(Pinky, Pinky.Target, 150);
             Pinky.WrapAroundScreen = new WrapAroundScreen(Pinky, Board);
-            Pinky.StopWatch = new StopWatch(start: true);
             Pinky.DotCounter = new DotCounter(Level.pinkyLimit);
 
             Inky = new Ghost();
             Inky.State = GhostState.Home;
-            Inky.Speed = new Speed(150, Level.ghostTunnelSpeed);
+            Inky.Speed = new Speed(maxSpeed, Level.ghostTunnelSpeed);
             Inky.StartPosition = TileEngine.GetPosition(11.5f, 14.5f);
             Inky.StartPosition2 = TileEngine.GetPosition(11.5f, 13.5f);
             Inky.Position = Inky.StartPosition.Copy();
             Inky.TilePosition = new TilePosition(Inky.Position);
             Inky.Direction = new Direction(Direction.Right);
             Inky.Rotation = new Rotation();
+            Inky.TunnelSpeed = new TunnelSpeed(Inky.Speed, Inky.TilePosition, Level.ghostTunnelSpeed);
             Inky.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Inky.Position);
             Inky.AnimatedSprite.AddSequence(name: "Up", start: 16, count: 2, time: 150);
             Inky.AnimatedSprite.AddSequence(name: "Down", start: 18, count: 2, time: 150);
@@ -142,13 +145,14 @@ namespace Pacman
 
             Clyde = new Ghost();
             Clyde.State = GhostState.Home;
-            Clyde.Speed = new Speed(150, Level.ghostTunnelSpeed);
+            Clyde.Speed = new Speed(maxSpeed, Level.ghostTunnelSpeed);
             Clyde.StartPosition = TileEngine.GetPosition(15.5f, 14.5f);
             Clyde.StartPosition2 = TileEngine.GetPosition(15.5f, 13.5f);
             Clyde.Position = Clyde.StartPosition.Copy();
             Clyde.TilePosition = new TilePosition(Clyde.Position);
             Clyde.Direction = new Direction(Direction.Left);
             Clyde.Rotation = new Rotation();
+            Clyde.TunnelSpeed = new TunnelSpeed(Clyde.Speed, Clyde.TilePosition, Level.ghostTunnelSpeed);
             Clyde.AnimatedSprite = new AnimatedSprite(filename: "pacman", parent: Board.Group, position: Clyde.Position);
             Clyde.AnimatedSprite.AddSequence(name: "Up", start: 24, count: 2, time: 150);
             Clyde.AnimatedSprite.AddSequence(name: "Down", start: 26, count: 2, time: 150);
@@ -176,19 +180,23 @@ namespace Pacman
             DebugInfo = new DebugInfo();
             DebugInfo.addDebug("Pacman Position: ", Pacman.Position);
             DebugInfo.addDebug("Pacman Tile: ", Pacman.TilePosition);
+            DebugInfo.addDebug("Pacman Speed: ", Pacman.Speed);
             DebugInfo.addDebug("Blinky Position: ", Blinky.Position);
             DebugInfo.addDebug("Blinky Tile: ", Blinky.TilePosition);
             DebugInfo.addDebug("Blinky State: ", Blinky);
+            DebugInfo.addDebug("Blinky Speed: ", Blinky.Speed);
             DebugInfo.addDebug("Pinky Position: ", Pinky.Position);
             DebugInfo.addDebug("Pinky Tile: ", Pinky.TilePosition);
             DebugInfo.addDebug("Pinky State: ", Pinky);
-            DebugInfo.addDebug("Pinky StopWatch: ", Pinky.StopWatch);
+            DebugInfo.addDebug("Pinky Speed: ", Pinky.Speed);
             DebugInfo.addDebug("Inky Position: ", Inky.Position);
             DebugInfo.addDebug("Inky Tile: ", Inky.TilePosition);
             DebugInfo.addDebug("Inky State: ", Inky);
+            DebugInfo.addDebug("Inky Speed: ", Inky.Speed);
             DebugInfo.addDebug("Clyde Position: ", Clyde.Position);
             DebugInfo.addDebug("Clyde Tile: ", Clyde.TilePosition);
             DebugInfo.addDebug("Clyde State: ", Clyde);
+            DebugInfo.addDebug("Clyde Speed: ", Clyde.Speed);
             DebugInfo.addDebug("Tile Selector: ", TileSelector.TilePosition);
             DebugInfo.addDebug("Score: ", Score);
 
@@ -213,40 +221,39 @@ namespace Pacman
 
         private void OnStateTimer()
         {
-            StateTimer.Dispose();
             if (StateTimerCount == 0)
             {
-                StateTimer = new Clock(Level.Chase1 * 1000);
+                StateTimer.Reset(Level.Chase1 * 1000);
                 LevelState = GhostState.Chase;
             }
             else if (StateTimerCount == 1)
             {
-                StateTimer = new Clock(Level.Scatter2 * 1000);
+                StateTimer.Reset(Level.Scatter2 * 1000);
                 LevelState = GhostState.Scatter;
             }
             else if (StateTimerCount == 2)
             {
-                StateTimer = new Clock(Level.Chase2 * 1000);
+                StateTimer.Reset(Level.Chase2 * 1000);
                 LevelState = GhostState.Chase;
             }
             else if (StateTimerCount == 3)
             {
-                StateTimer = new Clock(Level.Scatter3 * 1000);
+                StateTimer.Reset(Level.Scatter3 * 1000);
                 LevelState = GhostState.Scatter;
             }
             else if (StateTimerCount == 4)
             {
-                StateTimer = new Clock(Level.Chase3 * 1000);
+                StateTimer.Reset(Level.Chase3 * 1000);
                 LevelState = GhostState.Chase;
             }
             else if (StateTimerCount == 5)
             {
-                StateTimer = new Clock(Level.Scatter4 * 1000);
+                StateTimer.Reset(Level.Scatter4 * 1000);
                 LevelState = GhostState.Scatter;
             }
             else
             {
-                StateTimer = null;
+                StateTimer.Stop();
                 LevelState = GhostState.Chase;
             }
 
@@ -258,9 +265,6 @@ namespace Pacman
                 Inky.State = LevelState;
             if (Clyde.State == GhostState.Chase || Clyde.State == GhostState.Scatter)
                 Clyde.State = LevelState;
-
-            if (StateTimer != null)
-                StateTimer.ClockReachedLimit += OnStateTimer;
 
             StateTimerCount++;
         }
@@ -288,7 +292,6 @@ namespace Pacman
                 Clyde.DotCounter.Dispose();
                 ActiveGhost = null;
                 ActiveTimer.Dispose();
-                ActiveTimer = null;
             }
 
         }
@@ -367,18 +370,13 @@ namespace Pacman
             DebugInfo.Dispose();
             ActiveTimer.Dispose();
             StateTimer.Dispose();
+            StateTimerCount = 0;
         }
 
         private void setNextState(Ghost ghost)
         {
             if (ghost.State == GhostState.Home)
                 ghost.State = GhostState.LeaveHome;
-            else if (ghost.State == GhostState.LeaveHome)
-                ghost.State = GhostState.Scatter;
-            else if (ghost.State == GhostState.Scatter)
-                ghost.State = GhostState.Chase;
-            else if (ghost.State == GhostState.Chase)
-                ghost.State = GhostState.Scatter;
         }
 
         private void onCollision(Pacman pacman, GameObject gameObject)
@@ -386,6 +384,7 @@ namespace Pacman
             if (Board.Pellets.Contains(gameObject))
             {
                 var pellet = gameObject as Pellet;
+                pacman.Speed.Factor = Level.pacmanEatSpeed;
 
                 if (pellet.IsPowerPellet)
                 {

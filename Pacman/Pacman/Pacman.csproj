@@ -127,6 +127,7 @@
     <Compile Include="LeaveHome.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Pacman.cs" />
+    <Compile Include="PacmanChangeSpeeds.cs" />
     <Compile Include="PacmanTarget.cs" />
     <Compile Include="Pellet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -137,7 +138,6 @@
     <Compile Include="Speed.cs" />
     <Compile Include="StartStopAnimation.cs" />
     <Compile Include="Steering.cs" />
-    <Compile Include="StopWatch.cs" />
     <Compile Include="Target.cs" />
     <Compile Include="Tile.cs" />
     <Compile Include="TileEngine.cs">
@@ -145,6 +145,7 @@
     </Compile>
     <Compile Include="TilePosition.cs" />
     <Compile Include="TileSelector.cs" />
+    <Compile Include="TunnelSpeed.cs" />
     <Compile Include="Velocity.cs" />
     <Compile Include="WrapAroundScreen.cs" />
   </ItemGroup>

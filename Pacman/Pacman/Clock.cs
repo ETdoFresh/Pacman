@@ -18,15 +18,15 @@ namespace Pacman
         public Clock(float limit = 0)
         {
             this.limit = limit;
-            Play();
+            Start();
         }
 
-        public void Pause()
+        public void Stop()
         {
             Runtime.GameUpdate -= OnGameUpdate;
         }
 
-        public void Play()
+        public void Start()
         {
             Runtime.GameUpdate -= OnGameUpdate;
             Runtime.GameUpdate += OnGameUpdate;
@@ -35,6 +35,12 @@ namespace Pacman
         public void Reset()
         {
             time = 0;
+        }
+
+        public void Reset(float newLimit)
+        {
+            limit = newLimit;
+            Reset();
         }
 
         private void OnGameUpdate(GameTime gameTime)

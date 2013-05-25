@@ -20,6 +20,7 @@ namespace Pacman
         public WrapAroundScreen WrapAroundScreen { get; set; }
         public StartStopAnimation StartStopAnimation { get; set; }
         public Collision Collision { get; set; }
+        public PacmanChangeSpeeds ChangeSpeeds { get; set; }
 
         public Pacman()
         {
@@ -34,6 +35,7 @@ namespace Pacman
             if (WrapAroundScreen != null) WrapAroundScreen.Dispose();
             if (StartStopAnimation != null) StartStopAnimation.Dispose();
             if (Collision != null) Collision.Dispose();
+            if (ChangeSpeeds != null) ChangeSpeeds.Dispose();
             base.Dispose();
         }
     }
