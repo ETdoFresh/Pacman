@@ -26,6 +26,7 @@ namespace Pacman
         public GhostState LevelState { get; set; }
         public Clock StateTimer { get; set; }
         public int StateTimerCount { get; set; }
+        public Clock FrightenedTimer { get; set; }
 
         private const Int32 firstTileIndex = 54;
         private const float maxSpeed = 150;
@@ -81,6 +82,7 @@ namespace Pacman
             Blinky.AnimatedSprite.AddSequence(name: "Down", start: 2, count: 2, time: 150);
             Blinky.AnimatedSprite.AddSequence(name: "Left", start: 4, count: 2, time: 150);
             Blinky.AnimatedSprite.AddSequence(name: "Right", start: 6, count: 2, time: 150);
+            Blinky.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
             Blinky.AnimatedSprite.SetSequence(name: "Up");
             Blinky.AnimatedTowardDirection = new AnimatedTowardDirection(Blinky.Direction, Blinky.AnimatedSprite);
             Blinky.Velocity = new Velocity(Blinky.Position);
@@ -106,6 +108,7 @@ namespace Pacman
             Pinky.AnimatedSprite.AddSequence(name: "Down", start: 10, count: 2, time: 150);
             Pinky.AnimatedSprite.AddSequence(name: "Left", start: 12, count: 2, time: 150);
             Pinky.AnimatedSprite.AddSequence(name: "Right", start: 14, count: 2, time: 150);
+            Pinky.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
             Pinky.AnimatedSprite.SetSequence(name: "Up");
             Pinky.AnimatedTowardDirection = new AnimatedTowardDirection(Pinky.Direction, Pinky.AnimatedSprite);
             Pinky.Velocity = new Velocity(Pinky.Position);
@@ -132,6 +135,7 @@ namespace Pacman
             Inky.AnimatedSprite.AddSequence(name: "Down", start: 18, count: 2, time: 150);
             Inky.AnimatedSprite.AddSequence(name: "Left", start: 20, count: 2, time: 150);
             Inky.AnimatedSprite.AddSequence(name: "Right", start: 22, count: 2, time: 150);
+            Inky.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
             Inky.AnimatedSprite.SetSequence(name: "Up");
             Inky.AnimatedTowardDirection = new AnimatedTowardDirection(Inky.Direction, Inky.AnimatedSprite);
             Inky.Velocity = new Velocity(Inky.Position);
@@ -158,6 +162,7 @@ namespace Pacman
             Clyde.AnimatedSprite.AddSequence(name: "Down", start: 26, count: 2, time: 150);
             Clyde.AnimatedSprite.AddSequence(name: "Left", start: 28, count: 2, time: 150);
             Clyde.AnimatedSprite.AddSequence(name: "Right", start: 30, count: 2, time: 150);
+            Clyde.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
             Clyde.AnimatedSprite.SetSequence(name: "Up");
             Clyde.AnimatedTowardDirection = new AnimatedTowardDirection(Clyde.Direction, Clyde.AnimatedSprite);
             Clyde.Velocity = new Velocity(Clyde.Position);
@@ -331,6 +336,15 @@ namespace Pacman
                     ghost.GetToEndTarget.CalculateNextMoves();
                 }
             }
+            else if (state == GhostState.Frightened)
+            {
+                ghost.AnimatedTowardDirection.Dispose();
+                ghost.Direction.Reverse();
+                ghost.GetToEndTarget.Dispose();
+                ghost.GetToEndTarget = new GetToEndTarget(ghost, Board.Tiles);
+                ghost.GetToEndTarget.CalculateNextMoves();
+                ghost.AnimatedSprite.SetSequence("Frightened");
+            }
         }
 
         private void OnFinishLeavingHome(Ghost ghost)
@@ -388,6 +402,14 @@ namespace Pacman
 
                 if (pellet.IsPowerPellet)
                 {
+                    if (FrightenedTimer == null) FrightenedTimer = new Clock();
+                    FrightenedTimer.Reset(Level.frightTime);
+
+                    List<Ghost> ghosts = new List<Ghost>() { Blinky, Pinky, Inky, Clyde };
+                    foreach (var ghost in ghosts)
+                        if (ghost.State != GhostState.Home && ghost.State != GhostState.LeaveHome)
+                            ghost.State = GhostState.Frightened;
+
                     Score.Value += 50;
                 }
                 else

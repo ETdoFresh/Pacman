@@ -24,7 +24,7 @@ namespace Pacman
 
         private void updateAnimationBasedOnDirection(GameTime gameTime)
         {
-            if (direction.Value != previousDirection.Value)
+            if (animatedSprite != null && direction.Value != previousDirection.Value)
             {
                 previousDirection.Value = direction.Value;
                 if (direction.Value == Direction.Left) animatedSprite.SetSequence("Left");
@@ -36,7 +36,10 @@ namespace Pacman
 
         public void Dispose()
         {
-            Runtime.GameUpdate += updateAnimationBasedOnDirection;
+            Runtime.GameUpdate -= updateAnimationBasedOnDirection;
+            direction = null;
+            previousDirection = null;
+            animatedSprite = null;
         }
     }
 }
