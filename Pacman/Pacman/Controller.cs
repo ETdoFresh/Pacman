@@ -222,6 +222,19 @@ namespace Pacman
             LevelState = GhostState.Scatter;
             StateTimer = new Clock(Level.Scatter1 * 1000);
             StateTimer.ClockReachedLimit += OnStateTimer;
+            FrightenedTimer = new Clock();
+            FrightenedTimer.ClockReachedLimit += FrightenedTimer_ClockReachedLimit;
+        }
+
+        void FrightenedTimer_ClockReachedLimit()
+        {
+            List<Ghost> ghosts = new List<Ghost>() { Blinky, Pinky, Inky, Clyde };
+            foreach (var ghost in ghosts)
+                if (ghost.State == GhostState.Frightened)
+                {
+                    ghost.State = LevelState;
+                }
+            FrightenedTimer.Stop();
         }
 
         private void OnStateTimer()
@@ -306,6 +319,9 @@ namespace Pacman
             if (ghost.EndTarget != null)
                 ghost.EndTarget.Dispose();
 
+            if (ghost.AnimatedTowardDirection == null)
+                ghost.AnimatedTowardDirection = new AnimatedTowardDirection(ghost.Direction, ghost.AnimatedSprite);
+
             if (ghost == Blinky) Blinky.EndTarget = new BlinkyTarget(Blinky, Pacman, Board.Group);
             else if (ghost == Pinky) Pinky.EndTarget = new PinkyTarget(Pinky, Pacman, Board.Group);
             else if (ghost == Inky) Inky.EndTarget = new InkyTarget(Inky, Blinky, Pacman, Board.Group);
@@ -338,7 +354,9 @@ namespace Pacman
             }
             else if (state == GhostState.Frightened)
             {
-                ghost.AnimatedTowardDirection.Dispose();
+                if (ghost.AnimatedTowardDirection != null)
+                    ghost.AnimatedTowardDirection.Dispose();
+                ghost.AnimatedTowardDirection = null;
                 ghost.Direction.Reverse();
                 ghost.GetToEndTarget.Dispose();
                 ghost.GetToEndTarget = new GetToEndTarget(ghost, Board.Tiles);
@@ -403,7 +421,8 @@ namespace Pacman
                 if (pellet.IsPowerPellet)
                 {
                     if (FrightenedTimer == null) FrightenedTimer = new Clock();
-                    FrightenedTimer.Reset(Level.frightTime);
+                    FrightenedTimer.Reset(Level.frightTime * 1000);
+                    FrightenedTimer.Start();
 
                     List<Ghost> ghosts = new List<Ghost>() { Blinky, Pinky, Inky, Clyde };
                     foreach (var ghost in ghosts)
@@ -422,5 +441,7 @@ namespace Pacman
                 Board.Pellets.Remove(pellet);
             }
         }
+
+
     }
 }
