@@ -68,7 +68,7 @@ namespace DisplayLibrary
         {
             sequence = sequences[name];
 
-            if (CurrentFrame > TotalFrames)
+            if (CurrentFrame >= TotalFrames)
                 CurrentFrame = 0;
 
             sourceRectangle = sourceRectangles[sequence.frames[CurrentFrame]];

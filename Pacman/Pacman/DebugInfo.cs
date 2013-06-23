@@ -22,6 +22,8 @@ namespace Pacman
 
         private void Update(GameTime gameTime)
         {
+            if (labels == null) return;
+
             var updatedString = "";
             for (var i = 0; i < labels.Count; i++)
             {

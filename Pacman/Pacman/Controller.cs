@@ -27,9 +27,11 @@ namespace Pacman
         public Clock StateTimer { get; set; }
         public int StateTimerCount { get; set; }
         public Clock FrightenedTimer { get; set; }
+        public bool IsFlightFlashing { get; set; }
 
         private const Int32 firstTileIndex = 54;
         private const float maxSpeed = 150;
+        private int level = 1;
 
         public Controller()
         {
@@ -40,7 +42,7 @@ namespace Pacman
         {
             TileEngine.Initialize("pacman", firstTileIndex);
 
-            Level = new Level();
+            Level = new Level(level);
 
             Board = new Board();
             Board.Position = new Position(300, 0);
@@ -83,6 +85,7 @@ namespace Pacman
             Blinky.AnimatedSprite.AddSequence(name: "Left", start: 4, count: 2, time: 150);
             Blinky.AnimatedSprite.AddSequence(name: "Right", start: 6, count: 2, time: 150);
             Blinky.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
+            Blinky.AnimatedSprite.AddSequence(name: "FrightenedFlashing", start: 32, count: 4, time: 300);
             Blinky.AnimatedSprite.SetSequence(name: "Up");
             Blinky.AnimatedTowardDirection = new AnimatedTowardDirection(Blinky.Direction, Blinky.AnimatedSprite);
             Blinky.Velocity = new Velocity(Blinky.Position);
@@ -109,6 +112,7 @@ namespace Pacman
             Pinky.AnimatedSprite.AddSequence(name: "Left", start: 12, count: 2, time: 150);
             Pinky.AnimatedSprite.AddSequence(name: "Right", start: 14, count: 2, time: 150);
             Pinky.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
+            Pinky.AnimatedSprite.AddSequence(name: "FrightenedFlashing", start: 32, count: 4, time: 300);
             Pinky.AnimatedSprite.SetSequence(name: "Up");
             Pinky.AnimatedTowardDirection = new AnimatedTowardDirection(Pinky.Direction, Pinky.AnimatedSprite);
             Pinky.Velocity = new Velocity(Pinky.Position);
@@ -136,6 +140,7 @@ namespace Pacman
             Inky.AnimatedSprite.AddSequence(name: "Left", start: 20, count: 2, time: 150);
             Inky.AnimatedSprite.AddSequence(name: "Right", start: 22, count: 2, time: 150);
             Inky.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
+            Inky.AnimatedSprite.AddSequence(name: "FrightenedFlashing", start: 32, count: 4, time: 300);
             Inky.AnimatedSprite.SetSequence(name: "Up");
             Inky.AnimatedTowardDirection = new AnimatedTowardDirection(Inky.Direction, Inky.AnimatedSprite);
             Inky.Velocity = new Velocity(Inky.Position);
@@ -163,6 +168,7 @@ namespace Pacman
             Clyde.AnimatedSprite.AddSequence(name: "Left", start: 28, count: 2, time: 150);
             Clyde.AnimatedSprite.AddSequence(name: "Right", start: 30, count: 2, time: 150);
             Clyde.AnimatedSprite.AddSequence(name: "Frightened", start: 32, count: 2, time: 150);
+            Clyde.AnimatedSprite.AddSequence(name: "FrightenedFlashing", start: 32, count: 4, time: 300);
             Clyde.AnimatedSprite.SetSequence(name: "Up");
             Clyde.AnimatedTowardDirection = new AnimatedTowardDirection(Clyde.Direction, Clyde.AnimatedSprite);
             Clyde.Velocity = new Velocity(Clyde.Position);
@@ -224,17 +230,6 @@ namespace Pacman
             StateTimer.ClockReachedLimit += OnStateTimer;
             FrightenedTimer = new Clock();
             FrightenedTimer.ClockReachedLimit += FrightenedTimer_ClockReachedLimit;
-        }
-
-        void FrightenedTimer_ClockReachedLimit()
-        {
-            List<Ghost> ghosts = new List<Ghost>() { Blinky, Pinky, Inky, Clyde };
-            foreach (var ghost in ghosts)
-                if (ghost.State == GhostState.Frightened)
-                {
-                    ghost.State = LevelState;
-                }
-            FrightenedTimer.Stop();
         }
 
         private void OnStateTimer()
@@ -336,6 +331,7 @@ namespace Pacman
             }
             else if (state == GhostState.Scatter || state == GhostState.Chase)
             {
+                ghost.Speed.Factor = Level.ghostSpeed;
                 if (ghost.LeaveHome != null) ghost.LeaveHome.Dispose();
                 ghost.LeaveHome = null;
                 if (ghost.GetToEndTarget == null)
@@ -354,6 +350,7 @@ namespace Pacman
             }
             else if (state == GhostState.Frightened)
             {
+                ghost.Speed.Factor = Level.frightGhostSpeed;
                 if (ghost.AnimatedTowardDirection != null)
                     ghost.AnimatedTowardDirection.Dispose();
                 ghost.AnimatedTowardDirection = null;
@@ -402,6 +399,7 @@ namespace Pacman
             DebugInfo.Dispose();
             ActiveTimer.Dispose();
             StateTimer.Dispose();
+            FrightenedTimer.Dispose();
             StateTimerCount = 0;
         }
 
@@ -421,8 +419,9 @@ namespace Pacman
                 if (pellet.IsPowerPellet)
                 {
                     if (FrightenedTimer == null) FrightenedTimer = new Clock();
-                    FrightenedTimer.Reset(Level.frightTime * 1000);
+                    FrightenedTimer.Reset(Level.frightTime * 1000 - Level.numFlashes * 300);
                     FrightenedTimer.Start();
+                    IsFlightFlashing = false;
 
                     List<Ghost> ghosts = new List<Ghost>() { Blinky, Pinky, Inky, Clyde };
                     foreach (var ghost in ghosts)
@@ -439,9 +438,42 @@ namespace Pacman
 
                 pellet.Dispose();
                 Board.Pellets.Remove(pellet);
+
+                if (Board.Pellets.Count == 0)
+                {
+                    Dispose();
+                    level++;
+                    Initialize();
+                }
             }
         }
 
-
+        void FrightenedTimer_ClockReachedLimit()
+        {
+            List<Ghost> ghosts = new List<Ghost>() { Blinky, Pinky, Inky, Clyde };
+            if (IsFlightFlashing)
+            {
+                foreach (var ghost in ghosts)
+                {
+                    if (ghost.State == GhostState.Frightened)
+                    {
+                        ghost.State = LevelState;
+                    }
+                }
+                FrightenedTimer.Stop();
+            }
+            else
+            {
+                IsFlightFlashing = true;
+                FrightenedTimer.Reset(Level.numFlashes * 300);
+                foreach (var ghost in ghosts)
+                {
+                    if (ghost.State == GhostState.Frightened)
+                    {
+                        ghost.AnimatedSprite.SetSequence("FrightenedFlashing");
+                    }
+                }                
+            }
+        }
     }
 }

@@ -25,10 +25,9 @@ namespace Pacman
         {
             if (speed.Factor != ghostTunnelSpeedFactor)
             {
+                previousSpeedFactor = speed.Factor;
                 if (tilePosition.Y == 14 && (tilePosition.X <= 5 || tilePosition.X >= 22))
                     speed.Factor = ghostTunnelSpeedFactor;
-                else
-                    previousSpeedFactor = speed.Factor;
             }
             else
             {
