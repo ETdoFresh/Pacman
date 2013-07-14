@@ -31,3 +31,6 @@ $tf*/
 *.ai
 *.tps
 pacman-*.png
+*.cache*
+
+PacmanContent/tiles.xlsx

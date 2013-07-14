@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Pacman")]
-[assembly: AssemblyProduct("Pacman")]
+[assembly: AssemblyTitle("PacmanLibrary")]
+[assembly: AssemblyProduct("PacmanLibrary")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright ©  2012")]
+[assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 // On Windows, the following GUID is for the ID of the typelib if this
 // project is exposed to COM. On other platforms, it unique identifies the
 // title storage container when deploying this assembly to the device.
-[assembly: Guid("965f6406-96a7-4819-be9a-02bb4a12c803")]
+[assembly: Guid("afa639fe-e437-4d29-b966-040e908b6033")]
 
 // Version information for an assembly consists of the following four values:
 //
