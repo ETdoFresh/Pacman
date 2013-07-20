@@ -1,34 +1,38 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacman", "Pacman\Pacman.csproj", "{7B1A9FD5-FC44-4BE8-A04D-40DE6AB63A00}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanContent", "PacmanContent\PacmanContent.contentproj", "{C4ADE800-26AA-4721-B58A-042A5E95C128}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanLibrary", "PacmanLibrary\PacmanLibrary.csproj", "{FB845156-8990-4531-8BCE-20F66217EE97}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextureAtlasPipeline", "TextureAtlasPipeline\TextureAtlasPipeline.csproj", "{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanContent", "PacmanContent\PacmanContent.contentproj", "{5ABAD209-C546-4B21-BAB0-EEFB847E7F0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacman", "Pacman\Pacman.csproj", "{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
 		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7B1A9FD5-FC44-4BE8-A04D-40DE6AB63A00}.Debug|x86.ActiveCfg = Debug|x86
-		{7B1A9FD5-FC44-4BE8-A04D-40DE6AB63A00}.Debug|x86.Build.0 = Debug|x86
-		{7B1A9FD5-FC44-4BE8-A04D-40DE6AB63A00}.Release|x86.ActiveCfg = Release|x86
-		{7B1A9FD5-FC44-4BE8-A04D-40DE6AB63A00}.Release|x86.Build.0 = Release|x86
-		{C4ADE800-26AA-4721-B58A-042A5E95C128}.Debug|x86.ActiveCfg = Debug|x86
-		{C4ADE800-26AA-4721-B58A-042A5E95C128}.Release|x86.ActiveCfg = Release|x86
-		{FB845156-8990-4531-8BCE-20F66217EE97}.Debug|x86.ActiveCfg = Debug|x86
-		{FB845156-8990-4531-8BCE-20F66217EE97}.Debug|x86.Build.0 = Debug|x86
-		{FB845156-8990-4531-8BCE-20F66217EE97}.Release|x86.ActiveCfg = Release|x86
-		{FB845156-8990-4531-8BCE-20F66217EE97}.Release|x86.Build.0 = Release|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Debug|Any CPU.Build.0 = Debug|x86
 		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Debug|x86.ActiveCfg = Debug|x86
 		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Debug|x86.Build.0 = Debug|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|Any CPU.ActiveCfg = Debug|x86
+		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|Any CPU.Build.0 = Debug|x86
 		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|x86.ActiveCfg = Debug|x86
 		{2DFF2EE2-2C4B-44B5-90CA-D08D280FBB6D}.Release|x86.Build.0 = Debug|x86
+		{5ABAD209-C546-4B21-BAB0-EEFB847E7F0E}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{5ABAD209-C546-4B21-BAB0-EEFB847E7F0E}.Debug|x86.ActiveCfg = Debug|x86
+		{5ABAD209-C546-4B21-BAB0-EEFB847E7F0E}.Release|Any CPU.ActiveCfg = Release|x86
+		{5ABAD209-C546-4B21-BAB0-EEFB847E7F0E}.Release|x86.ActiveCfg = Release|x86
+		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Debug|x86.ActiveCfg = Debug|x86
+		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Debug|x86.Build.0 = Debug|x86
+		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Release|Any CPU.ActiveCfg = Release|x86
+		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Release|x86.ActiveCfg = Release|x86
+		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

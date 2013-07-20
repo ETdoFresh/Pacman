@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
-namespace PacmanLibrary.Engine
+namespace Pacman.Engine
 {
-    class AnimatedSprite : Sprite
+    class AnimatedSpriteObject : SpriteObject
     {
         public int CurrentFrame { get; set; }
         public int TotalFrames { get { return _currentSequence.Frames.Length; } }
@@ -17,17 +18,17 @@ namespace PacmanLibrary.Engine
         private bool _isPlaying;
         private float _playSpeed;
 
-        public AnimatedSprite(string assetFile, Group parent = null)
-            : base(assetFile, 0, parent)
+        public AnimatedSpriteObject(string assetFile)
+            : base(assetFile, 0)
         {
             _sequences = new Dictionary<string, AnimationSequence>();
             _isPlaying = true;
             _playSpeed = 1.0f;
         }
 
-        public override void LoadContent(Microsoft.Xna.Framework.Content.ContentManager Content)
+        public override void LoadContent()
         {
-            base.LoadContent(Content);
+            base.LoadContent();
 
             if (_currentSequence == null)
             {
@@ -40,13 +41,12 @@ namespace PacmanLibrary.Engine
             }
         }
 
-        public override void Update(RenderContext renderContext)
+        public override void Update(GameTime gameTime)
         {
-            base.Update(renderContext);
+            base.Update(gameTime);
 
             if (_isPlaying)
             {
-                var gameTime = renderContext.GameTime;
                 var previousFrame = CurrentFrame;
 
                 _timeSinceLastFrame += gameTime.ElapsedGameTime.TotalSeconds;
@@ -77,7 +77,7 @@ namespace PacmanLibrary.Engine
                     }
                 }
 
-                if (CurrentFrame != previousFrame)
+                if (_sourceRectangle != _sourceRectangles[_currentSequence.Frames[CurrentFrame]])
                 {
                     _sourceRectangle = _sourceRectangles[_currentSequence.Frames[CurrentFrame]];
                     //Origin = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
@@ -100,7 +100,8 @@ namespace PacmanLibrary.Engine
             return _currentSequence.PlayTime / 1000.0 / TotalFrames / _playSpeed;
         }
 
-        public void SetSequence(string name, bool resetFrame = false)
+        public void SetSequence(string name) { SetSequence(name, false); }
+        public void SetSequence(string name, bool resetFrame)
         {
             _currentSequence = _sequences[name];
 
@@ -111,7 +112,10 @@ namespace PacmanLibrary.Engine
                 _sourceRectangle = _sourceRectangles[_currentSequence.Frames[CurrentFrame]];
         }
 
-        public void AddSequence(string name, int start, int count = 1, int time = 1000, int loopCount = -1, bool setSequence = true)
+        public void AddSequence(string name, int start, int count) { AddSequence(name, start, count, 1000, -1, true); }
+        public void AddSequence(string name, int start, int count, int time) { AddSequence(name, start, count, time, -1, true); }
+        public void AddSequence(string name, int start, int count, int time, int loopCount) { AddSequence(name, start, count, time, loopCount, true); }
+        public void AddSequence(string name, int start, int count, int time, int loopCount, bool setSequence)
         {
             var frames = new int[count];
             for (int i = start; i < start + count; i++) frames[i - start] = i;
@@ -119,10 +123,13 @@ namespace PacmanLibrary.Engine
             AddSequence(name, frames, time, loopCount, setSequence);
         }
 
-        public void AddSequence(string name, int[] frames, int playTime = 1000, int loopCount = -1, bool setSequence = true)
+        public void AddSequence(string name, int[] frames) { AddSequence(name, frames, 1000, -1, true); }
+        public void AddSequence(string name, int[] frames, int playTime) { AddSequence(name, frames, playTime, -1, true); }
+        public void AddSequence(string name, int[] frames, int playTime, int loopCount) { AddSequence(name, frames, playTime, loopCount, true); }
+        public void AddSequence(string name, int[] frames, int playTime, int loopCount, bool setSequence)
         {
             _sequences.Remove(name);
-            var sequence = new AnimationSequence() { Frames = frames, PlayTime = playTime, LoopCount = loopCount};
+            var sequence = new AnimationSequence() { Frames = frames, PlayTime = playTime, LoopCount = loopCount };
             _sequences.Add(name, sequence);
 
             if (setSequence) SetSequence(name);

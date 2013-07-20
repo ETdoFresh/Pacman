@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ProjectGuid>{7B1A9FD5-FC44-4BE8-A04D-40DE6AB63A00}</ProjectGuid>
+    <ProjectGuid>{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}</ProjectGuid>
     <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -14,7 +14,7 @@
     <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
     <XnaPlatform>Windows</XnaPlatform>
     <XnaProfile>Reach</XnaProfile>
-    <XnaCrossPlatformGroupID>b18962c1-a1e2-47b3-923c-9357010417b2</XnaCrossPlatformGroupID>
+    <XnaCrossPlatformGroupID>102c6ea5-cb98-4134-b851-cff5af69cbbe</XnaCrossPlatformGroupID>
     <XnaOutputType>Game</XnaOutputType>
     <ApplicationIcon>Game.ico</ApplicationIcon>
     <Thumbnail>GameThumbnail.png</Thumbnail>
@@ -72,15 +72,34 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Engine\AnimatedSpriteObject.cs" />
+    <Compile Include="Engine\AnimationSequence.cs" />
+    <Compile Include="Engine\DisplayObject.cs" />
+    <Compile Include="Engine\GameObject.cs" />
+    <Compile Include="Engine\GroupObject.cs" />
+    <Compile Include="Engine\Helpers\InputHelper.cs" />
+    <Compile Include="Engine\ImageObject.cs" />
+    <Compile Include="Engine\SceneObject.cs" />
+    <Compile Include="Engine\SpriteObject.cs" />
+    <Compile Include="Engine\Stage.cs" />
+    <Compile Include="Engine\TextureAtlasReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Pacman.cs" />
+    <Compile Include="PacmanGame.cs" />
+    <Compile Include="Scenes\LevelScene.cs" />
+    <Compile Include="Scenes\MenuScene.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />
     <Content Include="GameThumbnail.png">
       <XnaPlatformSpecific>true</XnaPlatformSpecific>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PacmanContent\PacmanContent.contentproj">
+      <Name>PacmanContent</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
@@ -108,12 +127,6 @@
       <ProductName>Microsoft XNA Framework Redistributable 4.0</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\PacmanLibrary\PacmanLibrary.csproj">
-      <Project>{FB845156-8990-4531-8BCE-20F66217EE97}</Project>
-      <Name>PacmanLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />

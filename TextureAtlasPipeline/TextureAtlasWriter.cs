@@ -33,7 +33,7 @@ namespace TextureAtlasPipeline
 
         public override string GetRuntimeReader(TargetPlatform targetPlatform)
         {
-            return "PacmanLibrary.Engine.TextureAtlasReader, PacmanLibrary";
+            return "Pacman.Engine.TextureAtlasReader, Pacman";
         }
     }
 }

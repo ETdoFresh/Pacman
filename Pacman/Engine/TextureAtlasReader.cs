@@ -1,8 +1,11 @@
+﻿using System;
 using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using System.Linq;
+using System.Text;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework;
 
-namespace PacmanLibrary.Engine
+namespace Pacman.Engine
 {
     /// <summary>
     /// This class will be instantiated by the XNA Framework Content
