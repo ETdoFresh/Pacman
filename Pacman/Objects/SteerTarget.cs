@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Pacman.Engine.Helpers;
 using Pacman.Engine;
+using Pacman.Engine.Display;
 
 namespace Pacman.Objects
 {

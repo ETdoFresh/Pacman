@@ -6,6 +6,7 @@ using Pacman.Engine;
 using Microsoft.Xna.Framework.Input;
 using Pacman.Engine.Helpers;
 using Microsoft.Xna.Framework;
+using Pacman.Engine.Display;
 
 namespace Pacman.Scenes
 {

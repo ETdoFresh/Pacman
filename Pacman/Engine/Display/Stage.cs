@@ -7,7 +7,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
 using Pacman.Engine.Helpers;
 
-namespace Pacman.Engine
+namespace Pacman.Engine.Display
 {
     class Stage : DrawableGameComponent
     {

@@ -5,15 +5,17 @@ using System.Text;
 using Pacman.Engine;
 using Microsoft.Xna.Framework;
 using Pacman.Engine.Helpers;
+using Pacman.Engine.Display;
 
 namespace Pacman.Objects
 {
     class Pacman : GroupObject, ISteer
     {
         public AnimatedSpriteObject AnimatedSprite { get; set; }
+        public Speed Speed { get; set; }
         public Velocity Velocity { get; set; }
         public Steering Steering { get; set; }
-        public Speed Speed { get; set; }
+        public SnapToTarget SnapToTarget { get; set; }
 
         public Pacman()
         {
@@ -38,6 +40,9 @@ namespace Pacman.Objects
 
             Steering = new Steering(this, target);
             AddChild(Steering);
+
+            SnapToTarget = new SnapToTarget(this, Velocity, target);
+            AddChild(SnapToTarget);
         }
     }
 }

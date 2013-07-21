@@ -7,17 +7,34 @@ using Pacman.Engine.Helpers;
 using Pacman.Objects;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
+using Pacman.Engine.Display;
 
 namespace Pacman.Scenes
 {
     class LevelScene : SceneObject
     {
+        TileGrid _tileGrid;
         Objects.Pacman _pacman;
         DisplayObject _target;
+        Random _random;
 
         public LevelScene()
             : base("Level")
         {
+            _random = new Random();
+            _tileGrid = new TileGrid(outerWallData.GetLength(1), outerWallData.GetLength(0), 15, 15);
+            for (int x = 0; x < _tileGrid.NumberOfXTiles; x++)
+            {
+                for (int y = 0; y < _tileGrid.NumberOfYTiles; y++)
+                {
+                    var rect = new RectangleObject(_tileGrid.TileWidth, _tileGrid.TileHeight);
+                    rect.Translate(_tileGrid.Data[x, y].PositionVector.X, _tileGrid.Data[x, y].PositionVector.Y);
+                    rect.Tint = new Color(_random.Next(0, 255), _random.Next(0, 255), _random.Next(0, 255));
+                    rect.Alpha = 0.3f;
+                    AddChild(rect);
+                }
+            }
+
             SetupBoard();
             _pacman = new Objects.Pacman();
             _pacman.Translate(25, 25);
@@ -25,7 +42,8 @@ namespace Pacman.Scenes
 
             _target = new CircleObject(15);
             _target.Translate(400, 25);
-            _target.Alpha = 0.25f;
+            _target.Tint = Color.Red;
+            _target.Alpha = 0.4f;
             AddChild(_target);
 
             _pacman.SteerTowards(_target);

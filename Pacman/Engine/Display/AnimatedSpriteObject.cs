@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
-namespace Pacman.Engine
+namespace Pacman.Engine.Display
 {
     class AnimatedSpriteObject : SpriteObject
     {

@@ -7,7 +7,7 @@ using System.Diagnostics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Pacman.Engine
+namespace Pacman.Engine.Display
 {
     class GameObject
     {

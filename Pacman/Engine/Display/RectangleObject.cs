@@ -5,12 +5,19 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Pacman.Engine
+namespace Pacman.Engine.Display
 {
     class RectangleObject : DisplayObject
     {
+        static List<Texture2D> _previousTextures;
+
         Rectangle _rectangle;
         Texture2D _texture;
+
+        static RectangleObject()
+        {
+            _previousTextures = new List<Texture2D>();
+        }
 
         public RectangleObject(float width, float height)
             : base()
@@ -23,7 +30,22 @@ namespace Pacman.Engine
         public override void LoadContent()
         {
             base.LoadContent();
-            _texture = new Texture2D(SpriteBatch.GraphicsDevice, (int)Width, (int)Height);
+            if (_previousTextures != null)
+            {
+                foreach (var texture in _previousTextures)
+                {
+                    if (texture.Width == Width && texture.Height == Height)
+                    {
+                        _texture = texture;
+                        break;
+                    }
+                }
+            }
+            if (_texture == null)
+            {
+                _texture = new Texture2D(SpriteBatch.GraphicsDevice, (int)Width, (int)Height);
+                _previousTextures.Add(_texture);
+            }
 
             Color[] color = new Color[(int)(Width * Height)];
             for (int i = 0; i < color.Length; i++) color[i] = Color.White;

@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Pacman.Engine;
 using Pacman.Scenes;
+using Pacman.Engine.Display;
 
 namespace Pacman
 {

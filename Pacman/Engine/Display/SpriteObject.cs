@@ -2,27 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
-namespace Pacman.Engine
+namespace Pacman.Engine.Display
 {
-    class ImageObject : DisplayObject
+    class SpriteObject : ImageObject
     {
-        private readonly string _assetFile;
-        protected Texture2D _texture;
-        protected Rectangle _sourceRectangle;
+        protected readonly string _sheetDefinition;
+        private int _index;
 
-        public ImageObject(string assetFile) : base()
+        protected List<Rectangle> _sourceRectangles;
+
+
+        public SpriteObject(string assetFile, int index)
+            : base(assetFile)
         {
-            _assetFile = assetFile;
+            _sheetDefinition = assetFile + "xml";
+            _index = index;
         }
 
         public override void LoadContent()
         {
             base.LoadContent();
-            _texture = Content.Load<Texture2D>(_assetFile);
-            _sourceRectangle = new Rectangle(0, 0, _texture.Width, _texture.Height);
+            _sourceRectangles = Content.Load<List<Rectangle>>(_sheetDefinition);
+            _sourceRectangle = _sourceRectangles[_index];
 
             Width = _sourceRectangle.Width;
             Height = _sourceRectangle.Height;

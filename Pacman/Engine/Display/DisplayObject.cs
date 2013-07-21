@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Pacman.Engine.Helpers;
 
-namespace Pacman.Engine
+namespace Pacman.Engine.Display
 {
     class DisplayObject : GameObject
     {

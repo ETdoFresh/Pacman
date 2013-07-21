@@ -5,6 +5,7 @@ using System.Text;
 using Pacman.Engine;
 using Pacman.Engine.Helpers;
 using Microsoft.Xna.Framework.Input;
+using Pacman.Engine.Display;
 
 namespace Pacman.Scenes
 {
