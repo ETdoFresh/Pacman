@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using Microsoft.Xna.Framework.Graphics;
+using Pacman.Engine.Helpers;
 
 namespace Pacman.Engine
 {
@@ -57,6 +58,8 @@ namespace Pacman.Engine
 
         public override void Update(GameTime gameTime)
         {
+            InputHelper.Update();
+
             // Have a seperate array of scenes to update in case an active scene is added or removed
             _scenesToUpdate.Clear();
             foreach (var scene in _activeScenes)
@@ -111,11 +114,18 @@ namespace Pacman.Engine
             return scene;
         }
 
-        public SceneObject GotoScene(SceneObject scene)
+        public SceneObject GotoScene(SceneObject scene) { return GotoScene(scene, true); }
+        public SceneObject GotoScene(SceneObject scene, bool suspendOtherScenes)
         {
             LoadScene(scene);
+
+            if (suspendOtherScenes)
+                while (_activeScenes.Count > 0)
+                    SuspendScene(_activeScenes[0]);
+
             if (!_activeScenes.Contains(scene))
                 _activeScenes.Add(scene);
+
             return scene;
         }
 
@@ -132,18 +142,6 @@ namespace Pacman.Engine
                     return scene;
 
             return null;
-        }
-
-        public void Back()
-        {
-            var menuScene = GetSceneByName("Menu");
-            if (menuScene != null)
-            {
-                if (_activeScenes.Contains(menuScene))
-                    Game.Exit();
-                else
-                    GotoScene(menuScene);
-            }
         }
     }
 }

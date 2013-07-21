@@ -26,6 +26,7 @@ namespace Pacman
 
             _stage = new Stage(this);
             _stage.GotoScene(new MenuScene());
+            _stage.LoadScene(new AnimationTest());
             _stage.LoadScene(new LevelScene());
         }
 

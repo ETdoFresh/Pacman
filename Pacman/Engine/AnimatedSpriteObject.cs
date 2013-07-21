@@ -39,6 +39,13 @@ namespace Pacman.Engine
 
                 _currentSequence = new AnimationSequence() { Frames = frames, PlayTime = 1000 };
             }
+            else
+            {
+                _sourceRectangle = _sourceRectangles[_currentSequence.Frames[CurrentFrame]];
+                Width = _sourceRectangle.Width;
+                Height = _sourceRectangle.Height;
+                Origin = new Vector2(Width / 2, Height / 2);
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -80,7 +87,9 @@ namespace Pacman.Engine
                 if (_sourceRectangle != _sourceRectangles[_currentSequence.Frames[CurrentFrame]])
                 {
                     _sourceRectangle = _sourceRectangles[_currentSequence.Frames[CurrentFrame]];
-                    //Origin = new Vector2(sourceRectangle.Width / 2, sourceRectangle.Height / 2);
+                    Width = _sourceRectangle.Width;
+                    Height = _sourceRectangle.Height;
+                    Origin = new Vector2(Width / 2, Height / 2);
                 }
             }
         }
