@@ -18,6 +18,7 @@ namespace Pacman.Engine.Display
         public TextObject(String text)
             : base()
         {
+            _text = "";
             _newText = text;
         }
 

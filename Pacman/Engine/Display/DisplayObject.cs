@@ -16,10 +16,10 @@ namespace Pacman.Engine.Display
 
         public float Alpha { get; set; }
         public Color Tint { get; set; }
-        public float Width { get; set; }
-        public float Height { get; set; }
+        public virtual float Width { get; set; }
+        public virtual float Height { get; set; }
 
-        public Vector2 ContentPosition { get { return Parent != null ? Parent.ContentPosition + Position.Value : Position.Value; } }
+        public Vector2 ContentPosition { get { return Parent != null ? Parent.ContentPosition + Position.Value * Parent.ContentScale : Position.Value; } }
         public float ContentRotation { get { return Parent != null ? Parent.ContentRotation + Rotation.Value : Rotation.Value; } }
         public float ContentScale { get { return Parent != null ? Parent.ContentScale * Scale.Value : Scale.Value; } }
         public float ContentWidth { get { return Width * ContentScale; } }
@@ -34,23 +34,23 @@ namespace Pacman.Engine.Display
             Tint = Color.White;
         }
 
-        public void Translate(float x, float y)
+        public virtual void Translate(float x, float y)
         {
             Position.X = x;
             Position.Y = y;
         }
 
-        public void Rotate(float degrees)
+        public virtual void Rotate(float degrees)
         {
             Rotation.Value = MathHelper.ToRadians(degrees);
         }
 
-        public void Resize(float value)
+        public virtual void Resize(float value)
         {
             Scale.Value = value;
         }
 
-        public void SetOrigin(float x, float y)
+        public virtual void SetOrigin(float x, float y)
         {
             Origin = new Vector2(x, y);
         }

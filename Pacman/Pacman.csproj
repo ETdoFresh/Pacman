@@ -78,11 +78,14 @@
     <Compile Include="Engine\Display\DisplayObject.cs" />
     <Compile Include="Engine\Display\GameObject.cs" />
     <Compile Include="Engine\Display\GroupObject.cs" />
+    <Compile Include="Engine\Helpers\TilePosition.cs" />
+    <Compile Include="Engine\Helpers\DebugHelper.cs" />
     <Compile Include="Engine\Helpers\InputHelper.cs" />
     <Compile Include="Engine\Helpers\Position.cs" />
     <Compile Include="Engine\Helpers\Rotation.cs" />
     <Compile Include="Engine\Helpers\Scale.cs" />
     <Compile Include="Engine\Helpers\Speed.cs" />
+    <Compile Include="Engine\Helpers\Tile.cs" />
     <Compile Include="Engine\Helpers\TileGrid.cs" />
     <Compile Include="Engine\Helpers\Velocity.cs" />
     <Compile Include="Engine\Display\ImageObject.cs" />
@@ -97,6 +100,7 @@
     <Compile Include="Objects\SnapToTarget.cs" />
     <Compile Include="Objects\Steering.cs" />
     <Compile Include="Objects\SteerTarget.cs" />
+    <Compile Include="Objects\Wrap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PacmanGame.cs" />

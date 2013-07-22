@@ -76,7 +76,7 @@ namespace Pacman.Scenes
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             base.Update(gameTime);
-            if (InputHelper.IsPressed(Keys.Space) || InputHelper.IsPressed(Keys.Escape))
+            if (InputHelper.IsPressed(Keys.T) || InputHelper.IsPressed(Keys.Escape))
             {
                 Stage.GotoScene("Menu");
             }

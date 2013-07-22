@@ -15,7 +15,9 @@ namespace Pacman.Objects
         public Speed Speed { get; set; }
         public Velocity Velocity { get; set; }
         public Steering Steering { get; set; }
+        public TilePosition TilePosition { get; set; }
         public SnapToTarget SnapToTarget { get; set; }
+        public Wrap Wrap { get; set; }
 
         public Pacman()
         {
@@ -28,6 +30,12 @@ namespace Pacman.Objects
             Speed = new Speed(100);
             Velocity = new Velocity(Position);
             AddChild(Velocity);
+        }
+
+        public void ActivateTilePosition(int tileWidth, int tileHeight)
+        {
+            TilePosition = new TilePosition(Position, tileWidth, tileHeight);
+            AddChild(TilePosition);
         }
 
         public void SteerTowards(DisplayObject target)
@@ -43,6 +51,12 @@ namespace Pacman.Objects
 
             SnapToTarget = new SnapToTarget(this, Velocity, target);
             AddChild(SnapToTarget);
+        }
+
+        public void WrapAround(int left, int top, float right, float bottom)
+        {
+            Wrap = new Wrap(Position, left, top, right, bottom);
+            AddChild(Wrap);
         }
     }
 }

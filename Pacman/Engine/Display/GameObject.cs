@@ -14,7 +14,7 @@ namespace Pacman.Engine.Display
         static public ContentManager Content { get; set; }
         static public SpriteBatch SpriteBatch { get; set; }
 
-        public string Name { get; protected set; }
+        public string Name { get; set; }
         public bool IsInitialized { get; protected set; }
         public bool Enabled { get; set; }
         public bool Visible { get; set; }

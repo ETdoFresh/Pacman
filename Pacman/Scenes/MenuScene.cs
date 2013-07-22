@@ -45,7 +45,7 @@ namespace Pacman.Scenes
             text.Tint = Color.Lime;
             AddChild(text);
 
-            var text2 = new TextObject("Press Spacebar to proceed to next Scene!");
+            var text2 = new TextObject("Press {Spacebar} to proceed to next Scene!\nPress {T} to view Animation Test!");
             text2.Translate(325, 350);
             text2.Resize(2);
             text2.Rotate(-5);
