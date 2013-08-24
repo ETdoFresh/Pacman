@@ -1,0 +1,7 @@
+To make a smaller black and white PNG file of good quality, I recommend:
+
+PNG-8
+Perceptual 64 or less color
+Diffusion
+Transparency
+Diffusion Transparency 0%

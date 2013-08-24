@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Untitled Document</title>
+</head>
+
+<body>
+<h1>Pacman Engine Workings</h1>
+<ul>
+  <li>Game Start – XNA Game Constructor</li>
+  <ul>
+    <li>Create Stage Object – Stage Constructor</li>
+    <ul>
+      <li>Creates _loadScenes, _activeScenes,  _scenesToUpdate, Stage.Instance</li>
+      <li>Adds Stage as Game component (so that next game  functions also run stage functions)</li>
+    </ul>
+    <li>Stage – Load Scene(s)</li>
+    <ul>
+      <li>Create MenuScene and add to _activeScenes and  _loadedScenes</li>
+      <li>Create AnimationTest and LevelScene and add to  _loadedScenes</li>
+    </ul>
+  </ul>
+  <li>Game Initialize – Stage Initialize</li>
+  <ul>
+    <li>Specify game content and Stage.IsInitialized =  true</li>
+    <li>Runs LoadContent</li>
+  </ul>
+  <li>Game Load Content – Stage LoadContent</li>
+  <ul>
+    <li>Specify game spriteBatch</li>
+    <li>Loop through each _loadedScene and initializes  scene</li>
+    <li>Scene loops through each child and Initializes  and LoadContent</li>
+  </ul>
+  <li>Game Update – Stage Update</li>
+  <ul>
+    <li>Update input helper</li>
+    <li>Create a temp array _scenesToUpdate from  _activeScenes</li>
+    <li>If enabled, update active scenes</li>
+    <ul>
+      <li>Scene Update – If child.enabled, update child</li>
+    </ul>
+  </ul>
+  <li>Game Draw – Stage Draw</li>
+  <ul>
+    <li>Loop all _activeScenes and if scene.visible,  draw scene</li>
+  </ul>
+</ul>
+<h1>Menu Scene Description</h1>
+<ul>
+  <li>Menu Scene Constructor
+    <ul>
+      <li>Create ImageObject pacman [x: 125, y: 125, scale:1.1]</li>
+      <li>Create SpriteObject pacman2 [index: 5, x: 300, y: 0]</li>
+      <li>Create AnimatedSpriteObject pacman3 [seq: 36|37|36|38, time: 150ms, x: 350, y: 0]</li>
+      <li>Create RectangleObject [width: 32, height: 32, x: 300, y: 50]</li>
+      <li>Create CircleObject [radius: 16, x: 350, y: 50]</li>
+      <li>Create TextObject [text: &quot;Woot!&quot;, x: 300, y: 100, size: 1.5, rotation: -15, color: lime]</li>
+      <li>Create TextObject [text: &quot;Alot of text about spacebar&quot;, x: 325, y: 350, size: 2, rotation: -5]</li>
+      <li>All objects added to scene</li>
+    </ul>
+  </li>
+  <li>Menu Scene Update
+    <ul>
+      <li>If {Space} is pressed, goto Level Scene</li>
+      <li>If {T} is pressed, goto AnimationTest Scene</li>
+      <li>If {Esc} is pressed, Exit Game</li>
+    </ul>
+  </li>
+</ul>
+</body>
+</html>
