@@ -6,6 +6,7 @@ using Pacman.Engine;
 using Pacman.Engine.Helpers;
 using Microsoft.Xna.Framework.Input;
 using Pacman.Engine.Display;
+using Microsoft.Xna.Framework;
 
 namespace Pacman.Scenes
 {
@@ -19,56 +20,38 @@ namespace Pacman.Scenes
 
             Translate(30, 30);
 
-            for (var i = 0; i < 32; i++)
+            for (var i = 0; i < 8; i++)
             {
                 var sprite = new AnimatedSpriteObject("pacman");
                 _allSprites.Add(sprite);
                 AddChild(sprite);
+                sprite.Resize(0.75f);
             }
 
-            _allSprites[0].AddSequence("BlinkyUp", 0, 2, 150);
-            _allSprites[1].AddSequence("BlinkyDown", 2, 2, 150);
-            _allSprites[2].AddSequence("BlinkyLeft", 4, 2, 150);
-            _allSprites[3].AddSequence("BlinkyRight", 6, 2, 150);
+            _allSprites[0].AddSequence("BlinkyUp", 1, 8, 150);
+            _allSprites[0].Tint = Color.Red;
 
-            _allSprites[4].AddSequence("PinkyUp", 8, 2, 150);
-            _allSprites[5].AddSequence("PinkyDown", 10, 2, 150);
-            _allSprites[6].AddSequence("PinkyLeft", 12, 2, 150);
-            _allSprites[7].AddSequence("PinkyRight", 14, 2, 150);
+            _allSprites[1].AddSequence("PinkyUp", 1, 8, 150);
+            _allSprites[1].Tint = Color.Pink;
+            
+            _allSprites[2].AddSequence("InkyUp", 1, 8, 150);
+            _allSprites[2].Tint = Color.Cyan;
+            
+            _allSprites[3].AddSequence("ClydeUp", 1, 8, 150);
+            _allSprites[3].Tint = Color.Orange;
 
-            _allSprites[8].AddSequence("InkyUp", 16, 2, 150);
-            _allSprites[9].AddSequence("InkyDown", 18, 2, 150);
-            _allSprites[10].AddSequence("InkyLeft", 20, 2, 150);
-            _allSprites[11].AddSequence("InkyRight", 22, 2, 150);
+            _allSprites[4].AddSequence("Frightened", 1, 8, 150);
+            _allSprites[4].Tint = Color.Blue;
+            
+            _allSprites[5].AddSequence("PacmanChomp", new[] { 9, 10, 11, 12,13,14,15,16,15,14,13,12,11,10 }, 150);
+            _allSprites[5].Tint = Color.Yellow;
+                        
+            _allSprites[6].AddSequence("Pellet", 0, 1, 1000);
 
-            _allSprites[12].AddSequence("ClydeUp", 24, 2, 150);
-            _allSprites[13].AddSequence("ClydeDown", 26, 2, 150);
-            _allSprites[14].AddSequence("ClydeLeft", 28, 2, 150);
-            _allSprites[15].AddSequence("ClydeRight", 30, 2, 150);
-
-            _allSprites[16].AddSequence("Frightened", 32, 2, 150);
-            _allSprites[17].AddSequence("FrightenedFlash", 32, 4, 300);
-            _allSprites[18].AddSequence("FrightenedFastFlash", new[] { 32, 35 }, 150);
-
-            _allSprites[19].AddSequence("PacmanChomp", new[] { 36, 37, 36, 38 }, 150);
-            _allSprites[20].AddSequence("PacmanDie", 39, 11, 825);
-
-            _allSprites[21].AddSequence("EyesUp", 50, 1, 1000);
-            _allSprites[22].AddSequence("EyesDown", 51, 1, 1000);
-            _allSprites[23].AddSequence("EyesLeft", 52, 1, 1000);
-            _allSprites[24].AddSequence("EyesRight", 53, 1, 1000);
-
-            _allSprites[25].AddSequence("InnerWall", 54, 1, 1000);
-            _allSprites[26].AddSequence("InnerWallCorner", 55, 1, 1000);
-            _allSprites[27].AddSequence("InnterWallCorner2", 58, 1, 1000);
-            _allSprites[28].AddSequence("OuterWall", 56, 1, 1000);
-            _allSprites[29].AddSequence("OuterWallCorner", 57, 1, 1000);
-
-            _allSprites[30].AddSequence("Pellet", 60, 1, 1000);
-            _allSprites[31].AddSequence("PowerPellet", 59, 1, 1000);
+            _allSprites[7].AddSequence("PowerPellet", 17, 1, 1000);
 
             var itemsPerRow = 16;
-            var spacing = 40;
+            var spacing = 75;
             for (var i = 0; i < _allSprites.Count; i++)
                 _allSprites[i].Translate((i % itemsPerRow) * spacing, ((float)Math.Floor((decimal)i / itemsPerRow) * spacing));
         }

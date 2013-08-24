@@ -12,12 +12,13 @@ namespace Pacman.Scenes
 {
     class MenuScene : SceneObject
     {
-        public MenuScene() : base("Menu")
+        public MenuScene()
+            : base("Menu")
         {
-            Translate(20, 20);
+            Translate(32, 32);
 
             var pacman = new ImageObject("pacman");
-            pacman.Translate(125, 125);
+            pacman.Translate(125, 256);
             pacman.Resize(1.1f);
             AddChild(pacman);
 
@@ -26,8 +27,8 @@ namespace Pacman.Scenes
             AddChild(pacman2);
 
             var pacman3 = new AnimatedSpriteObject("pacman");
-            pacman3.AddSequence("Chomp", new[] { 36, 37, 36, 38, }, 150);
-            pacman3.Translate(350, 0);
+            pacman3.AddSequence("Chomp", new[] { 9, 10, 11, 12, 13, 14, 15, 16, 15, 14, 13, 12, 11, 10, }, 150);
+            pacman3.Translate(375, 0);
             AddChild(pacman3);
 
             var rect = new RectangleObject(32, 32);
@@ -35,7 +36,7 @@ namespace Pacman.Scenes
             AddChild(rect);
 
             var circ = new CircleObject(16);
-            circ.Translate(350,50);
+            circ.Translate(350, 50);
             AddChild(circ);
 
             var text = new TextObject("Woot!");
