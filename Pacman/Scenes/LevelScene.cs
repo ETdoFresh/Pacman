@@ -18,6 +18,8 @@ namespace Pacman.Scenes
         Objects.Pacman _pacman;
         DisplayObject _mouse;
         TilePosition _mouseTilePosition;
+        Target _target;
+        PlayerMovement _playerMovement;
         Random _random;
         DebugHelper _debugHelper;
 
@@ -31,7 +33,7 @@ namespace Pacman.Scenes
 
             SetupBoard();
             _pacman = new Objects.Pacman();
-            _pacman.Translate(25, 25);
+            _pacman.Translate(14 * _tileGrid.TileWidth, 23 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
             _pacman.ActivateTilePosition(_tileGrid.TileWidth, _tileGrid.TileHeight);
             _pacman.WrapAround(0, 0, _tileGrid.Width, _tileGrid.Height);
             _tileGrid.AddChild(_pacman);
@@ -43,13 +45,20 @@ namespace Pacman.Scenes
             AddChild(_mouseTilePosition);
             _tileGrid.AddChild(_mouse);
 
-            _pacman.SteerTowards(_mouse);
+            _target = new Target();
+            _tileGrid.AddChild(_target);
+            
+            _playerMovement = new PlayerMovement(_pacman, _target, _tileGrid);
+            AddChild(_playerMovement);
+
+            _pacman.SteerTowards(_target);
 
             _debugHelper = new DebugHelper();
             _debugHelper.AddLine("Self Position: ", Position);
             _debugHelper.AddLine("TileGrid Position", _tileGrid.Position);
             _debugHelper.AddLine("Pacman Position: ", _pacman.Position);
             _debugHelper.AddLine("Pacman Tile Position: ", _pacman.TilePosition);
+            _debugHelper.AddLine("Pacman Target Position: ", _target.Position);
             _debugHelper.AddLine("Mouse Position: ", _mouse.Position);
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);

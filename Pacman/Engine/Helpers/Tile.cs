@@ -32,7 +32,7 @@ namespace Pacman.Engine.Helpers
             Right = width;
             Bottom = height;
 
-            IsPassable = true;
+            _isPassable = true;
 
             if (drawRectangle)
             {

@@ -18,6 +18,8 @@ namespace Pacman.Objects
         public TilePosition TilePosition { get; set; }
         public SnapToTarget SnapToTarget { get; set; }
         public Wrap Wrap { get; set; }
+        public Direction DesiredDirection { get; set; }
+        public Direction PreviousDirection { get; set; }
 
         public Pacman()
         {
@@ -28,7 +30,10 @@ namespace Pacman.Objects
             AnimatedSprite.Tint = Color.Yellow;
             AddChild(AnimatedSprite);
 
-            Speed = new Speed(200);
+            Speed = new Speed(225);
+            DesiredDirection = new Direction(Direction.LEFT);
+            PreviousDirection = new Direction(Direction.LEFT);
+
             Velocity = new Velocity(Position);
             AddChild(Velocity);
         }

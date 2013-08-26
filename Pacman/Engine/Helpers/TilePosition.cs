@@ -17,7 +17,7 @@ namespace Pacman.Engine.Helpers
         public int TileWidth { get; set; }
         public int TileHeight { get; set; }
         public Vector2 Vector { get { return new Vector2(X, Y); } }
-        
+
         public TilePosition(Position position, int tileWidth, int tileHeight)
         {
             _oldValue = new Vector2(-123, -123);

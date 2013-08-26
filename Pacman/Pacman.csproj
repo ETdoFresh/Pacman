@@ -95,11 +95,14 @@
     <Compile Include="Engine\Display\Stage.cs" />
     <Compile Include="Engine\Display\TextObject.cs" />
     <Compile Include="Engine\TextureAtlasReader.cs" />
+    <Compile Include="Objects\Direction.cs" />
     <Compile Include="Objects\ISteer.cs" />
     <Compile Include="Objects\Pacman.cs" />
+    <Compile Include="Objects\PlayerMovement.cs" />
     <Compile Include="Objects\SnapToTarget.cs" />
     <Compile Include="Objects\Steering.cs" />
     <Compile Include="Objects\SteerTarget.cs" />
+    <Compile Include="Objects\Target.cs" />
     <Compile Include="Objects\Wrap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
