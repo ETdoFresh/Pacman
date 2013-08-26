@@ -12,48 +12,93 @@ namespace Pacman.Scenes
 {
     class AnimationTest : SceneObject
     {
-        List<AnimatedSpriteObject> _allSprites;
+        List<DisplayObject> _allSprites;
         public AnimationTest()
             : base("AnimationTest")
         {
-            _allSprites = new List<AnimatedSpriteObject>();
+            _allSprites = new List<DisplayObject>();
 
-            Translate(30, 30);
+            Translate(35, 35);
 
-            for (var i = 0; i < 8; i++)
+            for (var i = 0; i < 4; i++)
             {
-                var sprite = new AnimatedSpriteObject("pacman");
-                _allSprites.Add(sprite);
-                AddChild(sprite);
-                sprite.Resize(0.75f);
+                GroupObject ghostGroup = new GroupObject();
+
+                ghostGroup.AddChild(new AnimatedSpriteObject("pacman"));
+
+                AnimatedSpriteObject eyes = new AnimatedSpriteObject("pacman");
+                eyes.AddSequence("Eyes", 16, 5, 5000);
+                ghostGroup.AddChild(eyes);
+
+                AnimatedSpriteObject pupils = new AnimatedSpriteObject("pacman");
+                pupils.AddSequence("Pupils", 21, 5, 5000);
+                pupils.Tint = new Color(60, 87, 167);
+                ghostGroup.AddChild(pupils);
+
+                _allSprites.Add(ghostGroup);
             }
 
-            _allSprites[0].AddSequence("BlinkyUp", 1, 8, 150);
-            _allSprites[0].Tint = Color.Red;
+            var blinky = (_allSprites[0] as GroupObject)[0] as AnimatedSpriteObject;
+            var pinky = (_allSprites[1] as GroupObject)[0] as AnimatedSpriteObject;
+            var inky = (_allSprites[2] as GroupObject)[0] as AnimatedSpriteObject;
+            var clyde = (_allSprites[3] as GroupObject)[0] as AnimatedSpriteObject;
 
-            _allSprites[1].AddSequence("PinkyUp", 1, 8, 150);
-            _allSprites[1].Tint = Color.Pink;
-            
-            _allSprites[2].AddSequence("InkyUp", 1, 8, 150);
-            _allSprites[2].Tint = Color.Cyan;
-            
-            _allSprites[3].AddSequence("ClydeUp", 1, 8, 150);
-            _allSprites[3].Tint = Color.Orange;
+            blinky.AddSequence("BlinkyUp", 8, 8, 250);
+            blinky.Tint = Color.Red;
 
-            _allSprites[4].AddSequence("Frightened", 1, 8, 150);
-            _allSprites[4].Tint = Color.Blue;
-            
-            _allSprites[5].AddSequence("PacmanChomp", new[] { 9, 10, 11, 12,13,14,15,16,15,14,13,12,11,10 }, 150);
-            _allSprites[5].Tint = Color.Yellow;
-                        
-            _allSprites[6].AddSequence("Pellet", 0, 1, 1000);
+            pinky.AddSequence("PinkyUp", 8, 8, 250);
+            pinky.Tint = Color.Pink;
 
-            _allSprites[7].AddSequence("PowerPellet", 17, 1, 1000);
+            inky.AddSequence("InkyUp", 8, 8, 250);
+            inky.Tint = Color.Cyan;
+
+            clyde.AddSequence("ClydeUp", 8, 8, 250);
+            clyde.Tint = Color.Orange;
+
+
+            var frightenedGroup = new GroupObject();
+            var frightenedGhost = new AnimatedSpriteObject("pacman");
+            var frightenedEyes = new SpriteObject("pacman", 28);
+            frightenedGhost.AddSequence("Frightened", 8, 8, 250);
+            frightenedGhost.Tint = new Color(60, 87, 167);
+            frightenedEyes.Tint = new Color(255, 207, 50);
+            frightenedGroup.AddChild(frightenedGhost);
+            frightenedGroup.AddChild(frightenedEyes);
+
+            var frightenedGroup1 = new GroupObject();
+            var frightenedGhost1 = new AnimatedSpriteObject("pacman");
+            var frightenedEyes1 = new SpriteObject("pacman", 28);
+            frightenedGhost1.AddSequence("Frightened", 8, 8, 250);
+            frightenedGhost1.Tint = Color.White;
+            frightenedEyes1.Tint = Color.Red;
+            frightenedGroup1.AddChild(frightenedGhost1);
+            frightenedGroup1.AddChild(frightenedEyes1);
+            
+            var pacman = new AnimatedSpriteObject("pacman");
+            pacman.AddSequence("PacmanChomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 250);
+            pacman.Tint = Color.Yellow;
+
+            var pellet = new AnimatedSpriteObject("pacman");
+            pellet.AddSequence("Pellet", 26, 1, 10000);
+            pellet.Tint = new Color(255, 225, 200);
+
+            var powerPellet = new AnimatedSpriteObject("pacman");
+            powerPellet.AddSequence("PowerPellet", 27, 1, 10000);
+
+            _allSprites.Add(frightenedGroup);
+            _allSprites.Add(frightenedGroup1);
+            _allSprites.Add(pacman);
+            _allSprites.Add(pellet);
+            _allSprites.Add(powerPellet);
 
             var itemsPerRow = 16;
-            var spacing = 75;
+            var spacing = 70;
             for (var i = 0; i < _allSprites.Count; i++)
+            {
+                AddChild(_allSprites[i]);
                 _allSprites[i].Translate((i % itemsPerRow) * spacing, ((float)Math.Floor((decimal)i / itemsPerRow) * spacing));
+                //_allSprites[i].Resize(0.5f);
+            }
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)

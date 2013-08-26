@@ -22,12 +22,13 @@ namespace Pacman.Objects
         public Pacman()
         {
             AnimatedSprite = new AnimatedSpriteObject("pacman");
-            AnimatedSprite.AddSequence("Chomp", new[] { 36, 37, 36, 38 }, 150);
-            AnimatedSprite.AddSequence("Die", 39, 11, 1000);
+            AnimatedSprite.AddSequence("Chomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 200);
+            AnimatedSprite.AddSequence("Die", 0, 11, 1000);
             AnimatedSprite.SetSequence("Chomp");
+            AnimatedSprite.Tint = Color.Yellow;
             AddChild(AnimatedSprite);
 
-            Speed = new Speed(100);
+            Speed = new Speed(200);
             Velocity = new Velocity(Position);
             AddChild(Velocity);
         }

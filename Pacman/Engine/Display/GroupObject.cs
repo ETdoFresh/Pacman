@@ -15,6 +15,11 @@ namespace Pacman.Engine.Display
             Children = new List<GameObject>();
         }
 
+        public GameObject this[int index]
+        {
+            get { return Children[index]; }
+        }
+
         public override void Initialize()
         {
             base.Initialize();
@@ -42,17 +47,19 @@ namespace Pacman.Engine.Display
                     child.Draw(gameTime);
         }
 
-        public void AddChild(GameObject child)
+        public GameObject AddChild(GameObject child)
         {
             Children.Remove(child);
             Children.Add(child);
             child.Parent = this;
+            return child;
         }
 
-        public void RemoveChild(GameObject child)
+        public GameObject RemoveChild(GameObject child)
         {
             Children.Remove(child);
             child.Parent = this;
+            return child;
         }
     }
 }

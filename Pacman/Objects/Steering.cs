@@ -38,7 +38,7 @@ namespace Pacman.Objects
             {
                 steeringOutput.velocity.Normalize();
                 steeringOutput.velocity *= _character.Speed.Value;
-                steeringOutput.orientation = (float)Math.Atan2(-steeringOutput.velocity.Y, -steeringOutput.velocity.X);
+                steeringOutput.orientation = (float)Math.Atan2(steeringOutput.velocity.Y, steeringOutput.velocity.X);
             }
             else
             {

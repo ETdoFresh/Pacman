@@ -17,15 +17,18 @@ namespace Pacman.Engine.Helpers
 
         static private MouseState _previousMouseState;
         static private MouseState _currentMouseState;
+        static private Position _mousePosition;
 
         static public float MouseX { get { return _currentMouseState.X; } }
         static public float MouseY { get { return _currentMouseState.Y; } }
         static public Vector2 MousePos { get { return new Vector2(_currentMouseState.X, _currentMouseState.Y); } }
+        static public Position MousePosition { get { return _mousePosition; } }
 
         static InputHelper()
         {
             _currentKeyboardState = Keyboard.GetState();
             _currentMouseState = Mouse.GetState();
+            _mousePosition = new Position(MousePos);
         }
 
         static public void Update()
@@ -34,6 +37,7 @@ namespace Pacman.Engine.Helpers
             _currentKeyboardState = Keyboard.GetState();
             _previousMouseState = _currentMouseState;
             _currentMouseState = Mouse.GetState();
+            _mousePosition.Value = MousePos;
         }
 
         static public InputState GetInputState(Keys key)

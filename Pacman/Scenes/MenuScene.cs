@@ -18,29 +18,29 @@ namespace Pacman.Scenes
             Translate(32, 32);
 
             var pacman = new ImageObject("pacman");
-            pacman.Translate(125, 256);
+            pacman.Translate(256, 256);
             pacman.Resize(1.1f);
             AddChild(pacman);
 
-            var pacman2 = new SpriteObject("pacman", 5);
-            pacman2.Translate(300, 0);
+            var pacman2 = new SpriteObject("pacman", 8);
+            pacman2.Translate(550, 0);
             AddChild(pacman2);
 
             var pacman3 = new AnimatedSpriteObject("pacman");
-            pacman3.AddSequence("Chomp", new[] { 9, 10, 11, 12, 13, 14, 15, 16, 15, 14, 13, 12, 11, 10, }, 150);
-            pacman3.Translate(375, 0);
+            pacman3.AddSequence("Chomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 500);
+            pacman3.Translate(625, 0);
             AddChild(pacman3);
 
             var rect = new RectangleObject(32, 32);
-            rect.Translate(300, 50);
+            rect.Translate(550, 50);
             AddChild(rect);
 
             var circ = new CircleObject(16);
-            circ.Translate(350, 50);
+            circ.Translate(600, 50);
             AddChild(circ);
 
             var text = new TextObject("Woot!");
-            text.Translate(300, 100);
+            text.Translate(550, 100);
             text.Resize(1.5f);
             text.Rotate(-15);
             text.Tint = Color.Lime;

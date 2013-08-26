@@ -25,7 +25,8 @@ namespace Pacman.Scenes
             : base("Level")
         {
             _random = new Random();
-            _tileGrid = new TileGrid(outerWallData.GetLength(1), outerWallData.GetLength(0), 15, 15);
+            _tileGrid = new TileGrid(outerWallData.GetLength(1), outerWallData.GetLength(0), 32, 32);
+            _tileGrid.Resize(0.48f);
             AddChild(_tileGrid);
 
             SetupBoard();
@@ -42,19 +43,24 @@ namespace Pacman.Scenes
             AddChild(_mouseTilePosition);
             _tileGrid.AddChild(_mouse);
 
+            _pacman.SteerTowards(_mouse);
+
             _debugHelper = new DebugHelper();
+            _debugHelper.AddLine("Self Position: ", Position);
+            _debugHelper.AddLine("TileGrid Position", _tileGrid.Position);
             _debugHelper.AddLine("Pacman Position: ", _pacman.Position);
             _debugHelper.AddLine("Pacman Tile Position: ", _pacman.TilePosition);
             _debugHelper.AddLine("Mouse Position: ", _mouse.Position);
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
+            _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);
             AddChild(_debugHelper);
         }
 
         public override void LoadContent()
         {
             base.LoadContent();
-            var x = Stage.GraphicsDevice.Viewport.Width / 2 - _tileGrid.Width / 2;
-            var y = Stage.GraphicsDevice.Viewport.Height / 2 - _tileGrid.Height / 2;
+            var x = Stage.GraphicsDevice.Viewport.Width / 2 - _tileGrid.ContentWidth / 2;
+            var y = Stage.GraphicsDevice.Viewport.Height / 2 - _tileGrid.ContentHeight / 2;
             _tileGrid.Translate(x, y);
         }
 
@@ -68,7 +74,7 @@ namespace Pacman.Scenes
 
             // Move _mouse object locally on mouse press and hold
             if (InputHelper.GetInputState(MouseButton.Left) == InputState.Pressed || InputHelper.GetInputState(MouseButton.Left) == InputState.Hold)
-                _mouse.Translate(InputHelper.MouseX / _tileGrid.ContentScale - _tileGrid.ContentPosition.X, InputHelper.MouseY / _tileGrid.ContentScale - _tileGrid.ContentPosition.Y);
+                _mouse.Translate((InputHelper.MouseX - _tileGrid.ContentPosition.X) / _tileGrid.ContentScale, (InputHelper.MouseY - _tileGrid.ContentPosition.Y) / _tileGrid.ContentScale);
             // When released, snap _mouse object into tile
             else if (InputHelper.GetInputState(MouseButton.Left) == InputState.Released)
                 _mouse.Translate(_mouseTilePosition.X * _mouseTilePosition.TileWidth + _mouseTilePosition.TileWidth / 2,
@@ -77,7 +83,7 @@ namespace Pacman.Scenes
 
         private void SetupBoard()
         {
-            const int indexOffset = 53;
+            const int indexOffset = 28;
             var board = new GroupObject();
             AddChild(board);
 
@@ -89,7 +95,7 @@ namespace Pacman.Scenes
                     {
                         var outerTile = new SpriteObject("pacman", outerWallData[row, column] + indexOffset);
                         outerTile.Rotate(outerWallOrientation[row, column] * 90);
-                        outerTile.Resize(1.05f);
+                        outerTile.Tint = new Color(60, 87, 167);
                         _tileGrid.Data[column, row].AddChild(outerTile);
                         _tileGrid.Data[column, row].IsPassable = false;
                     }
@@ -98,7 +104,7 @@ namespace Pacman.Scenes
                     {
                         var innerTile = new SpriteObject("pacman", innerWallData[row, column] + indexOffset);
                         innerTile.Rotate(innerWallOrientation[row, column] * 90);
-                        innerTile.Resize(1.05f);
+                        innerTile.Tint = new Color(60, 87, 167);
                         _tileGrid.Data[column, row].AddChild(innerTile);
                         _tileGrid.Data[column, row].IsPassable = false;
                     }

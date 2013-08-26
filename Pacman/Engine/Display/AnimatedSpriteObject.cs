@@ -14,7 +14,7 @@ namespace Pacman.Engine.Display
         private AnimationSequence _currentSequence;
         private Dictionary<string, AnimationSequence> _sequences;
 
-        private double _timeSinceLastFrame;
+        private double _timeOfAnimationLoop;
         private bool _isPlaying;
         private float _playSpeed;
 
@@ -56,15 +56,12 @@ namespace Pacman.Engine.Display
             {
                 var previousFrame = CurrentFrame;
 
-                _timeSinceLastFrame += gameTime.ElapsedGameTime.TotalSeconds;
+                _timeOfAnimationLoop += gameTime.ElapsedGameTime.TotalSeconds;
 
-                if (_timeSinceLastFrame > SecondsBetweenFrames())
-                {
-                    CurrentFrame++;
-                    _timeSinceLastFrame = 0;
-                }
+                CurrentFrame = (int)(Math.Floor(_timeOfAnimationLoop / SecondsBetweenFrames()));
                 if (CurrentFrame >= TotalFrames)
                 {
+                    _timeOfAnimationLoop = 0;
                     if (_currentSequence.LoopCount < 0)
                     {
                         CurrentFrame = 0;
