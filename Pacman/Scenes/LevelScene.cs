@@ -22,6 +22,7 @@ namespace Pacman.Scenes
         PlayerMovement _playerMovement;
         Random _random;
         DebugHelper _debugHelper;
+        Ghost _blinky, _pinky, _inky, _clyde;
 
         public LevelScene()
             : base("Level")
@@ -50,6 +51,22 @@ namespace Pacman.Scenes
             
             _playerMovement = new PlayerMovement(_pacman, _target, _tileGrid);
             AddChild(_playerMovement);
+
+            _blinky = new Blinky();
+            _blinky.Translate(14 * _tileGrid.TileWidth, 11 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
+            _tileGrid.AddChild(_blinky);
+
+            _pinky = new Pinky();
+            _pinky.Translate(12 * _tileGrid.TileWidth, 14 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
+            _tileGrid.AddChild(_pinky);
+
+            _inky = new Inky();
+            _inky.Translate(14 * _tileGrid.TileWidth, 14 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
+            _tileGrid.AddChild(_inky);
+
+            _clyde = new Clyde();
+            _clyde.Translate(16 * _tileGrid.TileWidth, 14 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
+            _tileGrid.AddChild(_clyde);
 
             _pacman.SteerTowards(_target);
 

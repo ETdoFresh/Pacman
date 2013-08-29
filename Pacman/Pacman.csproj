@@ -95,9 +95,14 @@
     <Compile Include="Engine\Display\Stage.cs" />
     <Compile Include="Engine\Display\TextObject.cs" />
     <Compile Include="Engine\TextureAtlasReader.cs" />
+    <Compile Include="Objects\Clyde.cs" />
     <Compile Include="Objects\Direction.cs" />
+    <Compile Include="Objects\Ghost.cs" />
+    <Compile Include="Objects\Inky.cs" />
     <Compile Include="Objects\ISteer.cs" />
+    <Compile Include="Objects\MoveTowardsPacman.cs" />
     <Compile Include="Objects\Pacman.cs" />
+    <Compile Include="Objects\Pinky.cs" />
     <Compile Include="Objects\PlayerMovement.cs" />
     <Compile Include="Objects\SnapToTarget.cs" />
     <Compile Include="Objects\Steering.cs" />
@@ -108,6 +113,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="PacmanGame.cs" />
     <Compile Include="Scenes\AnimationTest.cs" />
+    <Compile Include="Objects\Blinky.cs" />
     <Compile Include="Scenes\LevelScene.cs" />
     <Compile Include="Scenes\MenuScene.cs" />
   </ItemGroup>
