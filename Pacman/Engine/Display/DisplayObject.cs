@@ -40,6 +40,12 @@ namespace Pacman.Engine.Display
             Position.Y = y;
         }
 
+        public virtual void Translate(Position position)
+        {
+            Position.X = position.X;
+            Position.Y = position.Y;
+        }
+
         public virtual void Rotate(float degrees)
         {
             Rotation.Value = MathHelper.ToRadians(degrees);

@@ -4,9 +4,6 @@ namespace Pacman.Objects
 {
     class Pinky : Ghost
     {
-        public Pinky()
-        {
-            _body.Tint = Color.Pink;
-        }
+        public Pinky() { }
     }
 }

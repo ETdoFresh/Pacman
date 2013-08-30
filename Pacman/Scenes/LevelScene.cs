@@ -18,8 +18,6 @@ namespace Pacman.Scenes
         Objects.Pacman _pacman;
         DisplayObject _mouse;
         TilePosition _mouseTilePosition;
-        Target _target;
-        PlayerMovement _playerMovement;
         Random _random;
         DebugHelper _debugHelper;
         Ghost _blinky, _pinky, _inky, _clyde;
@@ -33,11 +31,117 @@ namespace Pacman.Scenes
             AddChild(_tileGrid);
 
             SetupBoard();
+
             _pacman = new Objects.Pacman();
-            _pacman.Translate(14 * _tileGrid.TileWidth, 23 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
-            _pacman.ActivateTilePosition(_tileGrid.TileWidth, _tileGrid.TileHeight);
-            _pacman.WrapAround(0, 0, _tileGrid.Width, _tileGrid.Height);
+            _pacman.Translate(_tileGrid.GetPosition(14.5f, 23f));
+            _pacman.TilePosition = new TilePosition(_pacman.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
+            _pacman.AnimatedSprite = new AnimatedSpriteObject("pacman");
+            _pacman.AnimatedSprite.AddSequence("Chomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 200);
+            _pacman.AnimatedSprite.AddSequence("Die", 0, 11, 1000);
+            _pacman.AnimatedSprite.SetSequence("Chomp");
+            _pacman.AnimatedSprite.Tint = Color.Yellow;
+            _pacman.Target = new Target();
+            _pacman.Speed = new Speed(225);
+            _pacman.Velocity = new Velocity(_pacman.Position);
+            _pacman.DesiredDirection = new Direction(Direction.LEFT);
+            _pacman.PreviousDirection = new Direction(Direction.LEFT);
+            _pacman.Steering = new Steering(_pacman, _pacman.Target as ISteer);
+            _pacman.Wrap = new Wrap(_pacman.Position, 0, 0, _tileGrid.Width, _tileGrid.Height);
+            _pacman.SnapToTarget = new SnapToTarget(_pacman, _pacman.Velocity, _pacman.Target);
+            _pacman.PlayerMovement = new PlayerMovement(_pacman, _pacman.Target, _tileGrid);
+            _pacman.AddChild(_pacman.TilePosition);
+            _pacman.AddChild(_pacman.AnimatedSprite);
+            _pacman.AddChild(_pacman.Velocity);
+            _pacman.AddChild(_pacman.Steering);
+            _pacman.AddChild(_pacman.Wrap);
+            _pacman.AddChild(_pacman.SnapToTarget);
+            _pacman.AddChild(_pacman.PlayerMovement);
+            _tileGrid.AddChild(_pacman.Target);
             _tileGrid.AddChild(_pacman);
+
+            _blinky = new Blinky();
+            _blinky.Translate(_tileGrid.GetPosition(13.5f, 11f));
+            _blinky.Body = new AnimatedSpriteObject("pacman");
+            _blinky.Body.AddSequence("BodyFloat", 8, 8, 250);
+            _blinky.Body.Tint = Color.Red;
+            _blinky.Eyes = new AnimatedSpriteObject("pacman");
+            _blinky.Eyes.AddSequence("Eyes", 16, 5, 5000);
+            _blinky.Pupils = new AnimatedSpriteObject("pacman");
+            _blinky.Pupils.AddSequence("Pupils", 21, 5, 5000);
+            _blinky.Pupils.Tint = new Color(60, 87, 167);
+            _blinky.Target = new Target();
+            _blinky.Target.Tint = Color.Red;
+            _blinky.Speed = new Speed(225);
+            _blinky.Velocity = new Velocity(_blinky.Position);
+            _blinky.Direction = new Direction(Direction.LEFT);
+            _blinky.AddChild(_blinky.Body);
+            _blinky.AddChild(_blinky.Eyes);
+            _blinky.AddChild(_blinky.Pupils);
+            _tileGrid.AddChild(_blinky);
+            _tileGrid.AddChild(_blinky.Target);
+
+            _pinky = new Pinky();
+            _pinky.Translate(_tileGrid.GetPosition(11.5f, 14f));
+            _pinky.Body = new AnimatedSpriteObject("pacman");
+            _pinky.Body.AddSequence("BodyFloat", 8, 8, 250);
+            _pinky.Body.Tint = Color.Pink;
+            _pinky.Eyes = new AnimatedSpriteObject("pacman");
+            _pinky.Eyes.AddSequence("Eyes", 16, 5, 5000);
+            _pinky.Pupils = new AnimatedSpriteObject("pacman");
+            _pinky.Pupils.AddSequence("Pupils", 21, 5, 5000);
+            _pinky.Pupils.Tint = new Color(60, 87, 167);
+            _pinky.Target = new Target();
+            _pinky.Target.Tint = Color.Pink;
+            _pinky.Speed = new Speed(225);
+            _pinky.Velocity = new Velocity(_pinky.Position);
+            _pinky.Direction = new Direction(Direction.LEFT);
+            _pinky.AddChild(_pinky.Body);
+            _pinky.AddChild(_pinky.Eyes);
+            _pinky.AddChild(_pinky.Pupils);
+            _tileGrid.AddChild(_pinky);
+            _tileGrid.AddChild(_pinky.Target);
+
+            _inky = new Inky();
+            _inky.Translate(_tileGrid.GetPosition(13.5f, 14f));
+            _inky.Body = new AnimatedSpriteObject("pacman");
+            _inky.Body.AddSequence("BodyFloat", 8, 8, 250);
+            _inky.Body.Tint = Color.Cyan;
+            _inky.Eyes = new AnimatedSpriteObject("pacman");
+            _inky.Eyes.AddSequence("Eyes", 16, 5, 5000);
+            _inky.Pupils = new AnimatedSpriteObject("pacman");
+            _inky.Pupils.AddSequence("Pupils", 21, 5, 5000);
+            _inky.Pupils.Tint = new Color(60, 87, 167);
+            _inky.Target = new Target();
+            _inky.Target.Tint = Color.Cyan;
+            _inky.Speed = new Speed(225);
+            _inky.Velocity = new Velocity(_inky.Position);
+            _inky.Direction = new Direction(Direction.LEFT);
+            _inky.AddChild(_inky.Body);
+            _inky.AddChild(_inky.Eyes);
+            _inky.AddChild(_inky.Pupils);
+            _tileGrid.AddChild(_inky);
+            _tileGrid.AddChild(_inky.Target);
+
+            _clyde = new Clyde();
+            _clyde.Translate(_tileGrid.GetPosition(15.5f, 14f));
+            _clyde.Body = new AnimatedSpriteObject("pacman");
+            _clyde.Body.AddSequence("BodyFloat", 8, 8, 250);
+            _clyde.Body.Tint = Color.Orange;
+            _clyde.Eyes = new AnimatedSpriteObject("pacman");
+            _clyde.Eyes.AddSequence("Eyes", 16, 5, 5000);
+            _clyde.Pupils = new AnimatedSpriteObject("pacman");
+            _clyde.Pupils.AddSequence("Pupils", 21, 5, 5000);
+            _clyde.Pupils.Tint = new Color(60, 87, 167);
+            _clyde.Target = new Target();
+            _clyde.Target.Tint = Color.Orange;
+            _clyde.Speed = new Speed(225);
+            _clyde.Velocity = new Velocity(_clyde.Position);
+            _clyde.Direction = new Direction(Direction.LEFT);
+            _clyde.AddChild(_clyde.Body);
+            _clyde.AddChild(_clyde.Eyes);
+            _clyde.AddChild(_clyde.Pupils);
+            _tileGrid.AddChild(_clyde);
+            _tileGrid.AddChild(_clyde.Target);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
@@ -46,36 +150,12 @@ namespace Pacman.Scenes
             AddChild(_mouseTilePosition);
             _tileGrid.AddChild(_mouse);
 
-            _target = new Target();
-            _tileGrid.AddChild(_target);
-            
-            _playerMovement = new PlayerMovement(_pacman, _target, _tileGrid);
-            AddChild(_playerMovement);
-
-            _blinky = new Blinky();
-            _blinky.Translate(14 * _tileGrid.TileWidth, 11 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
-            _tileGrid.AddChild(_blinky);
-
-            _pinky = new Pinky();
-            _pinky.Translate(12 * _tileGrid.TileWidth, 14 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
-            _tileGrid.AddChild(_pinky);
-
-            _inky = new Inky();
-            _inky.Translate(14 * _tileGrid.TileWidth, 14 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
-            _tileGrid.AddChild(_inky);
-
-            _clyde = new Clyde();
-            _clyde.Translate(16 * _tileGrid.TileWidth, 14 * _tileGrid.TileHeight + _tileGrid.TileHeight / 2);
-            _tileGrid.AddChild(_clyde);
-
-            _pacman.SteerTowards(_target);
-
             _debugHelper = new DebugHelper();
             _debugHelper.AddLine("Self Position: ", Position);
             _debugHelper.AddLine("TileGrid Position", _tileGrid.Position);
             _debugHelper.AddLine("Pacman Position: ", _pacman.Position);
             _debugHelper.AddLine("Pacman Tile Position: ", _pacman.TilePosition);
-            _debugHelper.AddLine("Pacman Target Position: ", _target.Position);
+            _debugHelper.AddLine("Pacman Target Position: ", _pacman.Target.Position);
             _debugHelper.AddLine("Mouse Position: ", _mouse.Position);
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);

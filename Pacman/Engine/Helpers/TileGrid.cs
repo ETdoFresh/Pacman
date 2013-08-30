@@ -37,6 +37,18 @@ namespace Pacman.Engine.Helpers
             UpdateGrid();
         }
 
+        public Position GetPosition(Vector2 tileXY)
+        {
+            return GetPosition(tileXY.X, tileXY.Y);
+        }
+
+        public Position GetPosition(float tileX, float tileY)
+        {
+            var xPosition = tileX * _tileWidth + _tileWidth / 2;
+            var yPosition = tileY * _tileHeight + _tileHeight / 2;
+            return new Position(xPosition, yPosition);
+        }
+
         private void UpdateGrid()
         {
             // Create a new grid if not created or different size
