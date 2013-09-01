@@ -13,8 +13,8 @@ namespace Pacman.Objects
         public Ghost() { }
 
         public AnimatedSpriteObject Body { get; set; }
-        public AnimatedSpriteObject Eyes { get; set; }
-        public AnimatedSpriteObject Pupils { get; set; }
+        public SpriteObject Eyes { get; set; }
+        public SpriteObject Pupils { get; set; }
         public Speed Speed { get; set; }
         public Velocity Velocity { get; set; }
         public Rotation Rotation { get; set; }
@@ -25,5 +25,6 @@ namespace Pacman.Objects
         public SnapToTarget SnapToTarget { get; set; }
         public TilePosition TilePosition { get; set; }
         public Target ImmediateTarget { get; set; }
+        public ShiftEyesToDirection ShiftEyesToDirection { get; set; }
     }
 }

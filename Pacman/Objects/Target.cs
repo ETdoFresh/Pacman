@@ -69,23 +69,23 @@ namespace Pacman.Objects
                         var test = ghostPosition + offset;
                         if (test != _ghostPrevTile)
                         {
-                            //if (SafeZoneCheck(test, currentTilePosition))
-                            //{
-                            if (test.X < 0 || _tileGrid.Data.GetLength(0) <= test.X ||
-                                test.Y < 0 || _tileGrid.Data.GetLength(1) <= test.Y ||
-                                _tileGrid.Data[(int)test.X, (int)test.Y].IsPassable)
+                            if (SafeZoneCheck(test))
                             {
-                                if (Vector2.DistanceSquared(_targetTilePosition.Vector, test)
-                                    < Vector2.DistanceSquared(_targetTilePosition.Vector, closestPosition))
+                                if (test.X < 0 || _tileGrid.Data.GetLength(0) <= test.X ||
+                                    test.Y < 0 || _tileGrid.Data.GetLength(1) <= test.Y ||
+                                    _tileGrid.Data[(int)test.X, (int)test.Y].IsPassable)
                                 {
-                                    closestPosition = test;
-                                    if (i == 0) _ghost.Direction.Value = Direction.LEFT;
-                                    else if (i == 1) _ghost.Direction.Value = Direction.RIGHT;
-                                    else if (i == 2) _ghost.Direction.Value = Direction.UP;
-                                    else if (i == 3) _ghost.Direction.Value = Direction.DOWN;
+                                    if (Vector2.DistanceSquared(_targetTilePosition.Vector, test)
+                                        < Vector2.DistanceSquared(_targetTilePosition.Vector, closestPosition))
+                                    {
+                                        closestPosition = test;
+                                        if (i == 0) _ghost.Direction.Value = Direction.LEFT;
+                                        else if (i == 1) _ghost.Direction.Value = Direction.RIGHT;
+                                        else if (i == 2) _ghost.Direction.Value = Direction.UP;
+                                        else if (i == 3) _ghost.Direction.Value = Direction.DOWN;
+                                    }
                                 }
                             }
-                            //}
                         }
                     }
 
@@ -97,6 +97,19 @@ namespace Pacman.Objects
                     ghostNewPosition.Y = ghostNewPosition.Y * _tileGrid.TileHeight + _tileGrid.TileHeight / 2;
                     _ghost.ImmediateTarget.Position.Value = ghostNewPosition;
                 }
+            }
+
+            private bool SafeZoneCheck(Vector2 destination)
+            {
+                var ghostTile = _ghost.TilePosition.Vector;
+                if (ghostTile.Y == 11 && (destination.X == 12 || destination.X == 15) && destination.Y == 10)
+                    return false;
+                if (ghostTile.Y == 23 && (destination.X == 12 || destination.X == 15) && destination.Y == 22)
+                    return false;
+                else if (ghostTile.Y == 11 && (destination.X == 13 || destination.X == 14) && destination.Y == 12)
+                    return false;
+                else
+                    return true;
             }
         }
 

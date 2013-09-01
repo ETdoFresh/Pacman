@@ -101,7 +101,6 @@
     <Compile Include="Objects\Ghost.cs" />
     <Compile Include="Objects\Inky.cs" />
     <Compile Include="Objects\ISteer.cs" />
-    <Compile Include="Objects\MoveTowardsPacman.cs" />
     <Compile Include="Objects\Pacman.cs" />
     <Compile Include="Objects\Pinky.cs" />
     <Compile Include="Objects\PlayerMovement.cs" />
@@ -117,6 +116,7 @@
     <Compile Include="Objects\Blinky.cs" />
     <Compile Include="Scenes\LevelScene.cs" />
     <Compile Include="Scenes\MenuScene.cs" />
+    <Compile Include="Objects\ShiftEyesToDirection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Game.ico" />

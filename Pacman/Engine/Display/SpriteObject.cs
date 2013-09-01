@@ -26,16 +26,24 @@ namespace Pacman.Engine.Display
         {
             base.LoadContent();
             _sourceRectangles = Content.Load<List<Rectangle>>(_sheetDefinition);
-            _sourceRectangle = _sourceRectangles[_index];
-
-            Width = _sourceRectangle.Width;
-            Height = _sourceRectangle.Height;
-            Origin = new Vector2(Width / 2, Height / 2);
+            ChangeIndex(_index);
         }
 
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch.Draw(_texture, ContentPosition, _sourceRectangle, Tint * Alpha, ContentOrientation, Origin, ContentScale, SpriteEffects.None, 0);
+        }
+
+        public void ChangeIndex(int index)
+        {
+            _index = index;
+            if (_sourceRectangles != null)
+            {
+                _sourceRectangle = _sourceRectangles[_index];
+                Width = _sourceRectangle.Width;
+                Height = _sourceRectangle.Height;
+                Origin = new Vector2(Width / 2, Height / 2);
+            }
         }
     }
 }
