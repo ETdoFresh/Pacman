@@ -74,7 +74,7 @@ namespace Pacman.Scenes
             _blinky.Pupils.AddSequence("Pupils", 21, 5, 5000);
             _blinky.Pupils.Tint = new Color(60, 87, 167);
             _blinky.Target = new Target.Blinky(_pacman);
-            _blinky.ImmediateTarget = new Target.Immediate(_blinky, _blinky.Target, _tileGrid);
+            _blinky.ImmediateTarget = new Target.Immediate(_blinky, _tileGrid);
             _blinky.Speed = new Speed(225);
             _blinky.Velocity = new Velocity() { Position = _blinky.Position, Speed = _blinky.Speed };
             _blinky.Rotation = new Rotation() { Orientation = _blinky.Orientation };
@@ -95,6 +95,8 @@ namespace Pacman.Scenes
 
             _pinky = new Pinky();
             _pinky.Translate(_tileGrid.GetPosition(11.5f, 14f));
+            _pinky.TilePosition = new TilePosition(_pinky.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
+            _pinky.Direction = new Direction(Direction.LEFT);
             _pinky.Body = new AnimatedSpriteObject("pacman");
             _pinky.Body.AddSequence("BodyFloat", 8, 8, 250);
             _pinky.Body.Tint = Color.Pink;
@@ -103,16 +105,18 @@ namespace Pacman.Scenes
             _pinky.Pupils = new AnimatedSpriteObject("pacman");
             _pinky.Pupils.AddSequence("Pupils", 21, 5, 5000);
             _pinky.Pupils.Tint = new Color(60, 87, 167);
-            _pinky.Target = new Target.Pinky();
+            _pinky.Target = new Target.Pinky(_pacman);
+            _pinky.ImmediateTarget = new Target.Immediate(_pinky, _tileGrid);
             _pinky.Speed = new Speed(225);
             _pinky.Velocity = new Velocity() { Position = _pinky.Position, Speed = _pinky.Speed };
             _pinky.Rotation = new Rotation() { Orientation = _pinky.Orientation };
-            _pinky.Direction = new Direction(Direction.LEFT);
+            _pinky.AddChild(_pinky.TilePosition);
             _pinky.AddChild(_pinky.Body);
             _pinky.AddChild(_pinky.Eyes);
             _pinky.AddChild(_pinky.Pupils);
             _tileGrid.AddChild(_pinky);
             _tileGrid.AddChild(_pinky.Target);
+            _tileGrid.AddChild(_pinky.ImmediateTarget);
 
             _inky = new Inky();
             _inky.Translate(_tileGrid.GetPosition(13.5f, 14f));
@@ -124,7 +128,7 @@ namespace Pacman.Scenes
             _inky.Pupils = new AnimatedSpriteObject("pacman");
             _inky.Pupils.AddSequence("Pupils", 21, 5, 5000);
             _inky.Pupils.Tint = new Color(60, 87, 167);
-            _inky.Target = new Target.Inky();
+            _inky.Target = new Target.Inky(_pacman, _blinky);
             _inky.Speed = new Speed(225);
             _inky.Velocity = new Velocity() { Position = _inky.Position, Speed = _inky.Speed };
             _inky.Rotation = new Rotation() { Orientation = _inky.Orientation };
@@ -145,7 +149,7 @@ namespace Pacman.Scenes
             _clyde.Pupils = new AnimatedSpriteObject("pacman");
             _clyde.Pupils.AddSequence("Pupils", 21, 5, 5000);
             _clyde.Pupils.Tint = new Color(60, 87, 167);
-            _clyde.Target = new Target.Clyde();
+            _clyde.Target = new Target.Clyde(_pacman, _clyde);
             _clyde.Speed = new Speed(225);
             _clyde.Velocity = new Velocity() { Position = _clyde.Position, Speed = _clyde.Speed };
             _clyde.Rotation = new Rotation() { Orientation = _clyde.Orientation };
@@ -172,6 +176,10 @@ namespace Pacman.Scenes
             _debugHelper.AddLine("Pacman Orientation: ", _pacman.Orientation);
             _debugHelper.AddLine("Pacman Rotation: ", _pacman.Rotation);
             _debugHelper.AddLine("Pacman Target Orientation: ", _pacman.Target.Orientation);
+            _debugHelper.AddLine("Blinky Tile Position: ", _blinky.TilePosition);
+            _debugHelper.AddLine("Blinky Target Position: ", _blinky.Target.Position);
+            _debugHelper.AddLine("Blinky Immediate Target Position: ", _blinky.ImmediateTarget.Position);
+            _debugHelper.AddLine("Blinky Direction: ", _blinky.Direction);
             _debugHelper.AddLine("Mouse Position: ", _mouse.Position);
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);

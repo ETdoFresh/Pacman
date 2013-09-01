@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Pacman.Engine.Display;
 using Microsoft.Xna.Framework;
+using Pacman.Objects;
 
 namespace Pacman.Engine.Helpers
 {
@@ -45,6 +46,8 @@ namespace Pacman.Engine.Helpers
                     output += (_objects[i] as Rotation).Value;
                 else if (_objects[i].GetType() == typeof(Orientation))
                     output += (_objects[i] as Orientation).Value;
+                else if (_objects[i].GetType() == typeof(Direction))
+                    output += (_objects[i] as Direction).Value;
 
                 output += "\n";
             }

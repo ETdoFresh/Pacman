@@ -42,5 +42,15 @@ namespace Pacman.Engine.Helpers
             X = (int)Math.Floor(_position.X / TileWidth);
             Y = (int)Math.Floor(_position.Y / TileHeight);
         }
+
+        public Vector2 VectorPositionFromTile(float tileX, float tileY)
+        {
+            var posX = tileX * TileWidth + TileWidth / 2;
+            var posY = tileY * TileHeight + TileHeight / 2;
+            return new Vector2(posX, posY);
+        }
+
+        public Vector2 VectorPositionFromTile(Vector2 tile)
+        { return VectorPositionFromTile(tile.X, tile.Y); }
     }
 }
