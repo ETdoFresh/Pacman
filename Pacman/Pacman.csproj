@@ -78,6 +78,7 @@
     <Compile Include="Engine\Display\DisplayObject.cs" />
     <Compile Include="Engine\Display\GameObject.cs" />
     <Compile Include="Engine\Display\GroupObject.cs" />
+    <Compile Include="Engine\Helpers\Orientation.cs" />
     <Compile Include="Engine\Helpers\TilePosition.cs" />
     <Compile Include="Engine\Helpers\DebugHelper.cs" />
     <Compile Include="Engine\Helpers\InputHelper.cs" />

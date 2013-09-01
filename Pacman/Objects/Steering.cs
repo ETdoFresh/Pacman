@@ -11,54 +11,102 @@ namespace Pacman.Objects
 {
     class Steering : GameObject
     {
-        public enum Type { Seek }
-
         ISteer _character;
         ISteer _target;
-        KinematicSteeringOutput steeringOutput;
-
-        public Type SteeringType { get; set; }
+        ISteerType _steerType;
+        ISteerType _rotationType;
 
         public Steering(ISteer character, DisplayObject target) : this(character, new SteerTarget(target)) { }
         public Steering(ISteer character, ISteer target)
         {
             _character = character;
             _target = target;
-            SteeringType = Type.Seek;
+            _steerType = new DynamicSeek(character, target, 100);
+            _rotationType = new DynamicLookWhereYouAreGoing(character, target, MathHelper.ToRadians(1080));
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            steeringOutput = new KinematicSteeringOutput();
-
-            steeringOutput.velocity = _target.Position.Value - _character.Position.Value;
-
-            if (steeringOutput.velocity != Vector2.Zero)
-            {
-                steeringOutput.velocity.Normalize();
-                steeringOutput.velocity *= _character.Speed.Value;
-                steeringOutput.orientation = (float)Math.Atan2(steeringOutput.velocity.Y, steeringOutput.velocity.X);
-            }
-            else
-            {
-                steeringOutput.orientation = _character.Rotation.Value;
-            }
-
-            _character.Velocity.Value = steeringOutput.velocity;
-            _character.Rotation.Value = steeringOutput.orientation;
+            _steerType.Update(gameTime);
+            _rotationType.Update(gameTime);
         }
 
-        public class SteeringOutput
+        public interface ISteerType
         {
-            public Vector2 linear = Vector2.Zero;
-            public float angular = 0;
+            void Update(GameTime gameTime);
         }
 
-        public class KinematicSteeringOutput
+        public class DynamicSeek : ISteerType
         {
-            public Vector2 velocity = Vector2.Zero;
-            public float orientation = 0;
+            ISteer _character;
+            ISteer _target;
+            float _acceleration;
+
+            public DynamicSeek(ISteer character, ISteer target, float acceleration)
+            {
+                _character = character;
+                _target = target;
+                _acceleration = acceleration;
+            }
+
+            public void Update(GameTime gameTime)
+            {
+                Vector2 velocity;
+                velocity = _target.Position.Value - _character.Position.Value;
+                if (velocity != Vector2.Zero)
+                {
+                    velocity.Normalize();
+                    velocity *= _acceleration;
+                    _character.Velocity.Value += velocity;
+                }
+            }
+        }
+
+        public class DyanmicAlign : ISteerType
+        {
+            protected ISteer _character;
+            protected ISteer _target;
+            protected float _spin;
+            protected float _timeToTarget = 0.1f;
+
+            public DyanmicAlign(ISteer character, ISteer target, float spin)
+            {
+                _character = character;
+                _target = target;
+                _spin = spin;
+            }
+
+            public virtual void Update(GameTime gameTime)
+            {
+                float sign = _target.Orientation.Value - _character.Orientation.Value;
+                float rotation = Math.Abs(sign);
+                sign = rotation / sign;
+                if (rotation > 0)
+                {
+                    rotation = Math.Min(_spin, rotation / _timeToTarget);
+                    _character.Rotation.Value = rotation * sign;
+                }
+                else
+                    _character.Rotation.Value = 0;
+            }
+        }
+
+        public class DynamicLookWhereYouAreGoing : DyanmicAlign
+        {
+            public DynamicLookWhereYouAreGoing(ISteer character, ISteer target, float spin)
+                : base(character, target, spin) { }
+
+            public override void Update(GameTime gameTime)
+            {
+                if (_character.Velocity.Value.LengthSquared() > 0)
+                {
+                    var orientation = (float)(Math.Atan2(_character.Velocity.Value.Y, _character.Velocity.Value.X));
+                    if (Math.Abs(_target.Orientation.Value - orientation) <= MathHelper.ToRadians(270))
+                        _target.Orientation.Value = orientation;
+                }
+                base.Update(gameTime);
+            }
         }
     }
 }

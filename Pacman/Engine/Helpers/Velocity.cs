@@ -13,20 +13,23 @@ namespace Pacman.Engine.Helpers
 
         public Vector2 Value { get { return _velocity; } set { _velocity = value; } }
         public Position Position { get; set; }
+        public Speed Speed { get; set; }
 
-        public Velocity() : this(Vector2.Zero, new Position()) { }
-        public Velocity(Vector2 value) : this(value, new Position()) { }
-        public Velocity(Position position) : this(Vector2.Zero, position) { }
-        public Velocity(Vector2 value, Position position)
+        public Velocity() 
         {
-            Value = value;
-            Position = position;
+            Position = new Position();
+            Speed = new Speed();
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            Position.Value += Value * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_velocity.Length() > Speed.Value)
+            {
+                _velocity.Normalize();
+                _velocity *= Speed.Value;
+            }
+            Position.Value += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

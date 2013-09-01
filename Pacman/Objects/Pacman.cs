@@ -16,6 +16,7 @@ namespace Pacman.Objects
         public AnimatedSpriteObject AnimatedSprite { get; set; }
         public Speed Speed { get; set; }
         public Velocity Velocity { get; set; }
+        public Rotation Rotation { get; set; }
         public Steering Steering { get; set; }
         public TilePosition TilePosition { get; set; }
         public SnapToTarget SnapToTarget { get; set; }

@@ -43,7 +43,7 @@ namespace Pacman.Engine.Display
 
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch.DrawString(_spriteFont, _text, ContentPosition, Tint * Alpha, ContentRotation, Origin, ContentScale, SpriteEffects.None, 0);
+            SpriteBatch.DrawString(_spriteFont, _text, ContentPosition, Tint * Alpha, ContentOrientation, Origin, ContentScale, SpriteEffects.None, 0);
         }
 
     }

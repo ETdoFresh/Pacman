@@ -41,6 +41,10 @@ namespace Pacman.Engine.Helpers
                     output += (_objects[i] as Position).Value;
                 else if (_objects[i].GetType() == typeof(TilePosition))
                     output += (_objects[i] as TilePosition).Vector;
+                else if (_objects[i].GetType() == typeof(Rotation))
+                    output += (_objects[i] as Rotation).Value;
+                else if (_objects[i].GetType() == typeof(Orientation))
+                    output += (_objects[i] as Orientation).Value;
 
                 output += "\n";
             }

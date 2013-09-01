@@ -10,7 +10,7 @@ namespace Pacman.Engine.Display
     class DisplayObject : GameObject
     {
         public Position Position { get; set; }
-        public Rotation Rotation { get; set; }
+        public Orientation Orientation { get; set; }
         public Scale Scale { get; set; }
         public Vector2 Origin { get; protected set; }
 
@@ -20,7 +20,7 @@ namespace Pacman.Engine.Display
         public virtual float Height { get; set; }
 
         public Vector2 ContentPosition { get { return Parent != null ? Parent.ContentPosition + Position.Value * Parent.ContentScale : Position.Value; } }
-        public float ContentRotation { get { return Parent != null ? Parent.ContentRotation + Rotation.Value : Rotation.Value; } }
+        public float ContentOrientation { get { return Parent != null ? Parent.ContentOrientation + Orientation.Value : Orientation.Value; } }
         public float ContentScale { get { return Parent != null ? Parent.ContentScale * Scale.Value : Scale.Value; } }
         public float ContentWidth { get { return Width * ContentScale; } }
         public float ContentHeight { get { return Height * ContentScale; } }
@@ -28,7 +28,7 @@ namespace Pacman.Engine.Display
         public DisplayObject() : base()
         {
             Position = new Position();
-            Rotation = new Rotation();
+            Orientation = new Orientation();
             Scale = new Scale(1);
             Alpha = 1;
             Tint = Color.White;
@@ -48,7 +48,7 @@ namespace Pacman.Engine.Display
 
         public virtual void Rotate(float degrees)
         {
-            Rotation.Value = MathHelper.ToRadians(degrees);
+            Orientation.Value = MathHelper.ToRadians(degrees);
         }
 
         public virtual void Resize(float value)
