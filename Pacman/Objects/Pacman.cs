@@ -25,5 +25,6 @@ namespace Pacman.Objects
         public Direction PreviousDirection { get; set; }
         public PlayerMovement PlayerMovement { get; set; }
         public Target Target { get; set; }
+        public PelletEater PelletEater { get; set; }
     }
 }

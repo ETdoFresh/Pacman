@@ -10,6 +10,12 @@ namespace Pacman.Objects
 {
     class Ghost : GroupObject, ISteer
     {
+        public enum States { CHASE, SCATTER, FRIGHTENED, HOME, LEAVEHOME }
+
+        public delegate void GhostHandler(Ghost ghost);
+        public event GhostHandler StateChange = delegate { };
+        private States _state;
+
         public Ghost() { }
 
         public AnimatedSpriteObject Body { get; set; }
@@ -26,5 +32,12 @@ namespace Pacman.Objects
         public TilePosition TilePosition { get; set; }
         public Target ImmediateTarget { get; set; }
         public ShiftEyesToDirection ShiftEyesToDirection { get; set; }
+        public LeaveHome LeaveHome { get; set; }
+        
+        public States State
+        {
+            get { return _state; }
+            set { _state = value; StateChange(this); }
+        }
     }
 }

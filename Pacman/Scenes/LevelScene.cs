@@ -21,6 +21,7 @@ namespace Pacman.Scenes
         Random _random;
         DebugHelper _debugHelper;
         Ghost _blinky, _pinky, _inky, _clyde;
+        List<Pellet> _pellets;
 
         public LevelScene()
             : base("Level")
@@ -30,6 +31,7 @@ namespace Pacman.Scenes
             AddChild(_tileGrid);
 
             SetupBoard();
+            GeneratePellets();
 
             _pacman = new Objects.Pacman();
             _pacman.Translate(_tileGrid.GetPosition(14.5f, 23f));
@@ -49,6 +51,7 @@ namespace Pacman.Scenes
             _pacman.Wrap = new Wrap(_pacman.Position, 0, 0, _tileGrid.Width, _tileGrid.Height);
             _pacman.SnapToTarget = new SnapToTarget(_pacman, _pacman.Velocity, _pacman.Target);
             _pacman.PlayerMovement = new PlayerMovement(_pacman, _pacman.Target, _tileGrid);
+            _pacman.PelletEater = new PelletEater(_pacman, _pellets, _tileGrid);
             _pacman.AddChild(_pacman.TilePosition);
             _pacman.AddChild(_pacman.AnimatedSprite);
             _pacman.AddChild(_pacman.Velocity);
@@ -57,6 +60,7 @@ namespace Pacman.Scenes
             _pacman.AddChild(_pacman.Wrap);
             _pacman.AddChild(_pacman.SnapToTarget);
             _pacman.AddChild(_pacman.PlayerMovement);
+            _pacman.AddChild(_pacman.PelletEater);
             _tileGrid.AddChild(_pacman.Target);
             _tileGrid.AddChild(_pacman);
 
@@ -91,6 +95,7 @@ namespace Pacman.Scenes
             _tileGrid.AddChild(_blinky);
             _tileGrid.AddChild(_blinky.Target);
             _tileGrid.AddChild(_blinky.ImmediateTarget);
+            _blinky.StateChange += OnGhostStateChange;
 
             _pinky = new Pinky();
             _pinky.Translate(_tileGrid.GetPosition(11.5f, 14f));
@@ -238,6 +243,63 @@ namespace Pacman.Scenes
                         _tileGrid.Data[column, row].IsPassable = false;
                     }
                 }
+            }
+        }
+
+        private void GeneratePellets()
+        {
+            _pellets = new List<Pellet>();
+            for (var row = 0; row < pelletsData.GetLength(1); row++)
+            {
+                for (var column = 0; column < pelletsData.GetLength(0); column++)
+                {
+                    if (pelletsData[column, row] == 1)
+                    {
+                        var pellet = new Pellet();
+                        pellet.Translate(_tileGrid.GetPosition(row, column));
+                        pellet.TilePosition = new TilePosition(pellet.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
+                        pellet.SpriteObject = new SpriteObject("pacman", 26);
+                        pellet.AddChild(pellet.TilePosition);
+                        pellet.AddChild(pellet.SpriteObject);
+                        _tileGrid.AddChild(pellet);
+                        _pellets.Add(pellet);
+                    }
+                    else if (pelletsData[column, row] == 2)
+                    {
+                        var pellet = new Pellet();
+                        pellet.Translate(_tileGrid.GetPosition(row, column));
+                        pellet.TilePosition = new TilePosition(pellet.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
+                        pellet.SpriteObject = new SpriteObject("pacman", 27);
+                        pellet.AddChild(pellet.TilePosition);
+                        pellet.AddChild(pellet.SpriteObject);
+                        _tileGrid.AddChild(pellet);
+                        _pellets.Add(pellet);
+                    }
+                }
+            }
+        }
+
+        private void OnGhostStateChange(Ghost ghost)
+        {
+            if (ghost.TilePosition == null)
+                ghost.TilePosition = new TilePosition(ghost.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
+            if (ghost.Direction == null)
+                ghost.Direction = new Direction(Direction.LEFT);
+            if (ghost.Body == null)
+            {
+                ghost.Body = new AnimatedSpriteObject("pacman");
+                ghost.Body.AddSequence("BodyFloat", 8, 8, 250);
+            }
+
+
+            if (ghost.State == Ghost.States.HOME)
+            {
+                if (ghost == _blinky)
+                    ghost.State = Ghost.States.SCATTER;
+            }
+            else if (ghost.State == Ghost.States.LEAVEHOME)
+            {
+                ghost.LeaveHome = new LeaveHome(ghost);
             }
         }
 

@@ -33,7 +33,10 @@ namespace Pacman.Engine.Display
         {
             base.Update(gameTime);
 
-            foreach (var child in Children)
+            // Copy List in case list gets modified outside of loop
+            var CopyOfChildren = new List<GameObject>(Children);
+
+            foreach (var child in CopyOfChildren)
                 if(child.Enabled)
                     child.Update(gameTime);
         }
