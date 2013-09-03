@@ -10,10 +10,10 @@ namespace Pacman.Objects
     {
         public enum DirectionValue { LEFT, RIGHT, UP, DOWN }
 
-        public static DirectionValue LEFT { get { return DirectionValue.LEFT; } }
-        public static DirectionValue RIGHT { get { return DirectionValue.RIGHT; } }
-        public static DirectionValue UP { get { return DirectionValue.UP; } }
-        public static DirectionValue DOWN { get { return DirectionValue.DOWN; } }
+        public const DirectionValue LEFT = DirectionValue.LEFT;
+        public const DirectionValue RIGHT = DirectionValue.RIGHT;
+        public const DirectionValue UP = DirectionValue.UP;
+        public const DirectionValue DOWN = DirectionValue.DOWN;
 
         private DirectionValue _value;
 

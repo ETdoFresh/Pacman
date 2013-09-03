@@ -50,10 +50,10 @@ namespace Pacman.Engine.Display
         public virtual void Update(GameTime gameTime) { }
         public virtual void Draw(GameTime gameTime) { }
 
-        public void RemoveSelf()
+        public virtual void RemoveSelf()
         {
             if (Parent != null)
-                Parent.RemoveChild(this);
+                Parent.RemoveChild(this, false);
         }
     }
 }

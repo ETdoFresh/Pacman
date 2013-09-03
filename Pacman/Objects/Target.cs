@@ -33,7 +33,7 @@ namespace Pacman.Objects
 
         internal class Immediate : Target
         {
-            static List<Vector2> offsets = new List<Vector2> { new Vector2(-1, 0), new Vector2(1, 0), new Vector2(0, -1), new Vector2(0, 1) };
+            static List<Vector2> offsets = new List<Vector2> { new Vector2(0, -1), new Vector2(-1, 0), new Vector2(0, 1), new Vector2(1, 0) };
 
             Ghost _ghost;
             TileGrid _tileGrid;
@@ -79,10 +79,10 @@ namespace Pacman.Objects
                                         < Vector2.DistanceSquared(_targetTilePosition.Vector, closestPosition))
                                     {
                                         closestPosition = test;
-                                        if (i == 0) _ghost.Direction.Value = Direction.LEFT;
-                                        else if (i == 1) _ghost.Direction.Value = Direction.RIGHT;
-                                        else if (i == 2) _ghost.Direction.Value = Direction.UP;
-                                        else if (i == 3) _ghost.Direction.Value = Direction.DOWN;
+                                        if (i == 0) _ghost.Direction.Value = Direction.UP;
+                                        else if (i == 1) _ghost.Direction.Value = Direction.LEFT;
+                                        else if (i == 2) _ghost.Direction.Value = Direction.DOWN;
+                                        else if (i == 3) _ghost.Direction.Value = Direction.RIGHT;
                                     }
                                 }
                             }
@@ -177,8 +177,9 @@ namespace Pacman.Objects
             {
                 base.Update(gameTime);
                 var distance = Vector2.Distance(_clyde.Position.Value, _pacman.Position.Value);
-                if (distance < _pacman.TilePosition.TileWidth * 8)
-                    Position.Value = _pacman.TilePosition.VectorPositionFromTile(0, 30);
+                var tileWidth = _pacman.TilePosition.TileWidth;
+                if (distance < tileWidth * 8)
+                    Position.Value = new Vector2(tileWidth / 2, 30 * tileWidth + tileWidth / 2);
                 else
                     Position.Value = _pacman.Position.Value;
             }

@@ -37,7 +37,7 @@ namespace Pacman.Engine.Display
             var CopyOfChildren = new List<GameObject>(Children);
 
             foreach (var child in CopyOfChildren)
-                if(child.Enabled)
+                if (child.Enabled)
                     child.Update(gameTime);
         }
 
@@ -58,11 +58,15 @@ namespace Pacman.Engine.Display
             return child;
         }
 
-        public GameObject RemoveChild(GameObject child)
+        public GameObject RemoveChild(GameObject child, bool RunRemoveSelf)
         {
             Children.Remove(child);
-            child.Parent = this;
+            child.Parent = null;
+            if (RunRemoveSelf) child.RemoveSelf();
             return child;
         }
+        
+        public GameObject RemoveChild(GameObject child)
+        { return RemoveChild(child, true); }
     }
 }

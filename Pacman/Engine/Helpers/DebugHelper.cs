@@ -48,6 +48,8 @@ namespace Pacman.Engine.Helpers
                     output += (_objects[i] as Orientation).Value;
                 else if (_objects[i].GetType() == typeof(Direction))
                     output += (_objects[i] as Direction).Value;
+                else if (_objects[i].GetType() == typeof(Velocity))
+                    output += (_objects[i] as Velocity).Speed.Value;
 
                 output += "\n";
             }

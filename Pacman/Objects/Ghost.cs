@@ -18,6 +18,25 @@ namespace Pacman.Objects
 
         public Ghost() { }
 
+        public override void RemoveSelf()
+        {
+            if (StateChange != null) StateChange = null;
+            if (Body != null) Body.RemoveSelf();
+            if (Eyes != null) Eyes.RemoveSelf();
+            if (Pupils != null) Pupils.RemoveSelf();
+            if (Velocity != null) Velocity.RemoveSelf();
+            if (Rotation != null) Rotation.RemoveSelf();
+            if (Target != null) Target.RemoveSelf();
+            if (Steering != null) Steering.RemoveSelf();
+            if (Wrap != null) Wrap.RemoveSelf();
+            if (SnapToTarget != null) SnapToTarget.RemoveSelf();
+            if (TilePosition != null) TilePosition.RemoveSelf();
+            if (ImmediateTarget != null) ImmediateTarget.RemoveSelf();
+            if (ShiftEyesToDirection != null) ShiftEyesToDirection.RemoveSelf();
+            if (LeaveHome != null) LeaveHome.RemoveSelf();
+            base.RemoveSelf();
+        }
+
         public AnimatedSpriteObject Body { get; set; }
         public SpriteObject Eyes { get; set; }
         public SpriteObject Pupils { get; set; }

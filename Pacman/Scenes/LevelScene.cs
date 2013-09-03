@@ -23,6 +23,8 @@ namespace Pacman.Scenes
         Ghost _blinky, _pinky, _inky, _clyde;
         List<Pellet> _pellets;
 
+        const float MAXSPEED = 225;
+
         public LevelScene()
             : base("Level")
         {
@@ -34,7 +36,9 @@ namespace Pacman.Scenes
             GeneratePellets();
 
             _pacman = new Objects.Pacman();
-            _pacman.Translate(_tileGrid.GetPosition(14.5f, 23f));
+            _pacman.Speed = new Speed(MAXSPEED, 1);
+            _pacman.StartPosition = _tileGrid.GetPosition(14.5f, 23f);
+            _pacman.Position = _pacman.StartPosition.Copy();
             _pacman.TilePosition = new TilePosition(_pacman.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
             _pacman.AnimatedSprite = new AnimatedSpriteObject("pacman");
             _pacman.AnimatedSprite.AddSequence("Chomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 200);
@@ -42,7 +46,6 @@ namespace Pacman.Scenes
             _pacman.AnimatedSprite.SetSequence("Chomp");
             _pacman.AnimatedSprite.Tint = Color.Yellow;
             _pacman.Target = new Target.Pacman();
-            _pacman.Speed = new Speed(225);
             _pacman.Velocity = new Velocity() { Position = _pacman.Position, Speed = _pacman.Speed };
             _pacman.Rotation = new Rotation() { Orientation = _pacman.Orientation };
             _pacman.DesiredDirection = new Direction(Direction.LEFT);
@@ -173,6 +176,7 @@ namespace Pacman.Scenes
             _debugHelper.AddLine("Pacman Target Position: ", _pacman.Target.Position);
             _debugHelper.AddLine("Pacman Orientation: ", _pacman.Orientation);
             _debugHelper.AddLine("Pacman Rotation: ", _pacman.Rotation);
+            _debugHelper.AddLine("Pacman Velocity: ", _pacman.Velocity);
             _debugHelper.AddLine("Pacman Target Orientation: ", _pacman.Target.Orientation);
             _debugHelper.AddLine("Blinky Tile Position: ", _blinky.TilePosition);
             _debugHelper.AddLine("Blinky Target Position: ", _blinky.Target.Position);

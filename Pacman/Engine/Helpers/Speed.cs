@@ -9,12 +9,15 @@ namespace Pacman.Engine.Helpers
     {
         float _speed;
 
-        public float Value { get { return _speed; } set { _speed = value; } }
+        public float Factor { get; set; }
+        public float Value { get { return Factor * _speed; } set { _speed = value; } }
 
-        public Speed() { }
-        public Speed(float value)
+        public Speed() : this(0, 1) { }
+        public Speed(float value) : this(value, 1) { }
+        public Speed(float value, float factor)
         {
             Value = value;
+            Factor = factor;
         }
     }
 }

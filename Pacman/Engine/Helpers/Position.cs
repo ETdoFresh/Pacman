@@ -26,5 +26,10 @@ namespace Pacman.Engine.Helpers
             X = x;
             Y = y;
         }
+
+        public Position Copy()
+        {
+            return new Position(Value);
+        }
     }
 }
