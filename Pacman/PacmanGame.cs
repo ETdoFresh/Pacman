@@ -25,19 +25,19 @@ namespace Pacman
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            _stage = new Stage(this);
-            _stage.GotoScene(new MenuScene());
-            _stage.LoadScene(new AnimationTest());
-            _stage.LoadScene(new LevelScene());
+            Stage.Create(this);
+            Stage.LoadScene(new AnimationTest());
+            Stage.LoadScene(new LevelScene());
+            Stage.GotoScene(new MenuScene());
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            GameObject.SpriteBatch.Begin();
+            DisplayObject.SpriteBatch.Begin();
             base.Draw(gameTime);
-            GameObject.SpriteBatch.End();
+            DisplayObject.SpriteBatch.End();
         }
     }
 }

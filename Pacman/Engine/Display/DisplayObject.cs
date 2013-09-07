@@ -4,11 +4,17 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Pacman.Engine.Helpers;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Pacman.Engine.Display
 {
     class DisplayObject : GameObject
     {
+        static public ContentManager Content { get; set; }
+        static public SpriteBatch SpriteBatch { get; set; }
+
+        public DisplayObject DisplayParent { get; set; }
         public Position Position { get; set; }
         public Orientation Orientation { get; set; }
         public Scale Scale { get; set; }
@@ -19,9 +25,9 @@ namespace Pacman.Engine.Display
         public virtual float Width { get; set; }
         public virtual float Height { get; set; }
 
-        public Vector2 ContentPosition { get { return Parent != null ? Parent.ContentPosition + Position.Value * Parent.ContentScale : Position.Value; } }
-        public float ContentOrientation { get { return Parent != null ? Parent.ContentOrientation + Orientation.Value : Orientation.Value; } }
-        public float ContentScale { get { return Parent != null ? Parent.ContentScale * Scale.Value : Scale.Value; } }
+        public Vector2 ContentPosition { get { return DisplayParent != null ? DisplayParent.ContentPosition + Position.Value * DisplayParent.ContentScale : Position.Value; } }
+        public float ContentOrientation { get { return DisplayParent != null ? DisplayParent.ContentOrientation + Orientation.Value : Orientation.Value; } }
+        public float ContentScale { get { return DisplayParent != null ? DisplayParent.ContentScale * Scale.Value : Scale.Value; } }
         public float ContentWidth { get { return Width * ContentScale; } }
         public float ContentHeight { get { return Height * ContentScale; } }
 
@@ -32,6 +38,20 @@ namespace Pacman.Engine.Display
             Scale = new Scale(1);
             Alpha = 1;
             Tint = Color.White;
+        }
+
+        public override GameObject AddComponent(GameObject component)
+        {
+            if (component is DisplayObject)
+                (component as DisplayObject).DisplayParent = this;
+            return base.AddComponent(component);
+        }
+
+        public override GameObject RemoveComponent(GameObject component, bool RunRemoveSelf)
+        {
+            if (component is DisplayObject)
+                (component as DisplayObject).DisplayParent = null;
+            return base.RemoveComponent(component, RunRemoveSelf);
         }
 
         public virtual void Translate(float x, float y)

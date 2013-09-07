@@ -1,38 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using System.Diagnostics;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Pacman.Engine.Display
 {
     class GameObject
     {
-        static public ContentManager Content { get; set; }
-        static public SpriteBatch SpriteBatch { get; set; }
-
-        public string Name { get; set; }
-        public bool IsInitialized { get; protected set; }
-        public bool Enabled { get; set; }
-        public bool Visible { get; set; }
-        public GroupObject Parent { get; set; }
+        List<GameObject> ComponentList;
 
         public GameObject()
         {
             Enabled = true;
             Visible = true;
             Debug.WriteLine("Game Object Constructed | " + this);
+            ComponentList = new List<GameObject>();
 
-            if (Stage.Instance.IsInitialized)
+            if (Stage.IsInitialized)
                 Initialize();
         }
 
         public virtual void Initialize() 
         {
             IsInitialized = true;
+            foreach (var component in ComponentList)
+                if (!component.IsInitialized)
+                    component.Initialize();
+
             Debug.WriteLine("Game Object Initalized | " + this);
             LoadContent();
         }
@@ -47,13 +40,58 @@ namespace Pacman.Engine.Display
             Debug.WriteLine("Game Object Content Unloaded | " + this);
         }
 
-        public virtual void Update(GameTime gameTime) { }
-        public virtual void Draw(GameTime gameTime) { }
+        public virtual void Update(GameTime gameTime) 
+        {
+            // Copy List in case list gets modified outside of loop
+            var CopyOfComponents = new List<GameObject>(ComponentList);
+            foreach (var component in CopyOfComponents)
+                if (component.Enabled)
+                    component.Update(gameTime);
+        }
+
+        public virtual void Draw(GameTime gameTime) {
+            foreach (var component in ComponentList)
+                if (component.Visible)
+                    component.Draw(gameTime);
+        }
 
         public virtual void RemoveSelf()
         {
             if (Parent != null)
-                Parent.RemoveChild(this, false);
+                Parent.RemoveComponent(this, false);
+        }
+
+        public virtual GameObject AddComponent(GameObject component)
+        {
+            if (component.Parent != null)
+                component.Parent.RemoveComponent(component, false);
+
+            ComponentList.Add(component);
+            component.Parent = this;
+            return component;
+        }
+
+        public virtual GameObject RemoveComponent(GameObject component, bool RunRemoveSelf)
+        {
+            ComponentList.Remove(component);
+            component.Parent = null;
+            if (RunRemoveSelf) component.RemoveSelf();
+            return component;
+        }
+
+        public virtual GameObject RemoveComponent(GameObject child)
+        { 
+            return RemoveComponent(child, true);
+        }
+
+        public bool IsInitialized { get; protected set; }
+        public bool Enabled { get; set; }
+        public bool Visible { get; set; }
+        public GameObject Parent { get; set; }
+
+        public GameObject this[int index]
+        {
+            get { return ComponentList[index]; }
         }
     }
 }

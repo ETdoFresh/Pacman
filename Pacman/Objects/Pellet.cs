@@ -7,7 +7,7 @@ using Pacman.Engine.Helpers;
 
 namespace Pacman.Objects
 {
-    class Pellet : GroupObject
+    class Pellet : DisplayObject
     {
         public Pellet() { }
 

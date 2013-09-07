@@ -30,7 +30,7 @@ namespace Pacman.Scenes
         {
             _random = new Random();
             _tileGrid = new TileGrid(outerWallData.GetLength(1), outerWallData.GetLength(0), 32, 32);
-            AddChild(_tileGrid);
+            AddComponent(_tileGrid);
 
             SetupBoard();
             GeneratePellets();
@@ -55,17 +55,17 @@ namespace Pacman.Scenes
             _pacman.SnapToTarget = new SnapToTarget(_pacman, _pacman.Velocity, _pacman.Target);
             _pacman.PlayerMovement = new PlayerMovement(_pacman, _pacman.Target, _tileGrid);
             _pacman.PelletEater = new PelletEater(_pacman, _pellets, _tileGrid);
-            _pacman.AddChild(_pacman.TilePosition);
-            _pacman.AddChild(_pacman.AnimatedSprite);
-            _pacman.AddChild(_pacman.Velocity);
-            _pacman.AddChild(_pacman.Rotation);
-            _pacman.AddChild(_pacman.Steering);
-            _pacman.AddChild(_pacman.Wrap);
-            _pacman.AddChild(_pacman.SnapToTarget);
-            _pacman.AddChild(_pacman.PlayerMovement);
-            _pacman.AddChild(_pacman.PelletEater);
-            _tileGrid.AddChild(_pacman.Target);
-            _tileGrid.AddChild(_pacman);
+            _pacman.AddComponent(_pacman.TilePosition);
+            _pacman.AddComponent(_pacman.AnimatedSprite);
+            _pacman.AddComponent(_pacman.Velocity);
+            _pacman.AddComponent(_pacman.Rotation);
+            _pacman.AddComponent(_pacman.Steering);
+            _pacman.AddComponent(_pacman.Wrap);
+            _pacman.AddComponent(_pacman.SnapToTarget);
+            _pacman.AddComponent(_pacman.PlayerMovement);
+            _pacman.AddComponent(_pacman.PelletEater);
+            _tileGrid.AddComponent(_pacman.Target);
+            _tileGrid.AddComponent(_pacman);
 
             _blinky = new Blinky();
             _blinky.Translate(_tileGrid.GetPosition(13.5f, 11f));
@@ -86,18 +86,18 @@ namespace Pacman.Scenes
             _blinky.Wrap = new Wrap(_blinky.Position, 0, 0, _tileGrid.Width, _tileGrid.Height);
             _blinky.SnapToTarget = new SnapToTarget(_blinky, _blinky.Velocity, _blinky.ImmediateTarget);
             _blinky.ShiftEyesToDirection = new ShiftEyesToDirection(_blinky);
-            _blinky.AddChild(_blinky.TilePosition);
-            _blinky.AddChild(_blinky.Body);
-            _blinky.AddChild(_blinky.Eyes);
-            _blinky.AddChild(_blinky.Pupils);
-            _blinky.AddChild(_blinky.Velocity);
-            _blinky.AddChild(_blinky.Steering);
-            _blinky.AddChild(_blinky.Wrap);
-            _blinky.AddChild(_blinky.SnapToTarget);
-            _blinky.AddChild(_blinky.ShiftEyesToDirection);
-            _tileGrid.AddChild(_blinky);
-            _tileGrid.AddChild(_blinky.Target);
-            _tileGrid.AddChild(_blinky.ImmediateTarget);
+            _blinky.AddComponent(_blinky.TilePosition);
+            _blinky.AddComponent(_blinky.Body);
+            _blinky.AddComponent(_blinky.Eyes);
+            _blinky.AddComponent(_blinky.Pupils);
+            _blinky.AddComponent(_blinky.Velocity);
+            _blinky.AddComponent(_blinky.Steering);
+            _blinky.AddComponent(_blinky.Wrap);
+            _blinky.AddComponent(_blinky.SnapToTarget);
+            _blinky.AddComponent(_blinky.ShiftEyesToDirection);
+            _tileGrid.AddComponent(_blinky);
+            _tileGrid.AddComponent(_blinky.Target);
+            _tileGrid.AddComponent(_blinky.ImmediateTarget);
             _blinky.StateChange += OnGhostStateChange;
 
             _pinky = new Pinky();
@@ -115,13 +115,13 @@ namespace Pacman.Scenes
             _pinky.Speed = new Speed(225);
             _pinky.Velocity = new Velocity() { Position = _pinky.Position, Speed = _pinky.Speed };
             _pinky.Rotation = new Rotation() { Orientation = _pinky.Orientation };
-            _pinky.AddChild(_pinky.TilePosition);
-            _pinky.AddChild(_pinky.Body);
-            _pinky.AddChild(_pinky.Eyes);
-            _pinky.AddChild(_pinky.Pupils);
-            _tileGrid.AddChild(_pinky);
-            _tileGrid.AddChild(_pinky.Target);
-            _tileGrid.AddChild(_pinky.ImmediateTarget);
+            _pinky.AddComponent(_pinky.TilePosition);
+            _pinky.AddComponent(_pinky.Body);
+            _pinky.AddComponent(_pinky.Eyes);
+            _pinky.AddComponent(_pinky.Pupils);
+            _tileGrid.AddComponent(_pinky);
+            _tileGrid.AddComponent(_pinky.Target);
+            _tileGrid.AddComponent(_pinky.ImmediateTarget);
 
             _inky = new Inky();
             _inky.Translate(_tileGrid.GetPosition(13.5f, 14f));
@@ -136,11 +136,11 @@ namespace Pacman.Scenes
             _inky.Velocity = new Velocity() { Position = _inky.Position, Speed = _inky.Speed };
             _inky.Rotation = new Rotation() { Orientation = _inky.Orientation };
             _inky.Direction = new Direction(Direction.LEFT);
-            _inky.AddChild(_inky.Body);
-            _inky.AddChild(_inky.Eyes);
-            _inky.AddChild(_inky.Pupils);
-            _tileGrid.AddChild(_inky);
-            _tileGrid.AddChild(_inky.Target);
+            _inky.AddComponent(_inky.Body);
+            _inky.AddComponent(_inky.Eyes);
+            _inky.AddComponent(_inky.Pupils);
+            _tileGrid.AddComponent(_inky);
+            _tileGrid.AddComponent(_inky.Target);
 
             _clyde = new Clyde();
             _clyde.Translate(_tileGrid.GetPosition(15.5f, 14f));
@@ -155,18 +155,18 @@ namespace Pacman.Scenes
             _clyde.Velocity = new Velocity() { Position = _clyde.Position, Speed = _clyde.Speed };
             _clyde.Rotation = new Rotation() { Orientation = _clyde.Orientation };
             _clyde.Direction = new Direction(Direction.LEFT);
-            _clyde.AddChild(_clyde.Body);
-            _clyde.AddChild(_clyde.Eyes);
-            _clyde.AddChild(_clyde.Pupils);
-            _tileGrid.AddChild(_clyde);
-            _tileGrid.AddChild(_clyde.Target);
+            _clyde.AddComponent(_clyde.Body);
+            _clyde.AddComponent(_clyde.Eyes);
+            _clyde.AddComponent(_clyde.Pupils);
+            _tileGrid.AddComponent(_clyde);
+            _tileGrid.AddComponent(_clyde.Target);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
             _mouse.Alpha = 0.75f;
             _mouseTilePosition = new TilePosition(_mouse.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
-            AddChild(_mouseTilePosition);
-            _tileGrid.AddChild(_mouse);
+            AddComponent(_mouseTilePosition);
+            _tileGrid.AddComponent(_mouse);
 
             _debugHelper = new DebugHelper();
             _debugHelper.AddLine("Self Position: ", Position);
@@ -185,20 +185,20 @@ namespace Pacman.Scenes
             _debugHelper.AddLine("Mouse Position: ", _mouse.Position);
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);
-            AddChild(_debugHelper);
+            AddComponent(_debugHelper);
         }
 
         public override void LoadContent()
         {
             base.LoadContent();
-            var displayWidth = Stage.GraphicsDevice.Viewport.Width;
-            var displayHeight = Stage.GraphicsDevice.Viewport.Height;
+            var displayWidth = Stage.MainGraphicsDevice.Viewport.Width;
+            var displayHeight = Stage.MainGraphicsDevice.Viewport.Height;
 
             var scaleFactor = Math.Min(displayWidth / _tileGrid.ContentWidth, displayHeight / _tileGrid.ContentHeight);
             _tileGrid.Resize(scaleFactor);
 
-            var x = Stage.GraphicsDevice.Viewport.Width / 2 - _tileGrid.ContentWidth / 2;
-            var y = Stage.GraphicsDevice.Viewport.Height / 2 - _tileGrid.ContentHeight / 2;
+            var x = Stage.MainGraphicsDevice.Viewport.Width / 2 - _tileGrid.ContentWidth / 2;
+            var y = Stage.MainGraphicsDevice.Viewport.Height / 2 - _tileGrid.ContentHeight / 2;
             _tileGrid.Translate(x, y);
         }
 
@@ -222,8 +222,8 @@ namespace Pacman.Scenes
         private void SetupBoard()
         {
             const int indexOffset = 28;
-            var board = new GroupObject();
-            AddChild(board);
+            var board = new DisplayObject();
+            AddComponent(board);
 
             for (var row = 0; row < outerWallData.GetLength(0); row++)
             {
@@ -234,7 +234,7 @@ namespace Pacman.Scenes
                         var outerTile = new SpriteObject("pacman", outerWallData[row, column] + indexOffset);
                         outerTile.Rotate(outerWallOrientation[row, column] * 90);
                         outerTile.Tint = new Color(60, 87, 167);
-                        _tileGrid.Data[column, row].AddChild(outerTile);
+                        _tileGrid.Data[column, row].AddComponent(outerTile);
                         _tileGrid.Data[column, row].IsPassable = false;
                     }
 
@@ -243,7 +243,7 @@ namespace Pacman.Scenes
                         var innerTile = new SpriteObject("pacman", innerWallData[row, column] + indexOffset);
                         innerTile.Rotate(innerWallOrientation[row, column] * 90);
                         innerTile.Tint = new Color(60, 87, 167);
-                        _tileGrid.Data[column, row].AddChild(innerTile);
+                        _tileGrid.Data[column, row].AddComponent(innerTile);
                         _tileGrid.Data[column, row].IsPassable = false;
                     }
                 }
@@ -263,9 +263,9 @@ namespace Pacman.Scenes
                         pellet.Translate(_tileGrid.GetPosition(row, column));
                         pellet.TilePosition = new TilePosition(pellet.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
                         pellet.SpriteObject = new SpriteObject("pacman", 26);
-                        pellet.AddChild(pellet.TilePosition);
-                        pellet.AddChild(pellet.SpriteObject);
-                        _tileGrid.AddChild(pellet);
+                        pellet.AddComponent(pellet.TilePosition);
+                        pellet.AddComponent(pellet.SpriteObject);
+                        _tileGrid.AddComponent(pellet);
                         _pellets.Add(pellet);
                     }
                     else if (pelletsData[column, row] == 2)
@@ -274,9 +274,9 @@ namespace Pacman.Scenes
                         pellet.Translate(_tileGrid.GetPosition(row, column));
                         pellet.TilePosition = new TilePosition(pellet.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
                         pellet.SpriteObject = new SpriteObject("pacman", 27);
-                        pellet.AddChild(pellet.TilePosition);
-                        pellet.AddChild(pellet.SpriteObject);
-                        _tileGrid.AddChild(pellet);
+                        pellet.AddComponent(pellet.TilePosition);
+                        pellet.AddComponent(pellet.SpriteObject);
+                        _tileGrid.AddComponent(pellet);
                         _pellets.Add(pellet);
                     }
                 }

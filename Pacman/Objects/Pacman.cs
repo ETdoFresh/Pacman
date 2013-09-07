@@ -9,7 +9,7 @@ using Pacman.Engine.Display;
 
 namespace Pacman.Objects
 {
-    class Pacman : GroupObject, ISteer
+    class Pacman : DisplayObject, ISteer
     {
         public Pacman() { }
 

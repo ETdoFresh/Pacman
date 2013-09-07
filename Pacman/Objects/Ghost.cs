@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Pacman.Objects
 {
-    class Ghost : GroupObject, ISteer
+    class Ghost : DisplayObject, ISteer
     {
         public enum States { CHASE, SCATTER, FRIGHTENED, HOME, LEAVEHOME }
 

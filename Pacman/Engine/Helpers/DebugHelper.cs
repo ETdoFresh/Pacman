@@ -8,7 +8,7 @@ using Pacman.Objects;
 
 namespace Pacman.Engine.Helpers
 {
-    class DebugHelper : GroupObject
+    class DebugHelper : DisplayObject
     {
         TextObject _textObject;
         List<string> _labels;
@@ -16,8 +16,8 @@ namespace Pacman.Engine.Helpers
 
         public DebugHelper()
         {
-            _textObject = new TextObject("") {Name = "DebugHelper"};
-            AddChild(_textObject);
+            _textObject = new TextObject("");
+            AddComponent(_textObject);
 
             _labels = new List<string>();
             _objects = new List<object>();

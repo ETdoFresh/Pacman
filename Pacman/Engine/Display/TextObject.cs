@@ -18,7 +18,6 @@ namespace Pacman.Engine.Display
         public TextObject(String text)
             : base()
         {
-            _text = "";
             _newText = text;
         }
 
@@ -26,19 +25,26 @@ namespace Pacman.Engine.Display
         {
             base.LoadContent();
             _spriteFont = Content.Load<SpriteFont>("SpriteFont");
+            ChangeText("");
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (_newText != null)
+            if (_newText != null && _newText != _text)
             {
-                _text = _newText;
-                var measureFont = _spriteFont.MeasureString(_text);
-                Width = measureFont.X;
-                Height = measureFont.Y;
-                Origin = new Vector2(Width / 2, Height / 2);
+                ChangeText(_newText);
+                _newText = null;
             }
+        }
+
+        private void ChangeText(string newText)
+        {
+            _text = newText;
+            var measureFont = _spriteFont.MeasureString(_text);
+            Width = measureFont.X;
+            Height = measureFont.Y;
+            Origin = new Vector2(Width / 2, Height / 2);
         }
 
         public override void Draw(GameTime gameTime)

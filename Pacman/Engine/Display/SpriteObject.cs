@@ -29,11 +29,6 @@ namespace Pacman.Engine.Display
             ChangeIndex(_index);
         }
 
-        public override void Draw(GameTime gameTime)
-        {
-            SpriteBatch.Draw(_texture, ContentPosition, _sourceRectangle, Tint * Alpha, ContentOrientation, Origin, ContentScale, SpriteEffects.None, 0);
-        }
-
         public void ChangeIndex(int index)
         {
             _index = index;

@@ -9,7 +9,7 @@ namespace Pacman.Engine.Helpers
 {
     public enum OriginType { TopLeft, Center }
 
-    class TileGrid : GroupObject
+    class TileGrid : DisplayObject
     {
         int _numberOfXTiles;
         int _numberOfYTiles;
@@ -67,7 +67,7 @@ namespace Pacman.Engine.Helpers
                 {
                     var tile = new Tile(_tileWidth, _tileHeight);
                     tile.Translate(x * _tileWidth + _tileWidth / 2, y * _tileHeight + _tileHeight / 2);
-                    AddChild(tile);
+                    AddComponent(tile);
                     _grid[x, y] = tile;
                 }
             }

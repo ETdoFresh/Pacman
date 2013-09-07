@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Pacman.Engine.Display
 {
-    class SceneObject : GroupObject
+    class SceneObject : DisplayObject
     {
-        protected Stage Stage { get { return Stage.Instance; } }
-
         public SceneObject(string name) : base()
         {
             Name = name;
         }
+
+        public string Name { get; set; }
     }
 }

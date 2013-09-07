@@ -11,31 +11,21 @@ namespace Pacman.Engine.Display
 {
     class Stage : DrawableGameComponent
     {
-        static public Stage Instance { get; private set; }
-
-        List<SceneObject> _loadedScenes;
-        List<SceneObject> _activeScenes;
-        List<SceneObject> _scenesToUpdate;
-
-        public bool IsInitialized { get; private set; }
+        static Stage _instance;
+        static List<SceneObject> _loadedScenes;
+        static List<SceneObject> _activeScenes;
+        static List<SceneObject> _scenesToUpdate;
 
         public Stage(Game game)
             : base(game)
         {
-            if (Instance == null)
-            {
-                _loadedScenes = new List<SceneObject>();
-                _activeScenes = new List<SceneObject>();
-                _scenesToUpdate = new List<SceneObject>();
-                Instance = this;
-                Debug.WriteLine("Stage Constructed | " + this);
-                game.Components.Add(this);
-            }
+            game.Components.Add(this);
+            Debug.WriteLine("Stage Constructed | " + this);
         }
 
         public override void Initialize()
         {
-            GameObject.Content = Game.Content;
+            DisplayObject.Content = StageGame.Content;
             IsInitialized = true;
             Debug.WriteLine("Stage Initialized | " + this);
             base.Initialize();
@@ -43,8 +33,8 @@ namespace Pacman.Engine.Display
 
         protected override void LoadContent()
         {
-            
-            GameObject.SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            DisplayObject.SpriteBatch = new SpriteBatch(MainGraphicsDevice);
             Debug.WriteLine("Stage Content Loaded | " + this);
             base.LoadContent();
 
@@ -86,7 +76,22 @@ namespace Pacman.Engine.Display
             base.Draw(gameTime);
         }
 
-        public SceneObject LoadScene(SceneObject scene)
+        public Game StageGame { get { return Game; } }
+        public GraphicsDevice StageGraphicsDevice { get { return GraphicsDevice; } }
+
+        static public Stage Create(Game game)
+        {
+            if (_instance == null)
+            {
+                _instance = new Stage(game);
+                _loadedScenes = new List<SceneObject>();
+                _activeScenes = new List<SceneObject>();
+                _scenesToUpdate = new List<SceneObject>();
+            }
+            return _instance;
+        }
+
+        static public SceneObject LoadScene(SceneObject scene)
         {
             if (!_loadedScenes.Contains(scene))
                 _loadedScenes.Add(scene);
@@ -97,14 +102,14 @@ namespace Pacman.Engine.Display
             return scene;
         }
 
-        public SceneObject UnloadScene(SceneObject scene)
+        static public SceneObject UnloadScene(SceneObject scene)
         {
             _activeScenes.Remove(scene);
             _loadedScenes.Remove(scene);
             return scene;
         }
 
-        public SceneObject GotoScene(string name)
+        static public SceneObject GotoScene(string name)
         {
             var scene = GetSceneByName(name);
 
@@ -114,8 +119,8 @@ namespace Pacman.Engine.Display
             return scene;
         }
 
-        public SceneObject GotoScene(SceneObject scene) { return GotoScene(scene, true); }
-        public SceneObject GotoScene(SceneObject scene, bool suspendOtherScenes)
+        static public SceneObject GotoScene(SceneObject scene) { return GotoScene(scene, true); }
+        static public SceneObject GotoScene(SceneObject scene, bool suspendOtherScenes)
         {
             LoadScene(scene);
 
@@ -129,13 +134,13 @@ namespace Pacman.Engine.Display
             return scene;
         }
 
-        public SceneObject SuspendScene(SceneObject scene)
+        static public SceneObject SuspendScene(SceneObject scene)
         {
             _activeScenes.Remove(scene);
             return scene;
         }
 
-        public SceneObject GetSceneByName(string name)
+        static public SceneObject GetSceneByName(string name)
         {
             foreach (var scene in _loadedScenes)
                 if (scene.Name == name)
@@ -143,5 +148,9 @@ namespace Pacman.Engine.Display
 
             return null;
         }
+
+        static public bool IsInitialized { get; private set; }
+        static public Game MainGame { get { return _instance.StageGame; } }
+        static public GraphicsDevice MainGraphicsDevice { get { return _instance.StageGraphicsDevice; } }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace Pacman.Engine.Helpers
 {
-    class Tile : GroupObject
+    class Tile : DisplayObject
     {
         static Random _random = new Random();
         
@@ -39,7 +39,7 @@ namespace Pacman.Engine.Helpers
                 _tile = new RectangleObject(width, height);
                 _tile.Tint = new Color(0, _random.Next(0, 255), _random.Next(0, 255));
                 _tile.Alpha = 0.3f;
-                AddChild(_tile);
+                AddComponent(_tile);
             }
         }
 

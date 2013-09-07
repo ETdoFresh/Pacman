@@ -30,26 +30,12 @@ namespace Pacman.Engine.Display
         public override void LoadContent()
         {
             base.LoadContent();
-            if (_previousTextures != null)
+            
+            if (!FindPreviousTexture())
             {
-                foreach (var texture in _previousTextures)
-                {
-                    if (texture.Width == Width && texture.Height == Height)
-                    {
-                        _texture = texture;
-                        break;
-                    }
-                }
-            }
-            if (_texture == null)
-            {
-                _texture = new Texture2D(SpriteBatch.GraphicsDevice, (int)Width, (int)Height);
+                CreateNewRectangleTexture();
                 _previousTextures.Add(_texture);
             }
-
-            Color[] color = new Color[(int)(Width * Height)];
-            for (int i = 0; i < color.Length; i++) color[i] = Color.White;
-            _texture.SetData(color);
 
             Origin = new Vector2(Width / 2, Height / 2);
         }
@@ -65,6 +51,30 @@ namespace Pacman.Engine.Display
         public override void Draw(GameTime gameTime)
         {
             SpriteBatch.Draw(_texture, _rectangle, null, Tint * Alpha, ContentOrientation, Origin, SpriteEffects.None, 0);
+        }
+
+        private bool FindPreviousTexture()
+        {
+            if (_previousTextures != null)
+            {
+                foreach (var texture in _previousTextures)
+                {
+                    if (texture.Width == Width && texture.Height == Height)
+                    {
+                        _texture = texture;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        private void CreateNewRectangleTexture()
+        {
+            _texture = new Texture2D(SpriteBatch.GraphicsDevice, (int)Width, (int)Height);
+            Color[] color = new Color[(int)(Width * Height)];
+            for (int i = 0; i < color.Length; i++) color[i] = Color.White;
+            _texture.SetData(color);
         }
     }
 }

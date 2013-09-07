@@ -20,37 +20,37 @@ namespace Pacman.Scenes
             var pacman = new ImageObject("pacman");
             pacman.Translate(256, 256);
             pacman.Resize(1.1f);
-            AddChild(pacman);
+            AddComponent(pacman);
 
             var pacman2 = new SpriteObject("pacman", 8);
             pacman2.Translate(550, 0);
-            AddChild(pacman2);
+            AddComponent(pacman2);
 
             var pacman3 = new AnimatedSpriteObject("pacman");
             pacman3.AddSequence("Chomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 500);
             pacman3.Translate(625, 0);
-            AddChild(pacman3);
+            AddComponent(pacman3);
 
             var rect = new RectangleObject(32, 32);
             rect.Translate(550, 50);
-            AddChild(rect);
+            AddComponent(rect);
 
             var circ = new CircleObject(16);
             circ.Translate(600, 50);
-            AddChild(circ);
+            AddComponent(circ);
 
             var text = new TextObject("Woot!");
             text.Translate(550, 100);
             text.Resize(1.5f);
             text.Rotate(-15);
             text.Tint = Color.Lime;
-            AddChild(text);
+            AddComponent(text);
 
             var text2 = new TextObject("Press {Spacebar} to proceed to next Scene!\nPress {T} to view Animation Test!");
             text2.Translate(325, 350);
             text2.Resize(2);
             text2.Rotate(-5);
-            AddChild(text2);
+            AddComponent(text2);
         }
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
@@ -66,7 +66,7 @@ namespace Pacman.Scenes
             }
             else if (InputHelper.IsPressed(Keys.Escape))
             {
-                Stage.Game.Exit();
+                Stage.MainGame.Exit();
             }
         }
     }
