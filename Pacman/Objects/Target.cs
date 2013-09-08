@@ -115,7 +115,7 @@ namespace Pacman.Objects
 
         internal class Blinky : Target
         {
-            public Blinky(Objects.Pacman pacman)
+            public Blinky(Objects.PacmanObject pacman)
             {
                 Position = pacman.Position;
                 Tint = Color.Red;
@@ -124,9 +124,9 @@ namespace Pacman.Objects
 
         internal class Pinky : Target
         {
-            Objects.Pacman _pacman;
+            Objects.PacmanObject _pacman;
 
-            public Pinky(Objects.Pacman pacman)
+            public Pinky(Objects.PacmanObject pacman)
             {
                 _pacman = pacman;
                 Tint = Color.Pink;
@@ -142,10 +142,10 @@ namespace Pacman.Objects
 
         internal class Inky : Target
         {
-            Objects.Pacman _pacman;
+            Objects.PacmanObject _pacman;
             Objects.Ghost _blinky;
 
-            public Inky(Objects.Pacman pacman, Objects.Ghost blinky)
+            public Inky(Objects.PacmanObject pacman, Objects.Ghost blinky)
             {
                 _pacman = pacman;
                 _blinky = blinky;
@@ -163,10 +163,10 @@ namespace Pacman.Objects
 
         internal class Clyde : Target
         {
-            Objects.Pacman _pacman;
+            Objects.PacmanObject _pacman;
             Objects.Ghost _clyde;
 
-            public Clyde(Objects.Pacman pacman, Objects.Ghost clyde)
+            public Clyde(Objects.PacmanObject pacman, Objects.Ghost clyde)
             {
                 _pacman = pacman;
                 _clyde = clyde;

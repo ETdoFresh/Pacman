@@ -11,7 +11,7 @@ namespace Pacman.Engine.Helpers
 
         public float Value { get { return _scale; } set { _scale = value; } }
 
-        public Scale() { }
+        public Scale() : this(1) { }
         public Scale(float value)
         {
             Value = value;

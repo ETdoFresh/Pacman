@@ -10,9 +10,9 @@ namespace Pacman.Objects
     interface ISteer
     {
         Position Position { get; }
-        Orientation Orientation { get; set; }
+        Orientation Orientation { get; }
         Speed Speed { get; }
-        Velocity Velocity { get; set; }
-        Rotation Rotation { get; set; }
+        Velocity Velocity { get; }
+        Rotation Rotation { get; }
     }
 }

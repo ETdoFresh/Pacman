@@ -15,7 +15,7 @@ namespace Pacman.Scenes
     class LevelScene : SceneObject
     {
         TileGrid _tileGrid;
-        Objects.Pacman _pacman;
+        Objects.PacmanObject _pacman;
         DisplayObject _mouse;
         TilePosition _mouseTilePosition;
         Random _random;
@@ -23,49 +23,22 @@ namespace Pacman.Scenes
         Ghost _blinky, _pinky, _inky, _clyde;
         List<Pellet> _pellets;
 
-        const float MAXSPEED = 225;
+        static public int tileWidth = 32;
+        static public int tileHeight = 32;
+
+        static public float maxSpeed = 225;
 
         public LevelScene()
             : base("Level")
         {
             _random = new Random();
-            _tileGrid = new TileGrid(outerWallData.GetLength(1), outerWallData.GetLength(0), 32, 32);
+            _tileGrid = new TileGrid(outerWallData.GetLength(1), outerWallData.GetLength(0), tileWidth, tileHeight);
             AddComponent(_tileGrid);
 
             SetupBoard();
             GeneratePellets();
 
-            _pacman = new Objects.Pacman();
-            _pacman.Speed = new Speed(MAXSPEED, 1);
-            _pacman.StartPosition = _tileGrid.GetPosition(14.5f, 23f);
-            _pacman.Position = _pacman.StartPosition.Copy();
-            _pacman.TilePosition = new TilePosition(_pacman.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
-            _pacman.AnimatedSprite = new AnimatedSpriteObject("pacman");
-            _pacman.AnimatedSprite.AddSequence("Chomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 200);
-            _pacman.AnimatedSprite.AddSequence("Die", 0, 11, 1000);
-            _pacman.AnimatedSprite.SetSequence("Chomp");
-            _pacman.AnimatedSprite.Tint = Color.Yellow;
-            _pacman.Target = new Target.Pacman();
-            _pacman.Velocity = new Velocity() { Position = _pacman.Position, Speed = _pacman.Speed };
-            _pacman.Rotation = new Rotation() { Orientation = _pacman.Orientation };
-            _pacman.DesiredDirection = new Direction(Direction.LEFT);
-            _pacman.PreviousDirection = new Direction(Direction.LEFT);
-            _pacman.Steering = new Steering(_pacman, _pacman.Target as ISteer);
-            _pacman.Wrap = new Wrap(_pacman.Position, 0, 0, _tileGrid.Width, _tileGrid.Height);
-            _pacman.SnapToTarget = new SnapToTarget(_pacman, _pacman.Velocity, _pacman.Target);
-            _pacman.PlayerMovement = new PlayerMovement(_pacman, _pacman.Target, _tileGrid);
-            _pacman.PelletEater = new PelletEater(_pacman, _pellets, _tileGrid);
-            _pacman.AddComponent(_pacman.TilePosition);
-            _pacman.AddComponent(_pacman.AnimatedSprite);
-            _pacman.AddComponent(_pacman.Velocity);
-            _pacman.AddComponent(_pacman.Rotation);
-            _pacman.AddComponent(_pacman.Steering);
-            _pacman.AddComponent(_pacman.Wrap);
-            _pacman.AddComponent(_pacman.SnapToTarget);
-            _pacman.AddComponent(_pacman.PlayerMovement);
-            _pacman.AddComponent(_pacman.PelletEater);
-            _tileGrid.AddComponent(_pacman.Target);
-            _tileGrid.AddComponent(_pacman);
+            _pacman = PacmanObject.Create(_tileGrid, _pellets);
 
             _blinky = new Blinky();
             _blinky.Translate(_tileGrid.GetPosition(13.5f, 11f));
@@ -173,11 +146,9 @@ namespace Pacman.Scenes
             _debugHelper.AddLine("TileGrid Position", _tileGrid.Position);
             _debugHelper.AddLine("Pacman Position: ", _pacman.Position);
             _debugHelper.AddLine("Pacman Tile Position: ", _pacman.TilePosition);
-            _debugHelper.AddLine("Pacman Target Position: ", _pacman.Target.Position);
             _debugHelper.AddLine("Pacman Orientation: ", _pacman.Orientation);
             _debugHelper.AddLine("Pacman Rotation: ", _pacman.Rotation);
             _debugHelper.AddLine("Pacman Velocity: ", _pacman.Velocity);
-            _debugHelper.AddLine("Pacman Target Orientation: ", _pacman.Target.Orientation);
             _debugHelper.AddLine("Blinky Tile Position: ", _blinky.TilePosition);
             _debugHelper.AddLine("Blinky Target Position: ", _blinky.Target.Position);
             _debugHelper.AddLine("Blinky Immediate Target Position: ", _blinky.ImmediateTarget.Position);

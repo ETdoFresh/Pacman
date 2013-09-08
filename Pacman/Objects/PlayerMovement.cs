@@ -11,12 +11,12 @@ namespace Pacman.Objects
 {
     class PlayerMovement : GameObject
     {
-        private Pacman _pacman;
+        private PacmanObject _pacman;
         private Target _target;
         private TileGrid _tileGrid;
         private Vector2 _pacmanPreviousPosition;
 
-        public PlayerMovement(Pacman pacman, Target target, TileGrid tileGrid)
+        public PlayerMovement(PacmanObject pacman, Target target, TileGrid tileGrid)
         {
             _pacman = pacman;
             _target = target;

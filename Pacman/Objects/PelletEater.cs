@@ -10,10 +10,10 @@ namespace Pacman.Objects
 {
     class PelletEater : GameObject
     {
-        Pacman _pacman;
+        PacmanObject _pacman;
         Pellet[,] _pelletGrid;
 
-        public PelletEater(Pacman pacman, List<Pellet> pellets, TileGrid tileGrid)
+        public PelletEater(PacmanObject pacman, List<Pellet> pellets, TileGrid tileGrid)
         {
             _pacman = pacman;
             _pelletGrid = new Pellet[tileGrid.NumberOfXTiles, tileGrid.NumberOfYTiles];
@@ -39,7 +39,7 @@ namespace Pacman.Objects
                 var pellet = _pelletGrid[_pacman.TilePosition.X, _pacman.TilePosition.Y];
                 pellet.RemoveSelf();
                 _pelletGrid[_pacman.TilePosition.X, _pacman.TilePosition.Y] = null;
-                _pacman.Speed.Factor = 0.2f;
+                _pacman.Speed.Factor = 0.5f;
             }
             else
             {
