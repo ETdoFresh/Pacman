@@ -7,13 +7,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pacman.Engine.Display
 {
+    /// <summary>
+    /// Same as ImageObject, but displays a sprite/tile instead of entire image.
+    /// </summary>
     class SpriteObject : ImageObject
     {
         protected readonly string _sheetDefinition;
-        private int _index;
-
         protected List<Rectangle> _sourceRectangles;
-
+        int _index;
 
         public SpriteObject(string assetFile, int index)
             : base(assetFile)
@@ -22,13 +23,20 @@ namespace Pacman.Engine.Display
             _index = index;
         }
 
+        /// <summary>
+        /// Loads sprite from spritesheet created by superclass image and spritesheet definition.
+        /// </summary>
         public override void LoadContent()
         {
             base.LoadContent();
-            _sourceRectangles = Content.Load<List<Rectangle>>(_sheetDefinition);
+            _sourceRectangles = Stage.GameContent.Load<List<Rectangle>>(_sheetDefinition);
             ChangeIndex(_index);
         }
 
+        /// <summary>
+        /// Changes the sprite and updates properties
+        /// </summary>
+        /// <param name="index">Sprite index</param>
         public void ChangeIndex(int index)
         {
             _index = index;

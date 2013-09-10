@@ -7,6 +7,9 @@ using Microsoft.Xna.Framework;
 
 namespace Pacman.Engine.Display
 {
+    /// <summary>
+    /// DisplayObject that displays an entire image
+    /// </summary>
     class ImageObject : DisplayObject
     {
         private readonly string _assetFile;
@@ -18,10 +21,13 @@ namespace Pacman.Engine.Display
             _assetFile = assetFile;
         }
 
+        /// <summary>
+        /// Loads an image file and set origin to center.
+        /// </summary>
         public override void LoadContent()
         {
             base.LoadContent();
-            _texture = Content.Load<Texture2D>(_assetFile);
+            _texture = Stage.GameContent.Load<Texture2D>(_assetFile);
             _sourceRectangle = new Rectangle(0, 0, _texture.Width, _texture.Height);
 
             Width = _sourceRectangle.Width;
@@ -29,9 +35,13 @@ namespace Pacman.Engine.Display
             Origin = new Vector2(Width / 2, Height / 2);
         }
 
+        /// <summary>
+        /// Draw the image.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
-            SpriteBatch.Draw(_texture, ContentPosition, _sourceRectangle, Tint * Alpha, ContentOrientation, Origin, ContentScale, SpriteEffects.None, 0);
+            Stage.SpriteBatch.Draw(_texture, ContentPosition, _sourceRectangle, Tint * Alpha, ContentOrientation, Origin, ContentScale, SpriteEffects.None, 0);
         }
     }
 }

@@ -110,7 +110,7 @@ namespace Pacman.Scenes
             }
             else if (InputHelper.IsPressed(Keys.Escape))
             {
-                Stage.MainGame.Exit();
+                Stage.GameObject.Exit();
             }
         }
     }

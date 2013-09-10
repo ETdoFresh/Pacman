@@ -74,14 +74,14 @@ namespace Pacman.Scenes
         public override void LoadContent()
         {
             base.LoadContent();
-            var displayWidth = Stage.MainGraphicsDevice.Viewport.Width;
-            var displayHeight = Stage.MainGraphicsDevice.Viewport.Height;
+            var displayWidth = Stage.GameGraphicsDevice.Viewport.Width;
+            var displayHeight = Stage.GameGraphicsDevice.Viewport.Height;
 
             var scaleFactor = Math.Min(displayWidth / _tileGrid.ContentWidth, displayHeight / _tileGrid.ContentHeight);
             _tileGrid.Resize(scaleFactor);
 
-            var x = Stage.MainGraphicsDevice.Viewport.Width / 2 - _tileGrid.ContentWidth / 2;
-            var y = Stage.MainGraphicsDevice.Viewport.Height / 2 - _tileGrid.ContentHeight / 2;
+            var x = Stage.GameGraphicsDevice.Viewport.Width / 2 - _tileGrid.ContentWidth / 2;
+            var y = Stage.GameGraphicsDevice.Viewport.Height / 2 - _tileGrid.ContentHeight / 2;
             _tileGrid.Translate(x, y);
         }
 

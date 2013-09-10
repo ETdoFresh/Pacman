@@ -9,11 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pacman.Engine.Display
 {
+    /// <summary>
+    /// A GameObject that can be displayed on screeen
+    /// </summary>
     class DisplayObject : GameObject
     {
-        static public ContentManager Content { get; set; }
-        static public SpriteBatch SpriteBatch { get; set; }
-
         public DisplayObject DisplayParent { get; set; }
         public Position Position { get; set; }
         public Orientation Orientation { get; set; }
@@ -40,6 +40,11 @@ namespace Pacman.Engine.Display
             Tint = Color.White;
         }
 
+        /// <summary>
+        /// Sets self as DisplayParent if component is a DisplayObject
+        /// </summary>
+        /// <param name="component"></param>
+        /// <returns></returns>
         public override GameObject AddComponent(GameObject component)
         {
             if (component is DisplayObject)
@@ -47,6 +52,12 @@ namespace Pacman.Engine.Display
             return base.AddComponent(component);
         }
 
+        /// <summary>
+        /// Removes self as DisplayParent if component is a DisplayObject
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="RunRemoveSelf"></param>
+        /// <returns></returns>
         public override GameObject RemoveComponent(GameObject component, bool RunRemoveSelf)
         {
             if (component is DisplayObject)
@@ -54,28 +65,51 @@ namespace Pacman.Engine.Display
             return base.RemoveComponent(component, RunRemoveSelf);
         }
 
+        /// <summary>
+        /// Change Position Value of DisplayObject
+        /// </summary>
+        /// <param name="x">Local X Coordinate</param>
+        /// <param name="y">Local Y Coordinate</param>
         public virtual void Translate(float x, float y)
         {
             Position.X = x;
             Position.Y = y;
         }
 
+        /// <summary>
+        /// Change Position Value of DisplayObject
+        /// </summary>
+        /// <param name="position">Local Vector2 Coordinate</param>
         public virtual void Translate(Position position)
         {
             Position.X = position.X;
             Position.Y = position.Y;
         }
 
+        /// <summary>
+        /// Set Orientation Value of DisplayObject
+        /// </summary>
+        /// <param name="degrees">Degrees of orientation</param>
         public virtual void Rotate(float degrees)
         {
             Orientation.Value = MathHelper.ToRadians(degrees);
         }
 
+
+        /// <summary>
+        /// Resizes DisplayObject
+        /// </summary>
+        /// <param name="value">Percent value</param>
         public virtual void Resize(float value)
         {
             Scale.Value = value;
         }
 
+        /// <summary>
+        /// Sets Origin Point of DisplayObject
+        /// </summary>
+        /// <param name="x">Local X Coordinate</param>
+        /// <param name="y">Local Y Coordinate</param>
         public virtual void SetOrigin(float x, float y)
         {
             Origin = new Vector2(x, y);

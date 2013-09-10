@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Pacman.Engine.Display
 {
+    /// <summary>
+    /// Data class that hold sequence data for AnimatedSpriteObject
+    /// </summary>
     class AnimationSequence
     {
         public int[] Frames { get; set; } // An array of frames to play
