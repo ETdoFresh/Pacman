@@ -10,11 +10,7 @@ namespace Pacman.Objects
 {
     abstract class Ghost : DisplayObject, ISteer
     {
-        public enum States { CHASE, SCATTER, FRIGHTENED, HOME, LEAVEHOME }
-
-        public delegate void GhostHandler(Ghost ghost);
-        public event GhostHandler StateChange = delegate { };
-        private States _state;
+        private GhostState _state;
 
         protected TileGrid _tileGrid;
         protected PacmanObject _pacman;
@@ -77,7 +73,6 @@ namespace Pacman.Objects
 
         public override void RemoveSelf()
         {
-            if (StateChange != null) StateChange = null;
             if (Body != null) Body.RemoveSelf();
             if (Eyes != null) Eyes.RemoveSelf();
             if (Pupils != null) Pupils.RemoveSelf();
@@ -109,11 +104,5 @@ namespace Pacman.Objects
         public Target ImmediateTarget { get; set; }
         public ShiftEyesToDirection ShiftEyesToDirection { get; set; }
         public LeaveHome LeaveHome { get; set; }
-        
-        public States State
-        {
-            get { return _state; }
-            set { _state = value; StateChange(this); }
-        }
     }
 }

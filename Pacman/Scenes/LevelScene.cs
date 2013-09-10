@@ -44,8 +44,6 @@ namespace Pacman.Scenes
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
             _clyde = Clyde.Create(_tileGrid, _pacman);
 
-            _blinky.StateChange += OnGhostStateChange;
-
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
             _mouse.Alpha = 0.75f;
@@ -163,30 +161,6 @@ namespace Pacman.Scenes
                         _pellets.Add(pellet);
                     }
                 }
-            }
-        }
-
-        private void OnGhostStateChange(Ghost ghost)
-        {
-            if (ghost.TilePosition == null)
-                ghost.TilePosition = new TilePosition(ghost.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
-            if (ghost.Direction == null)
-                ghost.Direction = new Direction(Direction.LEFT);
-            if (ghost.Body == null)
-            {
-                ghost.Body = new AnimatedSpriteObject("pacman");
-                ghost.Body.AddSequence("BodyFloat", 8, 8, 250);
-            }
-
-
-            if (ghost.State == Ghost.States.HOME)
-            {
-                if (ghost == _blinky)
-                    ghost.State = Ghost.States.SCATTER;
-            }
-            else if (ghost.State == Ghost.States.LEAVEHOME)
-            {
-                ghost.LeaveHome = new LeaveHome(ghost);
             }
         }
 
