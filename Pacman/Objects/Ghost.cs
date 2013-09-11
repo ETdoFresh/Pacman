@@ -10,7 +10,7 @@ namespace Pacman.Objects
 {
     abstract class Ghost : DisplayObject, ISteer
     {
-        private GhostState _state;
+        private GhostState _ghostState;
 
         protected TileGrid _tileGrid;
         protected PacmanObject _pacman;
@@ -27,16 +27,16 @@ namespace Pacman.Objects
             SetTransforms();
             SetProperties();
             SetUpdaters();
+            ResetProperties();
             _tileGrid.AddComponent(this);
         }
 
-        protected virtual void SetAnimations()
+        protected void SetAnimations()
         {
             Body = new AnimatedSpriteObject("pacman");
-            Body.AddSequence("BodyFloat", 8, 8, 250);
             Eyes = new SpriteObject("pacman", 20);
             Pupils = new SpriteObject("pacman", 25);
-            Pupils.Tint = new Color(60, 87, 167);
+            Body.AddSequence("BodyFloat", 8, 8, 250);
             AddComponent(Body);
             AddComponent(Eyes);
             AddComponent(Pupils);
@@ -69,6 +69,24 @@ namespace Pacman.Objects
             AddComponent(Wrap);
             AddComponent(SnapToTarget);
             AddComponent(ShiftEyesToDirection);
+        }
+
+        public virtual void ResetProperties() 
+        {
+            Body.Visible = true;
+            Eyes.Visible = true;
+            Pupils.Visible = true;
+            Eyes.ChangeIndex(20);
+            Pupils.ChangeIndex(25);
+            Pupils.Tint = new Color(60, 87, 167);
+            ShiftEyesToDirection.Enabled = true;
+            Speed.Factor = 1;
+        }
+
+        public void ChangeState(GhostState.GhostStates ghostState)
+        {
+            _ghostState = GhostState.Change(ghostState);
+            _ghostState.SetProperties(this);
         }
 
         public override void RemoveSelf()

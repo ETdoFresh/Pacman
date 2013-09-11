@@ -18,12 +18,6 @@ namespace Pacman.Objects
             return result;
         }
 
-        protected override void SetAnimations()
-        {
-            base.SetAnimations();
-            Body.Tint = Color.Cyan;
-        }
-
         protected override void SetTransforms()
         {
             base.SetTransforms();
@@ -37,6 +31,12 @@ namespace Pacman.Objects
             ImmediateTarget = new Target.Immediate(this, _tileGrid);
             _tileGrid.AddComponent(Target);
             _tileGrid.AddComponent(ImmediateTarget);
+        }
+
+        public override void ResetProperties()
+        {
+            base.ResetProperties();
+            Body.Tint = Color.Cyan;
         }
     }
 }

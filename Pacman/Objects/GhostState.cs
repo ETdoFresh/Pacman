@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Pacman.Objects
 {
@@ -15,14 +16,9 @@ namespace Pacman.Objects
         static public GhostStates FRIGHTENED { get { return GhostStates.Frightened; } }
         static public GhostStates EYES { get { return GhostStates.Eyes; } }
 
-        protected GhostStates _ghostState;
+        private GhostState(GhostStates ghostState) { }
 
-        private GhostState(GhostStates ghostState)
-        {
-            _ghostState = ghostState;
-        }
-
-        static public GhostState Create(GhostStates ghostState)
+        static public GhostState Change(GhostStates ghostState)
         {
             switch (ghostState)
             {
@@ -41,6 +37,11 @@ namespace Pacman.Objects
                 default:
                     throw new Exception("Ghost State not valid");
             }
+        }
+
+        public virtual void SetProperties(Ghost ghost)
+        {
+            ghost.ResetProperties();
         }
 
         private class Home : GhostState
@@ -66,11 +67,29 @@ namespace Pacman.Objects
         private class Frightened : GhostState
         {
             public Frightened() : base(FRIGHTENED) { }
+
+            public override void SetProperties(Ghost ghost)
+            {
+                base.SetProperties(ghost);
+                ghost.Body.Tint = new Color(60, 87, 167);
+                ghost.Eyes.Tint = new Color(255, 207, 50);
+                ghost.Eyes.ChangeIndex(28);
+                ghost.Pupils.Visible = false;
+                ghost.ShiftEyesToDirection.Enabled = false;
+                ghost.Speed.Factor = 0.7f;
+            }
         }
 
         private class Eyes : GhostState
         {
             public Eyes() : base(EYES) { }
+
+            public override void SetProperties(Ghost ghost)
+            {
+                base.SetProperties(ghost);
+                ghost.Body.Visible = false;
+                ghost.Speed.Factor = 1.2f;
+            }
         }
     }
 }

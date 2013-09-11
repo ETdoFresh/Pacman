@@ -42,7 +42,9 @@ namespace Pacman.Scenes
             _blinky = Blinky.Create(_tileGrid, _pacman);
             _pinky = Pinky.Create(_tileGrid, _pacman);
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
+            _inky.ChangeState(GhostState.EYES);
             _clyde = Clyde.Create(_tileGrid, _pacman);
+            _clyde.ChangeState(GhostState.FRIGHTENED);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
