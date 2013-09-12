@@ -8,20 +8,75 @@ using Microsoft.Xna.Framework;
 
 namespace Pacman.Objects
 {
-    abstract class Target : CircleObject, ISteer
+    class Target : CircleObject, ISteer
     {
+        public enum TargetStatesWithNone { Fixed }
+        public enum TargetStatesWithTileGrid { Immediate }
+        public enum TargetStatesWithPacman { Pacman, Blinky, Pinky }
+        public enum TargetStatesWithGhost { Inky, Clyde }
+        static public TargetStatesWithTileGrid IMMEDIATE { get { return TargetStatesWithTileGrid.Immediate; } }
+        static public TargetStatesWithPacman PACMAN { get { return TargetStatesWithPacman.Pacman; } }
+        static public TargetStatesWithPacman BLINKY { get { return TargetStatesWithPacman.Blinky; } }
+        static public TargetStatesWithPacman PINKY { get { return TargetStatesWithPacman.Pinky; } }
+        static public TargetStatesWithGhost INKY { get { return TargetStatesWithGhost.Inky; } }
+        static public TargetStatesWithGhost CLYDE { get { return TargetStatesWithGhost.Clyde; } }
+        static public TargetStatesWithNone FIXED { get { return TargetStatesWithNone.Fixed; } }
+
+        TargetState _targetState;
+
+        private Target() : base(10) 
+        {
+            _targetState = new FixedType();
+            Alpha = 0.5f;
+            Speed = new Speed();
+            Velocity = new Velocity() { Enabled = false };
+            Rotation = new Rotation() { Enabled = false };
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+            _targetState.Update(gameTime);
+        }
+
+        public void ChangeState(TargetStatesWithPacman targetState, Pacman pacman)
+        {
+            _targetState = TargetState.Create(targetState, pacman);
+        }
+
         public Speed Speed { get; set; }
         public Velocity Velocity { get; set; }
         public Rotation Rotation { get; set; }
 
-        public Target()
-            : base(10)
+        abstract internal class TargetState
         {
-            Alpha = 0.5f;
-            Speed = new Speed(0);
-            Velocity = new Velocity() { Position = Position, Speed = Speed };
-            Rotation = new Rotation() { Orientation = Orientation };
+            protected TargetState() { }
+
+            static public TargetState Create(TargetStatesWithPacman targetState, Pacman pacman)
+            {
+                switch (targetState)
+                {
+                    case TargetStatesWithPacman.Pacman:
+                        return new PacmanType(pacman);
+                    case TargetStatesWithPacman.Blinky:
+                        return new BlinkyType(pacman);
+                    case TargetStatesWithPacman.Pinky:
+                        return new PinkyType(pacman);
+                    default:
+                        throw new Exception("Target State (with Pacman) not valid");
+                }
+            }
+
+            abstract public void Update(GameTime gameTime);
         }
+
+        internal class ImmediateType : TargetState { }
+        internal class PacmanType : TargetState { public PacmanType(Pacman pacman) { } }
+        internal class BlinkyType : TargetState { public BlinkyType(Pacman pacman) { } }
+        internal class PinkyType : TargetState { public PinkyType(Pacman pacman) { } }
+        internal class InkyType : TargetState { }
+        internal class ClydeType : TargetState { }
+        internal class FixedType : TargetState { }
 
         internal class Pacman : Target
         {
