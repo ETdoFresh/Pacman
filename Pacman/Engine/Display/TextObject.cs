@@ -40,11 +40,14 @@ namespace Pacman.Engine.Display
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (_newText != null && _newText != _text)
+            if (Enabled)
             {
-                ChangeText(_newText);
-                _newText = null;
+                base.Update(gameTime);
+                if (_newText != null && _newText != _text)
+                {
+                    ChangeText(_newText);
+                    _newText = null;
+                }
             }
         }
 
@@ -54,7 +57,8 @@ namespace Pacman.Engine.Display
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
-            Stage.SpriteBatch.DrawString(_spriteFont, _text, ContentPosition, Tint * Alpha, ContentOrientation, Origin, ContentScale, SpriteEffects.None, 0);
+            if (Visible) 
+                Stage.SpriteBatch.DrawString(_spriteFont, _text, ContentPosition, Tint * Alpha, ContentOrientation, Origin, ContentScale, SpriteEffects.None, 0);
         }
 
         /// <summary>

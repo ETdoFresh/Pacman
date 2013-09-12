@@ -23,13 +23,16 @@ namespace Pacman.Engine.Helpers
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (_velocity.Length() > Speed.Value)
+            if (Enabled)
             {
-                _velocity.Normalize();
-                _velocity *= Speed.Value;
+                base.Update(gameTime);
+                if (_velocity.Length() > Speed.Value)
+                {
+                    _velocity.Normalize();
+                    _velocity *= Speed.Value;
+                }
+                Position.Value += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
             }
-            Position.Value += _velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
     }
 }

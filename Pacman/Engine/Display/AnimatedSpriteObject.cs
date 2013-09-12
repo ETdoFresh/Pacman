@@ -60,43 +60,46 @@ namespace Pacman.Engine.Display
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            if (_isPlaying)
+            if (Enabled)
             {
-                var previousFrame = CurrentFrame;
+                base.Update(gameTime);
 
-                _timeOfAnimationLoop += gameTime.ElapsedGameTime.TotalSeconds;
-
-                CurrentFrame = (int)(Math.Floor(_timeOfAnimationLoop / SecondsBetweenFrames()));
-                if (CurrentFrame >= TotalFrames)
+                if (_isPlaying)
                 {
-                    _timeOfAnimationLoop = 0;
-                    if (_currentSequence.LoopCount < 0)
+                    var previousFrame = CurrentFrame;
+
+                    _timeOfAnimationLoop += gameTime.ElapsedGameTime.TotalSeconds;
+
+                    CurrentFrame = (int)(Math.Floor(_timeOfAnimationLoop / SecondsBetweenFrames()));
+                    if (CurrentFrame >= TotalFrames)
                     {
-                        CurrentFrame = 0;
-                    }
-                    else
-                    {
-                        _currentSequence.LoopCount--;
-                        if (_currentSequence.LoopCount == 0)
-                        {
-                            Pause();
-                            CurrentFrame--;
-                        }
-                        else
+                        _timeOfAnimationLoop = 0;
+                        if (_currentSequence.LoopCount < 0)
                         {
                             CurrentFrame = 0;
                         }
+                        else
+                        {
+                            _currentSequence.LoopCount--;
+                            if (_currentSequence.LoopCount == 0)
+                            {
+                                Pause();
+                                CurrentFrame--;
+                            }
+                            else
+                            {
+                                CurrentFrame = 0;
+                            }
+                        }
                     }
-                }
 
-                if (_sourceRectangle != _sourceRectangles[_currentSequence.Frames[CurrentFrame]])
-                {
-                    _sourceRectangle = _sourceRectangles[_currentSequence.Frames[CurrentFrame]];
-                    Width = _sourceRectangle.Width;
-                    Height = _sourceRectangle.Height;
-                    Origin = new Vector2(Width / 2, Height / 2);
+                    if (_sourceRectangle != _sourceRectangles[_currentSequence.Frames[CurrentFrame]])
+                    {
+                        _sourceRectangle = _sourceRectangles[_currentSequence.Frames[CurrentFrame]];
+                        Width = _sourceRectangle.Width;
+                        Height = _sourceRectangle.Height;
+                        Origin = new Vector2(Width / 2, Height / 2);
+                    }
                 }
             }
         }

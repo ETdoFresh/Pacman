@@ -26,16 +26,19 @@ namespace Pacman.Objects
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-
-            var distance = _target.Position.Value - _source.Position.Value;
-            if (distance.Length() < _previousVelocity.Length() * gameTime.ElapsedGameTime.TotalSeconds)
+            if (Enabled)
             {
-                _source.Position.Value = _target.Position.Value;
-                _sourceVelocity.Value = Vector2.Zero;
-            }
+                base.Update(gameTime);
 
-            _previousVelocity = _sourceVelocity.Value;
+                var distance = _target.Position.Value - _source.Position.Value;
+                if (distance.Length() < _previousVelocity.Length() * gameTime.ElapsedGameTime.TotalSeconds)
+                {
+                    _source.Position.Value = _target.Position.Value;
+                    _sourceVelocity.Value = Vector2.Zero;
+                }
+
+                _previousVelocity = _sourceVelocity.Value;
+            }
         }
     }
 }

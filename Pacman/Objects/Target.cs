@@ -51,9 +51,12 @@ namespace Pacman.Objects
 
             public override void Update(GameTime gameTime)
             {
-                base.Update(gameTime);
-                _targetTilePosition.Update(gameTime);
-                CalculatePosition();
+                if (Enabled)
+                {
+                    base.Update(gameTime);
+                    _targetTilePosition.Update(gameTime);
+                    CalculatePosition();
+                }
             }
 
             private void CalculatePosition()
@@ -134,9 +137,12 @@ namespace Pacman.Objects
 
             public override void Update(GameTime gameTime)
             {
-                base.Update(gameTime);
-                Position.Value =
-                    _pacman.Position.Value + _pacman.PreviousDirection.Offset * _pacman.TilePosition.TileWidth * 4;
+                if (Enabled)
+                {
+                    base.Update(gameTime);
+                    Position.Value =
+                        _pacman.Position.Value + _pacman.PreviousDirection.Offset * _pacman.TilePosition.TileWidth * 4;
+                }
             }
         }
 
@@ -154,10 +160,13 @@ namespace Pacman.Objects
 
             public override void Update(GameTime gameTime)
             {
-                base.Update(gameTime);
-                var offset = _pacman.Position.Value + _pacman.PreviousDirection.Offset * _pacman.TilePosition.TileWidth * 2;
-                var blinkyDifference = offset - _blinky.Position.Value;
-                Position.Value = _blinky.Position.Value + blinkyDifference * 2;
+                if (Enabled)
+                {
+                    base.Update(gameTime);
+                    var offset = _pacman.Position.Value + _pacman.PreviousDirection.Offset * _pacman.TilePosition.TileWidth * 2;
+                    var blinkyDifference = offset - _blinky.Position.Value;
+                    Position.Value = _blinky.Position.Value + blinkyDifference * 2;
+                }
             }
         }
 
@@ -175,13 +184,16 @@ namespace Pacman.Objects
 
             public override void Update(GameTime gameTime)
             {
-                base.Update(gameTime);
-                var distance = Vector2.Distance(_clyde.Position.Value, _pacman.Position.Value);
-                var tileWidth = _pacman.TilePosition.TileWidth;
-                if (distance < tileWidth * 8)
-                    Position.Value = new Vector2(tileWidth / 2, 30 * tileWidth + tileWidth / 2);
-                else
-                    Position.Value = _pacman.Position.Value;
+                if (Enabled)
+                {
+                    base.Update(gameTime);
+                    var distance = Vector2.Distance(_clyde.Position.Value, _pacman.Position.Value);
+                    var tileWidth = _pacman.TilePosition.TileWidth;
+                    if (distance < tileWidth * 8)
+                        Position.Value = new Vector2(tileWidth / 2, 30 * tileWidth + tileWidth / 2);
+                    else
+                        Position.Value = _pacman.Position.Value;
+                }
             }
         }
     }

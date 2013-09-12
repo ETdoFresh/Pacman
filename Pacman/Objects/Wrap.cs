@@ -27,17 +27,20 @@ namespace Pacman.Objects
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            
-            if (_position.X < _left)
-                _position.X = _right - 1;
-            else if (_position.X >= _right)
-                _position.X = 0;
+            if (Enabled)
+            {
+                base.Update(gameTime);
 
-            if (_position.Y < _top)
-                _position.Y = _bottom - 1;
-            else if (_position.Y >= _bottom)
-                _position.Y = 0;
+                if (_position.X < _left)
+                    _position.X = _right - 1;
+                else if (_position.X >= _right)
+                    _position.X = 0;
+
+                if (_position.Y < _top)
+                    _position.Y = _bottom - 1;
+                else if (_position.Y >= _bottom)
+                    _position.Y = 0;
+            }
         }
     }
 }

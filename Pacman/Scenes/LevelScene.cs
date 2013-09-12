@@ -40,11 +40,10 @@ namespace Pacman.Scenes
 
             _pacman = PacmanObject.Create(_tileGrid, _pellets);
             _blinky = Blinky.Create(_tileGrid, _pacman);
+            _blinky.ChangeState(GhostState.CHASE);
             _pinky = Pinky.Create(_tileGrid, _pacman);
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
-            _inky.ChangeState(GhostState.EYES);
             _clyde = Clyde.Create(_tileGrid, _pacman);
-            _clyde.ChangeState(GhostState.FRIGHTENED);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
@@ -87,19 +86,22 @@ namespace Pacman.Scenes
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (InputHelper.IsPressed(Keys.Space) || InputHelper.IsPressed(Keys.Escape))
+            if (Enabled)
             {
-                Stage.GotoScene("Menu");
-            }
+                base.Update(gameTime);
+                if (InputHelper.IsPressed(Keys.Space) || InputHelper.IsPressed(Keys.Escape))
+                {
+                    Stage.GotoScene("Menu");
+                }
 
-            // Move _mouse object locally on mouse press and hold
-            if (InputHelper.GetInputState(MouseButton.Left) == InputState.Pressed || InputHelper.GetInputState(MouseButton.Left) == InputState.Hold)
-                _mouse.Translate((InputHelper.MouseX - _tileGrid.ContentPosition.X) / _tileGrid.ContentScale, (InputHelper.MouseY - _tileGrid.ContentPosition.Y) / _tileGrid.ContentScale);
-            // When released, snap _mouse object into tile
-            else if (InputHelper.GetInputState(MouseButton.Left) == InputState.Released)
-                _mouse.Translate(_mouseTilePosition.X * _mouseTilePosition.TileWidth + _mouseTilePosition.TileWidth / 2,
-                    _mouseTilePosition.Y * _mouseTilePosition.TileHeight + _mouseTilePosition.TileHeight / 2);
+                // Move _mouse object locally on mouse press and hold
+                if (InputHelper.GetInputState(MouseButton.Left) == InputState.Pressed || InputHelper.GetInputState(MouseButton.Left) == InputState.Hold)
+                    _mouse.Translate((InputHelper.MouseX - _tileGrid.ContentPosition.X) / _tileGrid.ContentScale, (InputHelper.MouseY - _tileGrid.ContentPosition.Y) / _tileGrid.ContentScale);
+                // When released, snap _mouse object into tile
+                else if (InputHelper.GetInputState(MouseButton.Left) == InputState.Released)
+                    _mouse.Translate(_mouseTilePosition.X * _mouseTilePosition.TileWidth + _mouseTilePosition.TileWidth / 2,
+                        _mouseTilePosition.Y * _mouseTilePosition.TileHeight + _mouseTilePosition.TileHeight / 2);
+            }
         }
 
         private void SetupBoard()

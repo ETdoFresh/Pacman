@@ -136,10 +136,35 @@ namespace Pacman.Engine.Display
             return RemoveComponent(component, true);
         }
 
+        public void DisableAllComponents()
+        {
+            foreach(GameObject component in _componentList)
+                component.Enabled = false;
+        }
+
+        public void HideAllComponents()
+        {
+            foreach (GameObject component in _componentList)
+                component.Visible = false;
+        }
+
+        public void EnableAllComponents()
+        {
+            foreach (GameObject component in _componentList)
+                component.Enabled = true;
+        }
+
+        public void ShowAllComponents()
+        {
+            foreach (GameObject component in _componentList)
+                component.Visible = true;
+        }
+
         public bool IsInitialized { get; protected set; }
         public bool Enabled { get; set; }
         public bool Visible { get; set; }
         public GameObject Parent { get; set; }
+        public int NumComponents { get { return _componentList.Count; } }
 
         public GameObject this[int index]
         {

@@ -44,9 +44,9 @@ namespace Pacman.Objects
 
         public override void  Update(GameTime gameTime)
         {
-            base.Update(gameTime);
             if (Enabled)
             {
+                base.Update(gameTime);
                 time += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 if (limit > 0 && time >= limit)

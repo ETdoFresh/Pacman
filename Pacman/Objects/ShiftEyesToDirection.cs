@@ -21,11 +21,14 @@ namespace Pacman.Objects
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (_ghost.Direction.Value != _previousDirection)
+            if (Enabled)
             {
-                SetEyesByDirection();
-                _previousDirection = _ghost.Direction.Value;
+                base.Update(gameTime);
+                if (_ghost.Direction.Value != _previousDirection)
+                {
+                    SetEyesByDirection();
+                    _previousDirection = _ghost.Direction.Value;
+                }
             }
         }
 

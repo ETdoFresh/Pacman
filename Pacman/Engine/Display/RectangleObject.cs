@@ -52,10 +52,13 @@ namespace Pacman.Engine.Display
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            var width = (int)(Width * ContentScale);
-            var height = (int)(Height * ContentScale);
-            _rectangle = new Rectangle((int)ContentPosition.X, (int)ContentPosition.Y, width, height);
+            if (Enabled)
+            {
+                base.Update(gameTime);
+                var width = (int)(Width * ContentScale);
+                var height = (int)(Height * ContentScale);
+                _rectangle = new Rectangle((int)ContentPosition.X, (int)ContentPosition.Y, width, height);
+            }
         }
 
         /// <summary>
@@ -64,7 +67,8 @@ namespace Pacman.Engine.Display
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
-            Stage.SpriteBatch.Draw(_texture, _rectangle, null, Tint * Alpha, ContentOrientation, Origin, SpriteEffects.None, 0);
+            if (Visible)
+                Stage.SpriteBatch.Draw(_texture, _rectangle, null, Tint * Alpha, ContentOrientation, Origin, SpriteEffects.None, 0);
         }
 
         /// <summary>

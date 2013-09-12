@@ -41,12 +41,34 @@ namespace Pacman.Objects
 
         public virtual void SetProperties(Ghost ghost)
         {
-            ghost.ResetProperties();
+            ghost.DisableAllComponents();
+            ghost.HideAllComponents();
+
+            ghost.TilePosition.Enabled = true;
+            ghost.Wrap.Enabled = true;
+            ghost.Body.Enabled = true;
+            ghost.Eyes.Enabled = true;
+            ghost.Pupils.Enabled = true;
+
+            ghost.Body.Visible = true;
+            ghost.Eyes.Visible = true;
+            ghost.Pupils.Visible = true;
+
+            ghost.Pupils.Tint = new Color(60, 87, 167);
+
+            ghost.Speed.Factor = 1;
         }
 
         private class Home : GhostState
         {
             public Home() : base(HOME) { }
+
+            public override void SetProperties(Ghost ghost)
+            {
+                base.SetProperties(ghost);
+                ghost.Eyes.ChangeIndex(20);
+                ghost.Pupils.ChangeIndex(25);
+            }
         }
 
         private class LeavingHome : GhostState
@@ -57,6 +79,19 @@ namespace Pacman.Objects
         private class Chase : GhostState
         {
             public Chase() : base(CHASE) { }
+
+            public override void SetProperties(Ghost ghost)
+            {
+                base.SetProperties(ghost);
+                ghost.Velocity.Enabled = true;
+                ghost.Steering.Enabled = true;
+                ghost.ShiftEyesToDirection.Enabled = true;
+                ghost.Target.Enabled = true;
+                ghost.Target.Visible = true;
+                ghost.ImmediateTarget.Enabled = true;
+                ghost.ImmediateTarget.Visible = true;
+                ghost.SnapToTarget.Enabled = true;
+            }
         }
 
         private class Scatter : GhostState

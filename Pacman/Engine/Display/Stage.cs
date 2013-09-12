@@ -69,22 +69,25 @@ namespace Pacman.Engine.Display
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Update(GameTime gameTime)
         {
-            InputHelper.Update();
-
-            // Have a seperate array of scenes to update in case an active scene is added or removed
-            _scenesToUpdate.Clear();
-            _scenesToUpdate.AddRange(_activeScenes);
-
-            // pop scenes out until all scenes are updated
-            while (_scenesToUpdate.Count > 0)
+            if (Enabled)
             {
-                var scene = _scenesToUpdate[_scenesToUpdate.Count - 1];
-                _scenesToUpdate.RemoveAt(_scenesToUpdate.Count - 1);
-                if (scene.Enabled)
-                    scene.Update(gameTime);
-            }
+                InputHelper.Update();
 
-            base.Update(gameTime);
+                // Have a seperate array of scenes to update in case an active scene is added or removed
+                _scenesToUpdate.Clear();
+                _scenesToUpdate.AddRange(_activeScenes);
+
+                // pop scenes out until all scenes are updated
+                while (_scenesToUpdate.Count > 0)
+                {
+                    var scene = _scenesToUpdate[_scenesToUpdate.Count - 1];
+                    _scenesToUpdate.RemoveAt(_scenesToUpdate.Count - 1);
+                    if (scene.Enabled)
+                        scene.Update(gameTime);
+                }
+
+                base.Update(gameTime);
+            }
         }
 
         /// <summary>

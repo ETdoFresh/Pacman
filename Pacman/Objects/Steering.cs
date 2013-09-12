@@ -27,9 +27,12 @@ namespace Pacman.Objects
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            _steerType.Update(gameTime);
-            _rotationType.Update(gameTime);
+            if (Enabled)
+            {
+                base.Update(gameTime);
+                _steerType.Update(gameTime);
+                _rotationType.Update(gameTime);
+            }
         }
 
         public interface ISteerType

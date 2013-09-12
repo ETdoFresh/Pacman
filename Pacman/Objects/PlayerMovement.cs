@@ -25,9 +25,12 @@ namespace Pacman.Objects
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            SetNewDirection();
-            SetNewTarget();
+            if (Enabled)
+            {
+                base.Update(gameTime);
+                SetNewDirection();
+                SetNewTarget();
+            }
         }
 
         private void SetNewDirection()

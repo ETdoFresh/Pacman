@@ -31,10 +31,11 @@ namespace Pacman.Engine.Display
         public float ContentWidth { get { return Width * ContentScale; } }
         public float ContentHeight { get { return Height * ContentScale; } }
 
-        public DisplayObject() : base()
+        public DisplayObject()
+            : base()
         {
-            Position = new Position();
-            Orientation = new Orientation();
+            Position = new Position(0, 0);
+            Orientation = new Orientation(0);
             Scale = new Scale(1);
             Alpha = 1;
             Tint = Color.White;

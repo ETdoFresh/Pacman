@@ -31,31 +31,34 @@ namespace Pacman.Engine.Helpers
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            var output = "";
-
-            for (var i = 0; i < _labels.Count; i++)
+            if (Enabled)
             {
-                output += _labels[i] + " ";
-                
-                if (_objects[i].GetType() == typeof(Position))
-                    output += (_objects[i] as Position).Value;
-                else if (_objects[i].GetType() == typeof(TilePosition))
-                    output += (_objects[i] as TilePosition).Vector;
-                else if (_objects[i].GetType() == typeof(Rotation))
-                    output += (_objects[i] as Rotation).Value;
-                else if (_objects[i].GetType() == typeof(Orientation))
-                    output += (_objects[i] as Orientation).Value;
-                else if (_objects[i].GetType() == typeof(Direction))
-                    output += (_objects[i] as Direction).Value;
-                else if (_objects[i].GetType() == typeof(Velocity))
-                    output += (_objects[i] as Velocity).Speed.Value;
+                base.Update(gameTime);
+                var output = "";
 
-                output += "\n";
+                for (var i = 0; i < _labels.Count; i++)
+                {
+                    output += _labels[i] + " ";
+
+                    if (_objects[i].GetType() == typeof(Position))
+                        output += (_objects[i] as Position).Value;
+                    else if (_objects[i].GetType() == typeof(TilePosition))
+                        output += (_objects[i] as TilePosition).Vector;
+                    else if (_objects[i].GetType() == typeof(Rotation))
+                        output += (_objects[i] as Rotation).Value;
+                    else if (_objects[i].GetType() == typeof(Orientation))
+                        output += (_objects[i] as Orientation).Value;
+                    else if (_objects[i].GetType() == typeof(Direction))
+                        output += (_objects[i] as Direction).Value;
+                    else if (_objects[i].GetType() == typeof(Velocity))
+                        output += (_objects[i] as Velocity).Speed.Value;
+
+                    output += "\n";
+                }
+
+                _textObject.Text = output;
+                _textObject.Translate(_textObject.Width / 2, _textObject.Height / 2);
             }
-
-            _textObject.Text = output;
-            _textObject.Translate(_textObject.Width / 2, _textObject.Height / 2);
         }
     }
 }

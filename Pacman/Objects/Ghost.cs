@@ -23,15 +23,16 @@ namespace Pacman.Objects
 
         protected virtual void Create()
         {
+            _ghostState = GhostState.Change(GhostState.HOME);
             SetAnimations();
             SetTransforms();
             SetProperties();
             SetUpdaters();
-            ResetProperties();
+            _ghostState.SetProperties(this);
             _tileGrid.AddComponent(this);
         }
 
-        protected void SetAnimations()
+        protected virtual void SetAnimations()
         {
             Body = new AnimatedSpriteObject("pacman");
             Eyes = new SpriteObject("pacman", 20);
@@ -69,18 +70,6 @@ namespace Pacman.Objects
             AddComponent(Wrap);
             AddComponent(SnapToTarget);
             AddComponent(ShiftEyesToDirection);
-        }
-
-        public virtual void ResetProperties() 
-        {
-            Body.Visible = true;
-            Eyes.Visible = true;
-            Pupils.Visible = true;
-            Eyes.ChangeIndex(20);
-            Pupils.ChangeIndex(25);
-            Pupils.Tint = new Color(60, 87, 167);
-            ShiftEyesToDirection.Enabled = true;
-            Speed.Factor = 1;
         }
 
         public void ChangeState(GhostState.GhostStates ghostState)

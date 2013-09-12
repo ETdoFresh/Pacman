@@ -25,8 +25,11 @@ namespace Pacman.Engine.Helpers
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            Orientation.Value += Value * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (Enabled)
+            {
+                base.Update(gameTime);
+                Orientation.Value += Value * (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
     }
 }

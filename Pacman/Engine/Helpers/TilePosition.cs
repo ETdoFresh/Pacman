@@ -33,15 +33,18 @@ namespace Pacman.Engine.Helpers
 
         public override void Update(GameTime gameTime)
         {
-            base.Update(gameTime);
-            if (_position.Value != _oldPosition)
+            if (Enabled)
             {
-                UpdateTilePosition();
-
-                if (Vector != _oldTile)
+                base.Update(gameTime);
+                if (_position.Value != _oldPosition)
                 {
-                    ChangeTile();
-                    _oldTile = Vector;
+                    UpdateTilePosition();
+
+                    if (Vector != _oldTile)
+                    {
+                        ChangeTile();
+                        _oldTile = Vector;
+                    }
                 }
             }
         }
