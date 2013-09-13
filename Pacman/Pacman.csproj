@@ -117,7 +117,7 @@
     <Compile Include="Objects\ISteer.cs" />
     <Compile Include="Objects\LeaveHome.cs" />
     <Compile Include="Objects\PacmanObject.cs" />
-    <Compile Include="Objects\Pellet.cs" />
+    <Compile Include="Objects\Pellets.cs" />
     <Compile Include="Objects\PelletEater.cs" />
     <Compile Include="Objects\Pinky.cs" />
     <Compile Include="Objects\SnapToTarget.cs" />

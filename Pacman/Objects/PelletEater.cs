@@ -11,15 +11,18 @@ namespace Pacman.Objects
     class PelletEater : GameObject
     {
         PacmanObject _pacman;
-        Pellet[,] _pelletGrid;
+        Pellets.Pellet[,] _pelletGrid;
 
-        public PelletEater(PacmanObject pacman, List<Pellet> pellets, TileGrid tileGrid)
+        public PelletEater(PacmanObject pacman, Pellets pellets, TileGrid tileGrid)
         {
             _pacman = pacman;
-            _pelletGrid = new Pellet[tileGrid.NumberOfXTiles, tileGrid.NumberOfYTiles];
+            _pelletGrid = new Pellets.Pellet[tileGrid.NumberOfXTiles, tileGrid.NumberOfYTiles];
 
-            foreach (var pellet in pellets)
+            for (int i = 0; i < pellets.NumPellets; i++)
+            {
+                var pellet = pellets.GetPellet(i);
                 _pelletGrid[pellet.TilePosition.X, pellet.TilePosition.Y] = pellet;
+            }
 
             _pacman.TilePosition.ChangeTile += OnChangeTile;
         }

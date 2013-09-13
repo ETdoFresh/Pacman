@@ -77,6 +77,11 @@ namespace Pacman.Objects
             _ghostState = GhostState.Change(ghostState, this);
         }
 
+        public GhostState.GhostStates GetState()
+        {
+            return _ghostState.CurrentState;
+        }
+
         private void ResetProperties()
         {
             DisableAllComponents();

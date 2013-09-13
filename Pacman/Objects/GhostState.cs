@@ -16,7 +16,12 @@ namespace Pacman.Objects
         static public GhostStates FRIGHTENED { get { return GhostStates.Frightened; } }
         static public GhostStates EYES { get { return GhostStates.Eyes; } }
 
-        private GhostState(GhostStates ghostState) { }
+        GhostStates _currentState;
+
+        private GhostState(GhostStates currentState)
+        {
+            _currentState = currentState; 
+        }
 
         static public GhostState Change(GhostStates ghostState, Ghost ghost)
         {
@@ -38,6 +43,8 @@ namespace Pacman.Objects
                     throw new Exception("Ghost State not valid");
             }
         }
+
+        public GhostStates CurrentState { get { return _currentState; } }
 
         private class Home : GhostState
         {

@@ -13,7 +13,7 @@ namespace Pacman.Objects
     class PacmanObject : DisplayObject, ISteer
     {
         TileGrid _tileGrid;
-        List<Pellet> _pellets;
+        Pellets _pellets;
         AnimatedSpriteObject _animatedSprite;
         Speed _speed;
         Direction _desiredDirection;
@@ -28,13 +28,13 @@ namespace Pacman.Objects
         PelletEater _pelletEater;
         Position _startPosition;
 
-        public PacmanObject(TileGrid tileGrid, List<Pellet> pellets) 
+        public PacmanObject(TileGrid tileGrid, Pellets pellets) 
         {
             _tileGrid = tileGrid;
             _pellets = pellets;
         }
 
-        static public PacmanObject Create(TileGrid tileGrid, List<Pellet> pellets)
+        static public PacmanObject Create(TileGrid tileGrid, Pellets pellets)
         {
             var result = new PacmanObject(tileGrid, pellets);
             result.SetupAnimations();

@@ -21,9 +21,8 @@ namespace Pacman.Scenes
         Random _random;
         DebugHelper _debugHelper;
         Ghost _blinky, _pinky, _inky, _clyde;
-        List<Pellet> _pellets;
+        Pellets _pellets;
         Timer _timer;
-        bool _tempToggle;
 
         static public int tileWidth = 32;
         static public int tileHeight = 32;
@@ -78,12 +77,11 @@ namespace Pacman.Scenes
 
         private void OnTimerLimitReached()
         {
-            if (_tempToggle)
+            if (_blinky.GetState() == GhostState.HOME)
                 _blinky.ChangeState(GhostState.CHASE);
             else
                 _blinky.ChangeState(GhostState.HOME);
 
-            _tempToggle = !_tempToggle;
             _timer.Reset();
         }
 
@@ -154,32 +152,23 @@ namespace Pacman.Scenes
 
         private void GeneratePellets()
         {
-            _pellets = new List<Pellet>();
+            _pellets = new Pellets(_tileGrid);
+            _tileGrid.AddComponent(_pellets);
             for (var row = 0; row < pelletsData.GetLength(1); row++)
             {
                 for (var column = 0; column < pelletsData.GetLength(0); column++)
                 {
                     if (pelletsData[column, row] == 1)
                     {
-                        var pellet = new Pellet();
+                        var pellet = _pellets.AddPellet();
                         pellet.Translate(_tileGrid.GetPosition(row, column));
-                        pellet.TilePosition = new TilePosition(pellet.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
-                        pellet.SpriteObject = new SpriteObject("pacman", 26);
-                        pellet.AddComponent(pellet.TilePosition);
-                        pellet.AddComponent(pellet.SpriteObject);
-                        _tileGrid.AddComponent(pellet);
-                        _pellets.Add(pellet);
+                        pellet.TilePosition.Update(null);
                     }
                     else if (pelletsData[column, row] == 2)
                     {
-                        var pellet = new Pellet();
+                        var pellet = _pellets.AddPowerPellet();
                         pellet.Translate(_tileGrid.GetPosition(row, column));
-                        pellet.TilePosition = new TilePosition(pellet.Position, _tileGrid.TileWidth, _tileGrid.TileHeight);
-                        pellet.SpriteObject = new SpriteObject("pacman", 27);
-                        pellet.AddComponent(pellet.TilePosition);
-                        pellet.AddComponent(pellet.SpriteObject);
-                        _tileGrid.AddComponent(pellet);
-                        _pellets.Add(pellet);
+                        pellet.TilePosition.Update(null);
                     }
                 }
             }
