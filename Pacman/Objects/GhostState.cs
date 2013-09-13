@@ -18,113 +18,55 @@ namespace Pacman.Objects
 
         private GhostState(GhostStates ghostState) { }
 
-        static public GhostState Change(GhostStates ghostState)
+        static public GhostState Change(GhostStates ghostState, Ghost ghost)
         {
             switch (ghostState)
             {
                 case GhostStates.Home:
-                    return new Home();
+                    return new Home(ghost);
                 case GhostStates.LeavingHome:
-                    return new LeavingHome();
+                    return new LeavingHome(ghost);
                 case GhostStates.Chase:
-                    return new Chase();
+                    return new Chase(ghost);
                 case GhostStates.Scatter:
-                    return new Scatter();
+                    return new Scatter(ghost);
                 case GhostStates.Frightened:
-                    return new Frightened();
+                    return new Frightened(ghost);
                 case GhostStates.Eyes:
-                    return new Eyes();
+                    return new Eyes(ghost);
                 default:
                     throw new Exception("Ghost State not valid");
             }
         }
 
-        public virtual void SetProperties(Ghost ghost)
-        {
-            ghost.DisableAllComponents();
-            ghost.HideAllComponents();
-
-            ghost.TilePosition.Enabled = true;
-            ghost.Wrap.Enabled = true;
-            ghost.Body.Enabled = true;
-            ghost.Eyes.Enabled = true;
-            ghost.Pupils.Enabled = true;
-
-            ghost.Body.Visible = true;
-            ghost.Eyes.Visible = true;
-            ghost.Pupils.Visible = true;
-
-            ghost.Pupils.Tint = new Color(60, 87, 167);
-
-            ghost.Speed.Factor = 1;
-        }
-
         private class Home : GhostState
         {
-            public Home() : base(HOME) { }
-
-            public override void SetProperties(Ghost ghost)
-            {
-                base.SetProperties(ghost);
-                ghost.Eyes.ChangeIndex(20);
-                ghost.Pupils.ChangeIndex(25);
-            }
+            public Home(Ghost ghost) : base(HOME) { ghost.OnHomeState(); }
         }
 
         private class LeavingHome : GhostState
         {
-            public LeavingHome() : base(LEAVINGHOME) { }
+            public LeavingHome(Ghost ghost) : base(LEAVINGHOME) { ghost.OnLeavingHomeState(); }
         }
 
         private class Chase : GhostState
         {
-            public Chase() : base(CHASE) { }
-
-            public override void SetProperties(Ghost ghost)
-            {
-                base.SetProperties(ghost);
-                ghost.Velocity.Enabled = true;
-                ghost.Steering.Enabled = true;
-                ghost.ShiftEyesToDirection.Enabled = true;
-                ghost.Target.Enabled = true;
-                ghost.Target.Visible = true;
-                ghost.ImmediateTarget.Enabled = true;
-                ghost.ImmediateTarget.Visible = true;
-                ghost.SnapToTarget.Enabled = true;
-            }
+            public Chase(Ghost ghost) : base(CHASE) { ghost.OnChaseState(); }
         }
 
         private class Scatter : GhostState
         {
-            public Scatter() : base(SCATTER) { }
+            public Scatter(Ghost ghost) : base(SCATTER) { ghost.OnScatterState(); }
         }
 
         private class Frightened : GhostState
         {
-            public Frightened() : base(FRIGHTENED) { }
-
-            public override void SetProperties(Ghost ghost)
-            {
-                base.SetProperties(ghost);
-                ghost.Body.Tint = new Color(60, 87, 167);
-                ghost.Eyes.Tint = new Color(255, 207, 50);
-                ghost.Eyes.ChangeIndex(28);
-                ghost.Pupils.Visible = false;
-                ghost.ShiftEyesToDirection.Enabled = false;
-                ghost.Speed.Factor = 0.7f;
-            }
+            public Frightened(Ghost ghost) : base(FRIGHTENED) { ghost.OnFrightenedState(); }
         }
 
         private class Eyes : GhostState
         {
-            public Eyes() : base(EYES) { }
-
-            public override void SetProperties(Ghost ghost)
-            {
-                base.SetProperties(ghost);
-                ghost.Body.Visible = false;
-                ghost.Speed.Factor = 1.2f;
-            }
+            public Eyes(Ghost ghost) : base(EYES) { ghost.OnEyesState(); }
         }
     }
 }

@@ -34,6 +34,7 @@ namespace Pacman.Objects
         public void Reset()
         {
             time = 0;
+            Enabled = true;
         }
 
         public void Reset(float newLimit)
@@ -50,7 +51,10 @@ namespace Pacman.Objects
                 time += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
 
                 if (limit > 0 && time >= limit)
+                {
+                    Enabled = false;
                     ClockReachedLimit();
+                }
             }
         }
     }

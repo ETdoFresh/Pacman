@@ -15,20 +15,19 @@ namespace Pacman.Objects
         protected TileGrid _tileGrid;
         protected PacmanObject _pacman;
 
-        public Ghost(TileGrid tileGrid, PacmanObject pacmanObject)
+        public Ghost(TileGrid tileGrid, PacmanObject pacman)
         {
             _tileGrid = tileGrid;
-            _pacman = pacmanObject;
+            _pacman = pacman;
         }
 
         protected virtual void Create()
         {
-            _ghostState = GhostState.Change(GhostState.HOME);
             SetAnimations();
             SetTransforms();
             SetProperties();
             SetUpdaters();
-            _ghostState.SetProperties(this);
+            ChangeState(GhostState.HOME);
             _tileGrid.AddComponent(this);
         }
 
@@ -72,10 +71,70 @@ namespace Pacman.Objects
             AddComponent(ShiftEyesToDirection);
         }
 
-        public void ChangeState(GhostState.GhostStates ghostState)
+        public virtual void ChangeState(GhostState.GhostStates ghostState)
         {
-            _ghostState = GhostState.Change(ghostState);
-            _ghostState.SetProperties(this);
+            ResetProperties();
+            _ghostState = GhostState.Change(ghostState, this);
+        }
+
+        private void ResetProperties()
+        {
+            DisableAllComponents();
+            HideAllComponents();
+            TilePosition.Enabled = true;
+            Wrap.Enabled = true;
+            Body.Enabled = true;
+            Eyes.Enabled = true;
+            Pupils.Enabled = true;
+            Body.Visible = true;
+            Eyes.Visible = true;
+            Pupils.Visible = true;
+            Pupils.Tint = new Color(60, 87, 167);
+            Speed.Factor = 1;
+        }
+
+        public virtual void OnHomeState()
+        {
+            Target.ChangeState(Target.FIXED);
+            Eyes.ChangeIndex(20);
+            Pupils.ChangeIndex(25);
+        }
+
+        public virtual void OnLeavingHomeState()
+        {
+
+        }
+
+        public virtual void OnChaseState()
+        {
+            Velocity.Enabled = true;
+            Steering.Enabled = true;
+            ShiftEyesToDirection.Enabled = true;
+            ShiftEyesToDirection.SetEyesByDirection();
+            SnapToTarget.Enabled = true;
+        }
+
+        public virtual void OnScatterState()
+        {
+            Target.ChangeState(Target.FIXED);
+        }
+
+        public virtual void OnFrightenedState()
+        {
+            Target.ChangeState(Target.FIXED);
+            Body.Tint = new Color(60, 87, 167);
+            Eyes.Tint = new Color(255, 207, 50);
+            Eyes.ChangeIndex(28);
+            Pupils.Visible = false;
+            ShiftEyesToDirection.Enabled = false;
+            Speed.Factor = 0.7f;
+        }
+
+        public virtual void OnEyesState()
+        {
+            Target.ChangeState(Target.FIXED);
+            Body.Visible = false;
+            Speed.Factor = 1.2f;
         }
 
         public override void RemoveSelf()

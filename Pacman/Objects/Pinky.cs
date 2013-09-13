@@ -33,11 +33,16 @@ namespace Pacman.Objects
         {
             base.SetProperties();
             Target = new Target();
-            Target.ChangeState(Target.PINKY, _pacman);
             ImmediateTarget = new Target();
             ImmediateTarget.ChangeState(Target.IMMEDIATE, _tileGrid, this);
             _tileGrid.AddComponent(Target);
             _tileGrid.AddComponent(ImmediateTarget);
+        }
+
+        public override void OnChaseState()
+        {
+            base.OnChaseState();
+            Target.ChangeState(Target.PINKY, _pacman);
         }
     }
 }

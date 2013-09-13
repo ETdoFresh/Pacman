@@ -32,7 +32,7 @@ namespace Pacman.Objects
             }
         }
 
-        private void SetEyesByDirection()
+        public void SetEyesByDirection()
         {
             int eyeOffset = 16;
             int pupilOffset = 21;

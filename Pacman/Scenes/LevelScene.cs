@@ -22,6 +22,8 @@ namespace Pacman.Scenes
         DebugHelper _debugHelper;
         Ghost _blinky, _pinky, _inky, _clyde;
         List<Pellet> _pellets;
+        Timer _timer;
+        bool _tempToggle;
 
         static public int tileWidth = 32;
         static public int tileHeight = 32;
@@ -44,6 +46,10 @@ namespace Pacman.Scenes
             _pinky = Pinky.Create(_tileGrid, _pacman);
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
             _clyde = Clyde.Create(_tileGrid, _pacman);
+
+            _timer = new Timer(1000);
+            _timer.ClockReachedLimit += OnTimerLimitReached;
+            AddComponent(_timer);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
@@ -68,6 +74,17 @@ namespace Pacman.Scenes
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);
             AddComponent(_debugHelper);
+        }
+
+        private void OnTimerLimitReached()
+        {
+            if (_tempToggle)
+                _blinky.ChangeState(GhostState.CHASE);
+            else
+                _blinky.ChangeState(GhostState.HOME);
+
+            _tempToggle = !_tempToggle;
+            _timer.Reset();
         }
 
         public override void LoadContent()
