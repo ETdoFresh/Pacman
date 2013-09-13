@@ -33,8 +33,10 @@ namespace Pacman.Objects
         protected override void SetProperties()
         {
             base.SetProperties();
-            Target = new Target.Inky(_pacman, _blinky);
-            ImmediateTarget = new Target.Immediate(this, _tileGrid);
+            Target = new Target();
+            Target.ChangeState(Target.INKY, _pacman, _blinky);
+            ImmediateTarget = new Target();
+            ImmediateTarget.ChangeState(Target.IMMEDIATE, _tileGrid, this);
             _tileGrid.AddComponent(Target);
             _tileGrid.AddComponent(ImmediateTarget);
         }

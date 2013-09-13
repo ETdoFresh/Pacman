@@ -24,7 +24,6 @@ namespace Pacman.Objects
         Steering _steering;
         SnapToTarget _snapToTarget;
         Wrap _wrap;
-        PlayerMovement _playerMovement;
         Target _target;
         PelletEater _pelletEater;
         Position _startPosition;
@@ -59,7 +58,8 @@ namespace Pacman.Objects
         private void SetupProperties()
         {
             _speed = new Speed(LevelScene.maxSpeed);
-            _target = new Target.Pacman();
+            _target = new Target();
+            _target.ChangeState(Target.PACMAN, _tileGrid, this);
             _desiredDirection = new Direction(Direction.LEFT);
             _previousDirection = new Direction(Direction.LEFT);
             _tileGrid.AddComponent(_target);
@@ -72,14 +72,12 @@ namespace Pacman.Objects
             _steering = new Steering(this, _target as ISteer);
             _wrap = new Wrap(Position, 0, 0, _tileGrid.Width, _tileGrid.Height);
             _snapToTarget = new SnapToTarget(this, _velocity, _target);
-            _playerMovement = new PlayerMovement(this, _target, _tileGrid);
             _pelletEater = new PelletEater(this, _pellets, _tileGrid);
             AddComponent(_velocity);
             AddComponent(_rotation);
             AddComponent(_steering);
             AddComponent(_wrap);
             AddComponent(_snapToTarget);
-            AddComponent(_playerMovement);
             AddComponent(_pelletEater);
         }
 

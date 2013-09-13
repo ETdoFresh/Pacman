@@ -120,7 +120,6 @@
     <Compile Include="Objects\Pellet.cs" />
     <Compile Include="Objects\PelletEater.cs" />
     <Compile Include="Objects\Pinky.cs" />
-    <Compile Include="Objects\PlayerMovement.cs" />
     <Compile Include="Objects\SnapToTarget.cs" />
     <Compile Include="Objects\Steering.cs" />
     <Compile Include="Objects\SteerTarget.cs" />
