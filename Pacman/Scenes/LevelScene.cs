@@ -22,8 +22,10 @@ namespace Pacman.Scenes
         DebugHelper _debugHelper;
         Ghost _blinky, _pinky, _inky, _clyde;
         Pellets _pellets;
-        Timer _timer;
         GhostState.GhostStates _levelState;
+        Timer _levelStateTimer;
+        int _stateTimerIteration;
+        Timer _ghostHomeTimer;
 
         static public int tileWidth = 32;
         static public int tileHeight = 32;
@@ -40,19 +42,26 @@ namespace Pacman.Scenes
             SetupBoard();
             GeneratePellets();
 
-            _levelState = GhostState.CHASE;
             _pacman = PacmanObject.Create(_tileGrid, _pellets);
             _blinky = Blinky.Create(_tileGrid, _pacman);
-            _blinky.ChangeState(GhostState.CHASE);
             _pinky = Pinky.Create(_tileGrid, _pacman);
-            _pinky.ChangeState(GhostState.LEAVINGHOME);
-            _pinky.SetLevelState(_levelState);
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
             _clyde = Clyde.Create(_tileGrid, _pacman);
+            
+            _levelState = GhostState.SCATTER;
+            _blinky.ChangeState(_levelState);
+            _blinky.SetLevelState(_levelState);
+            _pinky.SetLevelState(_levelState);
+            _inky.SetLevelState(_levelState);
+            _clyde.SetLevelState(_levelState);
 
-            _timer = new Timer(1000);
-            _timer.ClockReachedLimit += OnTimerLimitReached;
-            AddComponent(_timer);
+            _levelStateTimer = new Timer(7 * 1000);
+            _levelStateTimer.ClockReachedLimit += OnStateTimerLimitReached;
+            AddComponent(_levelStateTimer);
+
+            _ghostHomeTimer = new Timer(4 * 1000);
+            _ghostHomeTimer.ClockReachedLimit += OnHomeTimerLimitReached;
+            AddComponent(_ghostHomeTimer);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
@@ -79,14 +88,70 @@ namespace Pacman.Scenes
             AddComponent(_debugHelper);
         }
 
-        private void OnTimerLimitReached()
+        private void OnStateTimerLimitReached()
         {
-            if (_blinky.GetState() == GhostState.HOME)
-                _blinky.ChangeState(GhostState.CHASE);
-            else
-                _blinky.ChangeState(GhostState.HOME);
+            _stateTimerIteration++;
+            switch (_stateTimerIteration)
+            {
+                case 1:
+                    _levelState = GhostState.CHASE;
+                    _levelStateTimer.Reset(20 * 1000);
+                    break;
+                case 2:
+                    _levelState = GhostState.SCATTER;
+                    _levelStateTimer.Reset(7 * 1000);
+                    break;
+                case 3:
+                    _levelState = GhostState.CHASE;
+                    _levelStateTimer.Reset(20 * 1000);
+                    break;
+                case 4:
+                    _levelState = GhostState.SCATTER;
+                    _levelStateTimer.Reset(5 * 1000);
+                    break;
+                case 5:
+                    _levelState = GhostState.CHASE;
+                    _levelStateTimer.Reset(20 * 1000);
+                    break;
+                case 6:
+                    _levelState = GhostState.SCATTER;
+                    _levelStateTimer.Reset(5 * 1000);
+                    break;
+                case 7:
+                    _levelState = GhostState.CHASE;
+                    _levelStateTimer.Stop();
+                    break;
+                default:
+                    throw new Exception("Level Timer is not supposed to reach this iteration");
+            }
+            _blinky.SetLevelState(_levelState);
+            _pinky.SetLevelState(_levelState);
+            _inky.SetLevelState(_levelState);
+            _clyde.SetLevelState(_levelState);
+        }
 
-            _timer.Reset();
+        private void OnHomeTimerLimitReached()
+        {
+            if (_pinky.GetState() == GhostState.HOME)
+            {
+                _pinky.ChangeState(GhostState.LEAVINGHOME);
+                _ghostHomeTimer.Reset();
+            }
+            else if (_inky.GetState() == GhostState.HOME)
+            {
+                _inky.ChangeState(GhostState.LEAVINGHOME);
+                _ghostHomeTimer.Reset();
+            }
+            else if (_clyde.GetState() == GhostState.HOME)
+            {
+                _clyde.ChangeState(GhostState.LEAVINGHOME);
+                _ghostHomeTimer.Reset();
+            }
+            else
+            {
+                _ghostHomeTimer.ClockReachedLimit -= OnHomeTimerLimitReached;
+                _ghostHomeTimer.Stop();
+            }
         }
 
         public override void LoadContent()

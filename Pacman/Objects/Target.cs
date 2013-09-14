@@ -149,7 +149,8 @@ namespace Pacman.Objects
             {
                 _ghost = ghost;
                 _tileGrid = tileGrid;
-                _ghostNextTile = _ghostPrevTile = _ghost.TilePosition.Vector;
+                _ghostNextTile = _ghost.TilePosition.Vector;
+                _ghostPrevTile = _ghostNextTile + offsets[3];
                 _targetTilePosition = new TilePosition(ghost.Target.Position, tileGrid.TileWidth, tileGrid.TileHeight);
                 target.Tint = Color.White;
             }

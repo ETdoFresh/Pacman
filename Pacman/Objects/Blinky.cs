@@ -24,14 +24,20 @@ namespace Pacman.Objects
 
         protected override void SetTransforms()
         {
-            base.SetTransforms();
             Translate(_tileGrid.GetPosition(13.5f, 11f));
+            base.SetTransforms();
         }
 
         public override void OnChaseState()
         {
             base.OnChaseState();
             Target.ChangeState(Target.BLINKY, _pacman);
+        }
+
+        public override void OnScatterState()
+        {
+            base.OnScatterState();
+            Target.Translate(_tileGrid.GetPosition(25, -3));
         }
     }
 }

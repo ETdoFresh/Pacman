@@ -114,7 +114,7 @@ namespace Pacman.Objects
         public virtual void OnLeavingHomeState()
         {
             ImmediateTarget.ChangeState(Target.FIXED);
-            ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14f));
+            ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14.01f));
             Velocity.Enabled = true;
             Steering.Enabled = true;
             ShiftEyesToDirection.Enabled = true;
@@ -143,6 +143,10 @@ namespace Pacman.Objects
         public void SetLevelState(GhostState.GhostStates ghostState)
         {
             _levelState = ghostState;
+            if (_ghostState.CurrentState == GhostState.CHASE || _ghostState.CurrentState == GhostState.SCATTER)
+            {
+                ChangeState(_levelState);
+            }
         }
 
         public virtual void OnChaseState()
@@ -157,6 +161,11 @@ namespace Pacman.Objects
         public virtual void OnScatterState()
         {
             Target.ChangeState(Target.FIXED);
+            Velocity.Enabled = true;
+            Steering.Enabled = true;
+            ShiftEyesToDirection.Enabled = true;
+            ShiftEyesToDirection.SetEyesByDirection();
+            SnapToTarget.Enabled = true;
         }
 
         public virtual void OnFrightenedState()
