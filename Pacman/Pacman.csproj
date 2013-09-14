@@ -71,7 +71,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86" />
@@ -115,7 +115,6 @@
     <Compile Include="Objects\Ghost.cs" />
     <Compile Include="Objects\Inky.cs" />
     <Compile Include="Objects\ISteer.cs" />
-    <Compile Include="Objects\LeaveHome.cs" />
     <Compile Include="Objects\PacmanObject.cs" />
     <Compile Include="Objects\Pellets.cs" />
     <Compile Include="Objects\PelletEater.cs" />

@@ -11,6 +11,7 @@ namespace Pacman.Objects
     abstract class Ghost : DisplayObject, ISteer
     {
         private GhostState _ghostState;
+        private GhostState.GhostStates _levelState;
 
         protected TileGrid _tileGrid;
         protected PacmanObject _pacman;
@@ -54,6 +55,11 @@ namespace Pacman.Objects
         {
             Speed = new Speed(225);
             Direction = new Direction(Direction.LEFT);
+            Target = new Target();
+            ImmediateTarget = new Target();
+            ImmediateTarget.ChangeState(Target.IMMEDIATE, _tileGrid, this);
+            _tileGrid.AddComponent(Target);
+            _tileGrid.AddComponent(ImmediateTarget);
         }
 
         protected virtual void SetUpdaters()
@@ -107,7 +113,36 @@ namespace Pacman.Objects
 
         public virtual void OnLeavingHomeState()
         {
+            ImmediateTarget.ChangeState(Target.FIXED);
+            ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14f));
+            Velocity.Enabled = true;
+            Steering.Enabled = true;
+            ShiftEyesToDirection.Enabled = true;
+            ShiftEyesToDirection.SetEyesByDirection();
+            SnapToTarget.Enabled = true;
+            Direction.Value = Direction.RIGHT;
+            Steering.OnArriveAtTarget += OnLeaveHomeFirstArrive;
+            Speed.Factor = 0.4f;
+        }
 
+        private void OnLeaveHomeFirstArrive()
+        {
+            Direction.Value = Direction.UP;
+            Steering.OnArriveAtTarget -= OnLeaveHomeFirstArrive;
+            ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 11f));
+            Steering.OnArriveAtTarget += OnLeaveHomeSecondArrive;
+        }
+
+        private void OnLeaveHomeSecondArrive()
+        {
+            Steering.OnArriveAtTarget -= OnLeaveHomeSecondArrive;
+            ImmediateTarget.ChangeState(Target.IMMEDIATE, _tileGrid, this);
+            ChangeState(_levelState);
+        }
+
+        public void SetLevelState(GhostState.GhostStates ghostState)
+        {
+            _levelState = ghostState;
         }
 
         public virtual void OnChaseState()
@@ -156,7 +191,6 @@ namespace Pacman.Objects
             if (TilePosition != null) TilePosition.RemoveSelf();
             if (ImmediateTarget != null) ImmediateTarget.RemoveSelf();
             if (ShiftEyesToDirection != null) ShiftEyesToDirection.RemoveSelf();
-            if (LeaveHome != null) LeaveHome.RemoveSelf();
             base.RemoveSelf();
         }
 
@@ -174,6 +208,5 @@ namespace Pacman.Objects
         public TilePosition TilePosition { get; set; }
         public Target ImmediateTarget { get; set; }
         public ShiftEyesToDirection ShiftEyesToDirection { get; set; }
-        public LeaveHome LeaveHome { get; set; }
     }
 }

@@ -23,6 +23,7 @@ namespace Pacman.Scenes
         Ghost _blinky, _pinky, _inky, _clyde;
         Pellets _pellets;
         Timer _timer;
+        GhostState.GhostStates _levelState;
 
         static public int tileWidth = 32;
         static public int tileHeight = 32;
@@ -39,10 +40,13 @@ namespace Pacman.Scenes
             SetupBoard();
             GeneratePellets();
 
+            _levelState = GhostState.CHASE;
             _pacman = PacmanObject.Create(_tileGrid, _pellets);
             _blinky = Blinky.Create(_tileGrid, _pacman);
             _blinky.ChangeState(GhostState.CHASE);
             _pinky = Pinky.Create(_tileGrid, _pacman);
+            _pinky.ChangeState(GhostState.LEAVINGHOME);
+            _pinky.SetLevelState(_levelState);
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
             _clyde = Clyde.Create(_tileGrid, _pacman);
 

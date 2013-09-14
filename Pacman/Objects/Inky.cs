@@ -30,16 +30,6 @@ namespace Pacman.Objects
             Translate(_tileGrid.GetPosition(13.5f, 14f));
         }
 
-        protected override void SetProperties()
-        {
-            base.SetProperties();
-            Target = new Target();
-            ImmediateTarget = new Target();
-            ImmediateTarget.ChangeState(Target.IMMEDIATE, _tileGrid, this);
-            _tileGrid.AddComponent(Target);
-            _tileGrid.AddComponent(ImmediateTarget);
-        }
-
         public override void OnChaseState()
         {
             base.OnChaseState();

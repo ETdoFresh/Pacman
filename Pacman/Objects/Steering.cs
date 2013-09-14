@@ -16,12 +16,15 @@ namespace Pacman.Objects
         ISteerType _steerType;
         ISteerType _rotationType;
 
+        public delegate void ArriveAtTarget();
+        public event ArriveAtTarget OnArriveAtTarget = delegate { };
+
         public Steering(ISteer character, DisplayObject target) : this(character, new SteerTarget(target)) { }
         public Steering(ISteer character, ISteer target)
         {
             _character = character;
             _target = target;
-            _steerType = new DynamicSeek(character, target, 100);
+            _steerType = new DynamicSeek(character, target, this, 100);
             _rotationType = new DynamicLookWhereYouAreGoing(character, target, MathHelper.ToRadians(1080));
         }
 
@@ -44,12 +47,15 @@ namespace Pacman.Objects
         {
             ISteer _character;
             ISteer _target;
+            Steering _steering;
             float _acceleration;
+            bool _isMoving;
 
-            public DynamicSeek(ISteer character, ISteer target, float acceleration)
+            public DynamicSeek(ISteer character, ISteer target, Steering steering, float acceleration)
             {
                 _character = character;
                 _target = target;
+                _steering = steering;
                 _acceleration = acceleration;
             }
 
@@ -59,9 +65,18 @@ namespace Pacman.Objects
                 velocity = _target.Position.Value - _character.Position.Value;
                 if (velocity != Vector2.Zero)
                 {
+                    _isMoving = true;
                     velocity.Normalize();
                     velocity *= _acceleration;
                     _character.Velocity.Value += velocity;
+                }
+                else
+                {
+                    if (_isMoving)
+                    {
+                        _isMoving = false;
+                        _steering.OnArriveAtTarget();
+                    }
                 }
             }
         }
