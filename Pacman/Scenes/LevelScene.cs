@@ -47,7 +47,7 @@ namespace Pacman.Scenes
             _pinky = Pinky.Create(_tileGrid, _pacman);
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
             _clyde = Clyde.Create(_tileGrid, _pacman);
-            
+
             _levelState = GhostState.SCATTER;
             _blinky.ChangeState(_levelState);
             _blinky.SetLevelState(_levelState);
@@ -132,17 +132,17 @@ namespace Pacman.Scenes
 
         private void OnHomeTimerLimitReached()
         {
-            if (_pinky.GetState() == GhostState.HOME)
+            if (_pinky.CurrentState == GhostState.HOME)
             {
                 _pinky.ChangeState(GhostState.LEAVINGHOME);
                 _ghostHomeTimer.Reset();
             }
-            else if (_inky.GetState() == GhostState.HOME)
+            else if (_inky.CurrentState == GhostState.HOME)
             {
                 _inky.ChangeState(GhostState.LEAVINGHOME);
                 _ghostHomeTimer.Reset();
             }
-            else if (_clyde.GetState() == GhostState.HOME)
+            else if (_clyde.CurrentState == GhostState.HOME)
             {
                 _clyde.ChangeState(GhostState.LEAVINGHOME);
                 _ghostHomeTimer.Reset();

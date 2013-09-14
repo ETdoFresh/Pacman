@@ -83,9 +83,10 @@ namespace Pacman.Objects
             _ghostState = GhostState.Change(ghostState, this);
         }
 
-        public GhostState.GhostStates GetState()
+        public void ReverseDirection()
         {
-            return _ghostState.CurrentState;
+            if (ImmediateTarget != null)
+                (ImmediateTarget.CurrentType as Target.ImmediateType).ReverseDirection();
         }
 
         private void ResetProperties()
@@ -145,6 +146,7 @@ namespace Pacman.Objects
             _levelState = ghostState;
             if (_ghostState.CurrentState == GhostState.CHASE || _ghostState.CurrentState == GhostState.SCATTER)
             {
+                ReverseDirection();
                 ChangeState(_levelState);
             }
         }
@@ -217,5 +219,6 @@ namespace Pacman.Objects
         public TilePosition TilePosition { get; set; }
         public Target ImmediateTarget { get; set; }
         public ShiftEyesToDirection ShiftEyesToDirection { get; set; }
+        public GhostState.GhostStates CurrentState { get { return _ghostState.CurrentState; } }
     }
 }

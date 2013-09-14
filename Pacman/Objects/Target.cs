@@ -70,6 +70,7 @@ namespace Pacman.Objects
         public Speed Speed { get; set; }
         public Velocity Velocity { get; set; }
         public Rotation Rotation { get; set; }
+        public TargetState CurrentType { get { return _targetState; } }
 
         abstract internal class TargetState
         {
@@ -149,8 +150,8 @@ namespace Pacman.Objects
             {
                 _ghost = ghost;
                 _tileGrid = tileGrid;
+                _ghostPrevTile = _ghost.TilePosition.Vector + offsets[1];
                 _ghostNextTile = _ghost.TilePosition.Vector;
-                _ghostPrevTile = _ghostNextTile + offsets[3];
                 _targetTilePosition = new TilePosition(ghost.Target.Position, tileGrid.TileWidth, tileGrid.TileHeight);
                 target.Tint = Color.White;
             }
@@ -215,6 +216,14 @@ namespace Pacman.Objects
                     return false;
                 else
                     return true;
+            }
+
+            public void ReverseDirection()
+            {
+                var tempTile = _ghostPrevTile;
+                _ghostPrevTile = _ghostNextTile;
+                if (_ghostNextTile != _ghost.TilePosition.Vector)
+                    _ghostNextTile = tempTile;
             }
         }
 
