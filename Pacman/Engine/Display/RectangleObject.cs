@@ -36,7 +36,7 @@ namespace Pacman.Engine.Display
         public override void LoadContent()
         {
             base.LoadContent();
-            
+
             if (!FindPreviousTexture())
             {
                 CreateNewRectangleTexture();

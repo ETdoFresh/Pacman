@@ -20,9 +20,6 @@ namespace Pacman.Engine.Display
             Debug.WriteLine("Game Object Constructed | " + this);
             _componentList = new List<GameObject>();
             _componentsToBeUpdated = new List<GameObject>();
-
-            if (Stage.IsInitialized)
-                Initialize();
         }
 
         /// <summary>
@@ -104,6 +101,9 @@ namespace Pacman.Engine.Display
         /// <returns>Component that was added</returns>
         public virtual GameObject AddComponent(GameObject component)
         {
+            if (!component.IsInitialized && Stage.IsInitialized)
+                component.Initialize();
+
             if (component.Parent != null)
                 component.Parent.RemoveComponent(component, false);
 

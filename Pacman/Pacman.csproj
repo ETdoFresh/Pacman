@@ -115,6 +115,7 @@
     <Compile Include="Objects\Ghost.cs" />
     <Compile Include="Objects\Inky.cs" />
     <Compile Include="Objects\ISteer.cs" />
+    <Compile Include="Objects\LevelData.cs" />
     <Compile Include="Objects\PacmanObject.cs" />
     <Compile Include="Objects\Pellets.cs" />
     <Compile Include="Objects\PelletEater.cs" />

@@ -119,11 +119,39 @@ namespace Pacman.Objects
             {
                 if (_character.Velocity.Value.LengthSquared() > 0)
                 {
-                    var orientation = (float)(Math.Atan2(_character.Velocity.Value.Y, _character.Velocity.Value.X));
-                    if (Math.Abs(_target.Orientation.Value - orientation) <= MathHelper.ToRadians(270))
-                        _target.Orientation.Value = orientation;
+                    float orientation = (float)(Math.Atan2(_character.Velocity.Value.Y, _character.Velocity.Value.X));
+                    _target.Orientation.Value = MapToClosestOrientation(orientation);
+                    _character.Orientation.Value = MapToZeroToTwoPi(_character.Orientation.Value);
                 }
+
                 base.Update(gameTime);
+            }
+
+            private float MapToClosestOrientation(float orientation)
+            {
+                float PlusTwoPi = orientation + 2 * (float)Math.PI;
+                float MinusTwoPi = orientation - 2 * (float)Math.PI;
+                if (Math.Abs(orientation - _character.Orientation.Value) >
+                    Math.Abs(PlusTwoPi - _character.Orientation.Value))
+                {
+                    return MapToClosestOrientation(PlusTwoPi);
+                }
+                else if (Math.Abs(orientation - _character.Orientation.Value) >
+                    Math.Abs(MinusTwoPi - _character.Orientation.Value))
+                {
+                    return MapToClosestOrientation(MinusTwoPi);
+                }
+                return orientation;
+            }
+
+            private float MapToZeroToTwoPi(float orientation)
+            {
+                if (orientation < -(float)Math.PI)
+                    return MapToZeroToTwoPi(orientation + 2 * (float)Math.PI);
+                else if (orientation >= (float)Math.PI)
+                    return MapToZeroToTwoPi(orientation - 2 * (float)Math.PI);
+                else
+                    return orientation;
             }
         }
     }

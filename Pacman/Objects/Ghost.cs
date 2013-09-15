@@ -5,6 +5,7 @@ using System.Text;
 using Pacman.Engine.Display;
 using Pacman.Engine.Helpers;
 using Microsoft.Xna.Framework;
+using Pacman.Scenes;
 
 namespace Pacman.Objects
 {
@@ -53,7 +54,7 @@ namespace Pacman.Objects
 
         protected virtual void SetProperties()
         {
-            Speed = new Speed(225);
+            Speed = new Speed(LevelScene.maxSpeed);
             Direction = new Direction(Direction.LEFT);
             Target = new Target();
             ImmediateTarget = new Target();
@@ -102,7 +103,7 @@ namespace Pacman.Objects
             Eyes.Visible = true;
             Pupils.Visible = true;
             Pupils.Tint = new Color(60, 87, 167);
-            Speed.Factor = 1;
+            Speed.Factor = 0.75f;
         }
 
         public virtual void OnHomeState()

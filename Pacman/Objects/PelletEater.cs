@@ -42,11 +42,11 @@ namespace Pacman.Objects
                 var pellet = _pelletGrid[_pacman.TilePosition.X, _pacman.TilePosition.Y];
                 pellet.RemoveSelf();
                 _pelletGrid[_pacman.TilePosition.X, _pacman.TilePosition.Y] = null;
-                _pacman.Speed.Factor = 0.5f;
+                _pacman.Speed.Factor = 0.71f;
             }
             else
             {
-                _pacman.Speed.Factor = 1;
+                _pacman.Speed.Factor = 0.80f;
             }
         }
     }
