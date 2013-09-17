@@ -18,16 +18,16 @@ namespace Pacman.Objects
             return result;
         }
 
-        protected override void SetAnimations()
-        {
-            base.SetAnimations();
-            Body.Tint = Color.Cyan;
-        }
-
         protected override void SetTransforms()
         {
             Translate(_tileGrid.GetPosition(11.5f, 14f));
             base.SetTransforms();
+        }
+
+        protected override void ResetProperties()
+        {
+            base.ResetProperties();
+            Body.Tint = Color.Cyan;
         }
 
         public override void OnChaseState()

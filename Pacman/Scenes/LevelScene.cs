@@ -14,6 +14,10 @@ namespace Pacman.Scenes
 {
     class LevelScene : SceneObject
     {
+        static public int tileWidth = 32;
+        static public int tileHeight = 32;
+        static public float maxSpeed = 225;
+
         TileGrid _tileGrid;
         PacmanObject _pacman;
         DisplayObject _mouse;
@@ -27,11 +31,8 @@ namespace Pacman.Scenes
         Timer _levelStateTimer;
         int _stateTimerIteration;
         Timer _ghostHomeTimer;
-
-        static public int tileWidth = 32;
-        static public int tileHeight = 32;
-
-        static public float maxSpeed = 225;
+        PelletEater _pelletEater;
+        Timer _frightenedTimer;
 
         public LevelScene()
             : base("Level")
@@ -85,12 +86,16 @@ namespace Pacman.Scenes
             SetupBoard();
             GeneratePellets();
 
-            _pacman = PacmanObject.Create(_tileGrid, _pellets);
+            _pacman = PacmanObject.Create(_tileGrid);
             _blinky = Blinky.Create(_tileGrid, _pacman);
             _pinky = Pinky.Create(_tileGrid, _pacman);
             _inky = Inky.Create(_tileGrid, _pacman, _blinky);
             _clyde = Clyde.Create(_tileGrid, _pacman);
             _ghostArray = new Ghost[4] { _blinky, _pinky, _inky, _clyde };
+
+            _pelletEater = new PelletEater(_pacman, _pellets, _tileGrid);
+            _pelletEater.PowerPelletEaten += OnPowerPelletEaten;
+            AddComponent(_pelletEater);
 
             _levelState = GhostState.SCATTER;
             _blinky.ChangeState(_levelState);
@@ -280,6 +285,29 @@ namespace Pacman.Scenes
             {
                 _ghostHomeTimer.ClockReachedLimit -= OnHomeTimerLimitReached;
                 _ghostHomeTimer.Stop();
+            }
+        }
+
+        private void OnPowerPelletEaten()
+        {
+            foreach (Ghost ghost in _ghostArray)
+                if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
+                    ghost.ChangeState(GhostState.FRIGHTENED);
+
+            _frightenedTimer = new Timer(6 * 1000);
+            _frightenedTimer.ClockReachedLimit += OnFrightenedTimerReached;
+            AddComponent(_frightenedTimer);
+        }
+
+        private void OnFrightenedTimerReached()
+        {
+            _frightenedTimer.RemoveSelf();
+            foreach (Ghost ghost in _ghostArray)
+            {
+                if (ghost.CurrentState == GhostState.FRIGHTENED)
+                {
+                    ghost.ChangeState(_levelState);
+                }
             }
         }
     }

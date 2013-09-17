@@ -90,7 +90,7 @@ namespace Pacman.Objects
                 (ImmediateTarget.CurrentType as Target.ImmediateType).ReverseDirection();
         }
 
-        private void ResetProperties()
+        protected virtual void ResetProperties()
         {
             DisableAllComponents();
             HideAllComponents();
@@ -102,6 +102,7 @@ namespace Pacman.Objects
             Body.Visible = true;
             Eyes.Visible = true;
             Pupils.Visible = true;
+            Eyes.Tint = Color.White;
             Pupils.Tint = new Color(60, 87, 167);
             Speed.Factor = 0.75f;
         }

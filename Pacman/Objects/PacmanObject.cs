@@ -13,7 +13,6 @@ namespace Pacman.Objects
     class PacmanObject : DisplayObject, ISteer
     {
         TileGrid _tileGrid;
-        Pellets _pellets;
         AnimatedSpriteObject _animatedSprite;
         Speed _speed;
         Direction _desiredDirection;
@@ -25,18 +24,16 @@ namespace Pacman.Objects
         SnapToTarget _snapToTarget;
         Wrap _wrap;
         Target _target;
-        PelletEater _pelletEater;
         Position _startPosition;
 
-        public PacmanObject(TileGrid tileGrid, Pellets pellets) 
+        public PacmanObject(TileGrid tileGrid) 
         {
             _tileGrid = tileGrid;
-            _pellets = pellets;
         }
 
-        static public PacmanObject Create(TileGrid tileGrid, Pellets pellets)
+        static public PacmanObject Create(TileGrid tileGrid)
         {
-            var result = new PacmanObject(tileGrid, pellets);
+            var result = new PacmanObject(tileGrid);
             result.SetupAnimations();
             result.SetupTransforms();
             result.SetupProperties();
@@ -72,13 +69,11 @@ namespace Pacman.Objects
             _steering = new Steering(this, _target as ISteer);
             _wrap = new Wrap(Position, 0, 0, _tileGrid.Width, _tileGrid.Height);
             _snapToTarget = new SnapToTarget(this, _velocity, _target);
-            _pelletEater = new PelletEater(this, _pellets, _tileGrid);
             AddComponent(_velocity);
             AddComponent(_rotation);
             AddComponent(_steering);
             AddComponent(_wrap);
             AddComponent(_snapToTarget);
-            AddComponent(_pelletEater);
         }
 
         private void SetupAnimations()
