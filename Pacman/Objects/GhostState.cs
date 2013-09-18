@@ -8,12 +8,13 @@ namespace Pacman.Objects
 {
     class GhostState
     {
-        public enum GhostStates { Home, LeavingHome, Chase, Scatter, Frightened, Eyes }
+        public enum GhostStates { Home, LeavingHome, Chase, Scatter, Frightened, FrightenedFlashing, Eyes }
         static public GhostStates HOME { get { return GhostStates.Home; } }
         static public GhostStates LEAVINGHOME { get { return GhostStates.LeavingHome; } }
         static public GhostStates CHASE { get { return GhostStates.Chase; } }
         static public GhostStates SCATTER { get { return GhostStates.Scatter; } }
         static public GhostStates FRIGHTENED { get { return GhostStates.Frightened; } }
+        static public GhostStates FRIGHTENEDFLASHING { get { return GhostStates.FrightenedFlashing; } }
         static public GhostStates EYES { get { return GhostStates.Eyes; } }
 
         GhostStates _currentState;
@@ -37,6 +38,8 @@ namespace Pacman.Objects
                     return new Scatter(ghost);
                 case GhostStates.Frightened:
                     return new Frightened(ghost);
+                case GhostStates.FrightenedFlashing:
+                    return new FrightenedFlashing(ghost);
                 case GhostStates.Eyes:
                     return new Eyes(ghost);
                 default:
@@ -69,6 +72,11 @@ namespace Pacman.Objects
         private class Frightened : GhostState
         {
             public Frightened(Ghost ghost) : base(FRIGHTENED) { ghost.OnFrightenedState(); }
+        }
+
+        private class FrightenedFlashing : GhostState
+        {
+            public FrightenedFlashing(Ghost ghost) : base(FRIGHTENEDFLASHING) { ghost.OnFrightenedFlashingState(); }
         }
 
         private class Eyes : GhostState

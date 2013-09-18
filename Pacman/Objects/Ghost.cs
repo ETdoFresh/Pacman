@@ -13,6 +13,8 @@ namespace Pacman.Objects
     {
         private GhostState _ghostState;
         private GhostState.GhostStates _levelState;
+        Timer _flashTimer;
+        bool _flashBlue;
 
         protected TileGrid _tileGrid;
         protected PacmanObject _pacman;
@@ -29,8 +31,17 @@ namespace Pacman.Objects
             SetTransforms();
             SetProperties();
             SetUpdaters();
+            SetupFlashTimer();
             ChangeState(GhostState.HOME);
             _tileGrid.AddComponent(this);
+        }
+
+        private void SetupFlashTimer()
+        {
+            _flashTimer = new Timer(166);
+            _flashTimer.Stop();
+            _flashTimer.ClockReachedLimit += OnFlashTimerReached;
+            AddComponent(_flashTimer);
         }
 
         protected virtual void SetAnimations()
@@ -181,6 +192,38 @@ namespace Pacman.Objects
             Pupils.Visible = false;
             ShiftEyesToDirection.Enabled = false;
             Speed.Factor = 0.7f;
+        }
+
+        public virtual void OnFrightenedFlashingState()
+        {
+            Target.ChangeState(Target.FIXED);
+            Body.Tint = Color.White;
+            Eyes.Tint = Color.Red;
+            Eyes.ChangeIndex(28);
+            Pupils.Visible = false;
+            ShiftEyesToDirection.Enabled = false;
+            Speed.Factor = 0.7f;
+            _flashTimer.Reset();
+            _flashBlue = true;
+        }
+
+        private void OnFlashTimerReached()
+        {
+            if (CurrentState == GhostState.FRIGHTENEDFLASHING)
+            {
+                if (_flashBlue)
+                {
+                    Body.Tint = new Color(60, 87, 167);
+                    Eyes.Tint = new Color(255, 207, 50);
+                }
+                else
+                {
+                    Body.Tint = Color.White;
+                    Eyes.Tint = Color.Red;
+                }
+                _flashBlue = !_flashBlue;
+                _flashTimer.Reset();
+            }
         }
 
         public virtual void OnEyesState()

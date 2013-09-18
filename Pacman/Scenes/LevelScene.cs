@@ -294,17 +294,28 @@ namespace Pacman.Scenes
                 if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
                     ghost.ChangeState(GhostState.FRIGHTENED);
 
-            _frightenedTimer = new Timer(6 * 1000);
+            _frightenedTimer = new Timer(6 * 1000 - 5 * 166 * 2);
             _frightenedTimer.ClockReachedLimit += OnFrightenedTimerReached;
             AddComponent(_frightenedTimer);
         }
 
         private void OnFrightenedTimerReached()
         {
+            foreach (Ghost ghost in _ghostArray)
+                if (ghost.CurrentState == GhostState.FRIGHTENED)
+                    ghost.ChangeState(GhostState.FRIGHTENEDFLASHING);
+
+            _frightenedTimer.Reset(5 * 166 * 2);
+            _frightenedTimer.ClockReachedLimit -= OnFrightenedTimerReached;
+            _frightenedTimer.ClockReachedLimit += OnFrightenedFlashingTimerReached;
+        }
+
+        private void OnFrightenedFlashingTimerReached()
+        {
             _frightenedTimer.RemoveSelf();
             foreach (Ghost ghost in _ghostArray)
             {
-                if (ghost.CurrentState == GhostState.FRIGHTENED)
+                if (ghost.CurrentState == GhostState.FRIGHTENEDFLASHING)
                 {
                     ghost.ChangeState(_levelState);
                 }
