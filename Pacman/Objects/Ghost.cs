@@ -127,6 +127,7 @@ namespace Pacman.Objects
 
         public virtual void OnLeavingHomeState()
         {
+            Direction.Value = Direction.RIGHT;
             ImmediateTarget.ChangeState(Target.FIXED);
             ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14.01f));
             Velocity.Enabled = true;
@@ -134,7 +135,6 @@ namespace Pacman.Objects
             ShiftEyesToDirection.Enabled = true;
             ShiftEyesToDirection.SetEyesByDirection();
             SnapToTarget.Enabled = true;
-            Direction.Value = Direction.RIGHT;
             Steering.OnArriveAtTarget += OnLeaveHomeFirstArrive;
             Speed.Factor = 0.4f;
         }
@@ -185,24 +185,30 @@ namespace Pacman.Objects
 
         public virtual void OnFrightenedState()
         {
-            Target.ChangeState(Target.FIXED);
+            Target.ChangeState(Target.FRIGHTENED, _tileGrid);
             Body.Tint = new Color(60, 87, 167);
             Eyes.Tint = new Color(255, 207, 50);
             Eyes.ChangeIndex(28);
             Pupils.Visible = false;
+            Velocity.Enabled = true;
+            Steering.Enabled = true;
+            SnapToTarget.Enabled = true;
             ShiftEyesToDirection.Enabled = false;
-            Speed.Factor = 0.7f;
+            Speed.Factor = 0.5f;
         }
 
         public virtual void OnFrightenedFlashingState()
         {
-            Target.ChangeState(Target.FIXED);
+            Target.ChangeState(Target.FRIGHTENED, _tileGrid);
             Body.Tint = Color.White;
             Eyes.Tint = Color.Red;
             Eyes.ChangeIndex(28);
             Pupils.Visible = false;
+            Velocity.Enabled = true;
+            Steering.Enabled = true;
+            SnapToTarget.Enabled = true;
             ShiftEyesToDirection.Enabled = false;
-            Speed.Factor = 0.7f;
+            Speed.Factor = 0.5f;
             _flashTimer.Reset();
             _flashBlue = true;
         }

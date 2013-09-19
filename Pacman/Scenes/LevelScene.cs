@@ -291,8 +291,13 @@ namespace Pacman.Scenes
         private void OnPowerPelletEaten()
         {
             foreach (Ghost ghost in _ghostArray)
+            {
                 if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
+                {
                     ghost.ChangeState(GhostState.FRIGHTENED);
+                    ghost.ReverseDirection();
+                }
+            }
 
             _frightenedTimer = new Timer(6 * 1000 - 5 * 166 * 2);
             _frightenedTimer.ClockReachedLimit += OnFrightenedTimerReached;

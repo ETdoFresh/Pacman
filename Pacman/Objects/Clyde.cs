@@ -28,6 +28,13 @@ namespace Pacman.Objects
             Body.Tint = Color.Orange;
         }
 
+        public override void OnLeavingHomeState()
+        {
+            base.OnLeavingHomeState();
+            Direction.Value = Direction.LEFT;
+            ShiftEyesToDirection.SetEyesByDirection();
+        }
+
         public override void OnChaseState()
         {
             base.OnChaseState();

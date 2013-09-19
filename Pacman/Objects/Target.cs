@@ -12,11 +12,13 @@ namespace Pacman.Objects
     class Target : CircleObject, ISteer
     {
         public enum TargetStatesWithNone { Fixed }
+        public enum TargetStatesWithTileGrid { Frightened }
         public enum TargetStatesWithPacmanTileGrid { Pacman }
-        public enum TargetStatesWithTileGrid { Immediate }
+        public enum TargetStatesWithGhostTileGrid { Immediate }
         public enum TargetStatesWithPacman { Blinky, Pinky }
         public enum TargetStatesWithGhost { Inky, Clyde }
-        static public TargetStatesWithTileGrid IMMEDIATE { get { return TargetStatesWithTileGrid.Immediate; } }
+        static public TargetStatesWithTileGrid FRIGHTENED { get { return TargetStatesWithTileGrid.Frightened; } }
+        static public TargetStatesWithGhostTileGrid IMMEDIATE { get { return TargetStatesWithGhostTileGrid.Immediate; } }
         static public TargetStatesWithPacmanTileGrid PACMAN { get { return TargetStatesWithPacmanTileGrid.Pacman; } }
         static public TargetStatesWithPacman BLINKY { get { return TargetStatesWithPacman.Blinky; } }
         static public TargetStatesWithPacman PINKY { get { return TargetStatesWithPacman.Pinky; } }
@@ -52,7 +54,12 @@ namespace Pacman.Objects
             _targetState = TargetState.Create(targetState, this);
         }
 
-        public void ChangeState(TargetStatesWithTileGrid targetState, TileGrid tileGrid, Ghost ghost)
+        public void ChangeState(TargetStatesWithTileGrid targetState, TileGrid tileGrid)
+        {
+            _targetState = TargetState.Create(targetState, tileGrid, this);
+        }
+
+        public void ChangeState(TargetStatesWithGhostTileGrid targetState, TileGrid tileGrid, Ghost ghost)
         {
             _targetState = TargetState.Create(targetState, tileGrid, ghost, this);
         }
@@ -100,11 +107,22 @@ namespace Pacman.Objects
                 }
             }
 
-            static public TargetState Create(TargetStatesWithTileGrid targetState, TileGrid tileGrid, Ghost ghost, Target target)
+            static public TargetState Create(TargetStatesWithTileGrid targetState, TileGrid tileGrid, Target target)
             {
                 switch (targetState)
                 {
-                    case TargetStatesWithTileGrid.Immediate:
+                    case TargetStatesWithTileGrid.Frightened:
+                        return new FrightenedType(tileGrid, target);
+                    default:
+                        throw new Exception("Target State (with Tile Grid) not valid");
+                }
+            }
+
+            static public TargetState Create(TargetStatesWithGhostTileGrid targetState, TileGrid tileGrid, Ghost ghost, Target target)
+            {
+                switch (targetState)
+                {
+                    case TargetStatesWithGhostTileGrid.Immediate:
                         return new ImmediateType(tileGrid, ghost, target);
                     default:
                         throw new Exception("Target State (with Tile Grid) not valid");
@@ -382,6 +400,19 @@ namespace Pacman.Objects
         internal class FixedType : TargetState
         {
             public FixedType() { }
+            public override void Update(GameTime gameTime) { }
+        }
+
+        internal class FrightenedType : TargetState
+        {
+            public FrightenedType(TileGrid tileGrid, Target target)
+            {
+                Random _random = new Random();
+                int x = _random.Next((int)tileGrid.Width);
+                int y = _random.Next((int)tileGrid.Height);
+                target.Translate(x, y);
+            }
+
             public override void Update(GameTime gameTime) { }
         }
     }
