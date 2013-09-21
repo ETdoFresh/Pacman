@@ -13,6 +13,7 @@ namespace Pacman.Objects
     {
         private GhostState _ghostState;
         private GhostState.GhostStates _levelState;
+        TunnelChecker _tunnelHandler;
         Timer _flashTimer;
         bool _flashBlue;
 
@@ -82,11 +83,15 @@ namespace Pacman.Objects
             Wrap = new Wrap(Position, 0, 0, _tileGrid.Width, _tileGrid.Height);
             SnapToTarget = new SnapToTarget(this, Velocity, ImmediateTarget);
             ShiftEyesToDirection = new ShiftEyesToDirection(this);
+            _tunnelHandler = new TunnelChecker(TilePosition);
+            _tunnelHandler.TunnelStart += OnTunnelStart;
+            _tunnelHandler.TunnelEnd += OnTunnelEnd;
             AddComponent(Velocity);
             AddComponent(Steering);
             AddComponent(Wrap);
             AddComponent(SnapToTarget);
             AddComponent(ShiftEyesToDirection);
+            AddComponent(_tunnelHandler);
         }
 
         public virtual void ChangeState(GhostState.GhostStates ghostState)
@@ -116,6 +121,7 @@ namespace Pacman.Objects
             Eyes.Tint = Color.White;
             Pupils.Tint = new Color(60, 87, 167);
             Speed.Factor = 0.75f;
+            _tunnelHandler.Enabled = true;
         }
 
         public virtual void OnHomeState()
@@ -237,6 +243,19 @@ namespace Pacman.Objects
             Target.ChangeState(Target.FIXED);
             Body.Visible = false;
             Speed.Factor = 1.2f;
+        }
+
+        public virtual void OnTunnelStart()
+        {
+            Speed.Factor = 0.40f;
+        }
+
+        public virtual void OnTunnelEnd()
+        {
+            if (CurrentState == GhostState.CHASE || CurrentState == GhostState.SCATTER)
+                Speed.Factor = 0.75f;
+            else if (CurrentState == GhostState.FRIGHTENED || CurrentState == GhostState.FRIGHTENEDFLASHING)
+                Speed.Factor = 0.5f;
         }
 
         public override void RemoveSelf()

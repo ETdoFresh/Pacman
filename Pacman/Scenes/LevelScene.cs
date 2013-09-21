@@ -16,7 +16,7 @@ namespace Pacman.Scenes
     {
         static public int tileWidth = 32;
         static public int tileHeight = 32;
-        static public float maxSpeed = 225;
+        static public float maxSpeed = 300;
 
         TileGrid _tileGrid;
         PacmanObject _pacman;
@@ -97,6 +97,7 @@ namespace Pacman.Scenes
             _pelletEater.PowerPelletEaten += OnPowerPelletEaten;
             AddComponent(_pelletEater);
 
+            _stateTimerIteration = 0;
             _levelState = GhostState.SCATTER;
             _blinky.ChangeState(_levelState);
             foreach (Ghost ghost in _ghostArray) ghost.SetLevelState(_levelState);
