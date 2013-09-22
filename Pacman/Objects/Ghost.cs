@@ -275,6 +275,13 @@ namespace Pacman.Objects
             base.RemoveSelf();
         }
 
+        public void AddDotCounter(int limit)
+        {
+            if (DotCounter != null) DotCounter.RemoveSelf();
+            DotCounter = new DotCounter(limit, this);
+            AddComponent(DotCounter);
+        }
+
         public AnimatedSpriteObject Body { get; set; }
         public SpriteObject Eyes { get; set; }
         public SpriteObject Pupils { get; set; }
@@ -290,5 +297,6 @@ namespace Pacman.Objects
         public Target ImmediateTarget { get; set; }
         public ShiftEyesToDirection ShiftEyesToDirection { get; set; }
         public GhostState.GhostStates CurrentState { get { return _ghostState.CurrentState; } }
+        public DotCounter DotCounter { get; set; }
     }
 }

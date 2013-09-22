@@ -33,6 +33,8 @@ namespace Pacman.Scenes
         Timer _ghostHomeTimer;
         PelletEater _pelletEater;
         Timer _frightenedTimer;
+        DotCounter _activeDotCounter;
+        GlobalDotCounter _globalDotCounter;
 
         public LevelScene()
             : base("Level")
@@ -94,6 +96,7 @@ namespace Pacman.Scenes
             _ghostArray = new Ghost[4] { _blinky, _pinky, _inky, _clyde };
 
             _pelletEater = new PelletEater(_pacman, _pellets, _tileGrid);
+            _pelletEater.PelletEaten += OnPelletEaten;
             _pelletEater.PowerPelletEaten += OnPowerPelletEaten;
             AddComponent(_pelletEater);
 
@@ -105,6 +108,17 @@ namespace Pacman.Scenes
             _levelStateTimer = new Timer(7 * 1000);
             _levelStateTimer.ClockReachedLimit += OnStateTimerLimitReached;
             AddComponent(_levelStateTimer);
+
+            _pinky.AddDotCounter(0);
+            _inky.AddDotCounter(30);
+            _clyde.AddDotCounter(60);
+            _pinky.DotCounter.DotLimitReached += OnDotLimitReached;
+            _inky.DotCounter.DotLimitReached += OnDotLimitReached;
+            _clyde.DotCounter.DotLimitReached += OnDotLimitReached;
+            _activeDotCounter = _pinky.DotCounter;
+
+            //_globalDotCounter = new GlobalDotCounter(7, 17, 32, _pinky, _inky, _clyde);
+            //_globalDotCounter.DotLimitReached += OnDotLimitReached;
 
             _ghostHomeTimer = new Timer(4 * 1000);
             _ghostHomeTimer.ClockReachedLimit += OnHomeTimerLimitReached;
@@ -199,6 +213,8 @@ namespace Pacman.Scenes
                     }
                 }
             }
+            _tileGrid.Data[13, 12].IsPassable = false;
+            _tileGrid.Data[14, 12].IsPassable = false;
         }
 
         private void GeneratePellets()
@@ -270,16 +286,19 @@ namespace Pacman.Scenes
             if (_pinky.CurrentState == GhostState.HOME)
             {
                 _pinky.ChangeState(GhostState.LEAVINGHOME);
+                _activeDotCounter = _inky.DotCounter;
                 _ghostHomeTimer.Reset();
             }
             else if (_inky.CurrentState == GhostState.HOME)
             {
                 _inky.ChangeState(GhostState.LEAVINGHOME);
+                _activeDotCounter = _clyde.DotCounter;
                 _ghostHomeTimer.Reset();
             }
             else if (_clyde.CurrentState == GhostState.HOME)
             {
                 _clyde.ChangeState(GhostState.LEAVINGHOME);
+                _activeDotCounter = null;
                 _ghostHomeTimer.Reset();
             }
             else
@@ -289,8 +308,21 @@ namespace Pacman.Scenes
             }
         }
 
+        private void OnPelletEaten()
+        {
+            if (_activeDotCounter != null)
+                _activeDotCounter.AddDot();
+            else if (_globalDotCounter != null)
+                _globalDotCounter.AddDot();
+        }
+
         private void OnPowerPelletEaten()
         {
+            if (_activeDotCounter != null)
+                _activeDotCounter.AddDot();
+            else if (_globalDotCounter != null)
+                _globalDotCounter.AddDot();
+
             foreach (Ghost ghost in _ghostArray)
             {
                 if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
@@ -326,6 +358,19 @@ namespace Pacman.Scenes
                     ghost.ChangeState(_levelState);
                 }
             }
+        }
+
+        private void OnDotLimitReached(Ghost ghost)
+        {
+            if (ghost.CurrentState == GhostState.HOME)
+                ghost.ChangeState(GhostState.LEAVINGHOME);
+
+            if (ghost == _pinky)
+                _activeDotCounter = _inky.DotCounter;
+            else if (ghost == _inky)
+                _activeDotCounter = _clyde.DotCounter;
+            else
+                _activeDotCounter = null;
         }
     }
 }

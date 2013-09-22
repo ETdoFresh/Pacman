@@ -230,8 +230,6 @@ namespace Pacman.Objects
                     return false;
                 if (ghostTile.Y == 23 && (destination.X == 12 || destination.X == 15) && destination.Y == 22)
                     return false;
-                else if (ghostTile.Y == 11 && (destination.X == 13 || destination.X == 14) && destination.Y == 12)
-                    return false;
                 else
                     return true;
             }

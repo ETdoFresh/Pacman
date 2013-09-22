@@ -13,8 +13,9 @@ namespace Pacman.Objects
         PacmanObject _pacman;
         Pellets.Pellet[,] _pelletGrid;
 
-        public delegate void PowerPelletEatenHandler();
-        public event PowerPelletEatenHandler PowerPelletEaten = delegate { };
+        public delegate void PelletEatenHandler();
+        public event PelletEatenHandler PelletEaten = delegate { };
+        public event PelletEatenHandler PowerPelletEaten = delegate { };
 
         public PelletEater(PacmanObject pacman, Pellets pellets, TileGrid tileGrid)
         {
@@ -33,6 +34,7 @@ namespace Pacman.Objects
         public override void RemoveSelf()
         {
             _pacman.TilePosition.ChangeTile -= OnChangeTile;
+            PelletEaten = null;
             PowerPelletEaten = null;
             base.RemoveSelf();
         }
@@ -47,6 +49,8 @@ namespace Pacman.Objects
 
                 if (pellet is Pellets.PowerPellet)
                     PowerPelletEaten();
+                else
+                    PelletEaten();
 
                 pellet.RemoveSelf();
                 _pelletGrid[_pacman.TilePosition.X, _pacman.TilePosition.Y] = null;
