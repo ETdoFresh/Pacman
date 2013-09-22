@@ -133,6 +133,7 @@
     <Compile Include="PacmanGame.cs" />
     <Compile Include="Scenes\AnimationTest.cs" />
     <Compile Include="Objects\Blinky.cs" />
+    <Compile Include="Objects\CollisionManager.cs" />
     <Compile Include="Scenes\LevelScene.cs" />
     <Compile Include="Scenes\MenuScene.cs" />
     <Compile Include="Objects\ShiftEyesToDirection.cs" />

@@ -19,6 +19,7 @@ namespace Pacman.Objects
 
         protected TileGrid _tileGrid;
         protected PacmanObject _pacman;
+        protected Position _startPosition;
 
         public Ghost(TileGrid tileGrid, PacmanObject pacman)
         {
@@ -241,8 +242,47 @@ namespace Pacman.Objects
         public virtual void OnEyesState()
         {
             Target.ChangeState(Target.FIXED);
+            Target.Translate(_startPosition);
             Body.Visible = false;
+            Velocity.Enabled = true;
+            Steering.Enabled = true;
+            ShiftEyesToDirection.Enabled = true;
+            ShiftEyesToDirection.SetEyesByDirection();
+            SnapToTarget.Enabled = true;
+            TilePosition.ChangeTile += OnEyeTileChange;
             Speed.Factor = 1.2f;
+        }
+
+        private void OnEyeTileChange()
+        {
+            if (TilePosition.Y == 11 && (TilePosition.X == 13 || TilePosition.X == 14))
+            {
+                TilePosition.ChangeTile -= OnEyeTileChange;
+                ImmediateTarget.ChangeState(Target.FIXED);
+                ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 11f));
+                Steering.OnArriveAtTarget += OnEyeFirstArrive;
+            }
+        }
+
+        private void OnEyeFirstArrive()
+        {
+            Steering.OnArriveAtTarget -= OnEyeFirstArrive;
+            Direction.Value = Direction.DOWN;
+            ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14.01f));
+            Steering.OnArriveAtTarget += OnEyeSecondArrive;
+        }
+
+        private void OnEyeSecondArrive()
+        {
+            Steering.OnArriveAtTarget -= OnEyeSecondArrive;
+            ImmediateTarget.Translate(_startPosition);
+            Steering.OnArriveAtTarget += OnEyesFinalArrive;
+        }
+
+        private void OnEyesFinalArrive()
+        {
+            Steering.OnArriveAtTarget -= OnEyesFinalArrive;
+            ChangeState(GhostState.HOME);
         }
 
         public virtual void OnTunnelStart()

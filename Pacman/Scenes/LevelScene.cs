@@ -35,6 +35,7 @@ namespace Pacman.Scenes
         Timer _frightenedTimer;
         DotCounter _activeDotCounter;
         GlobalDotCounter _globalDotCounter;
+        CollisionManager _collisionManager;
 
         public LevelScene()
             : base("Level")
@@ -126,6 +127,10 @@ namespace Pacman.Scenes
 
             _pacman.Speed.Factor = 0.8f;
             foreach (Ghost ghost in _ghostArray) ghost.Speed.Factor = 0.75f;
+
+            _collisionManager = new CollisionManager(_pacman, _blinky, _pinky, _inky, _clyde);
+            _collisionManager.Collision += OnCollision;
+            AddComponent(_collisionManager);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
@@ -325,13 +330,15 @@ namespace Pacman.Scenes
 
             foreach (Ghost ghost in _ghostArray)
             {
-                if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
+                if (ghost.CurrentState != GhostState.HOME && ghost.CurrentState != GhostState.LEAVINGHOME && ghost.CurrentState != GhostState.EYES)
                 {
                     ghost.ChangeState(GhostState.FRIGHTENED);
                     ghost.ReverseDirection();
                 }
             }
 
+            if (_frightenedTimer != null)
+                _frightenedTimer.RemoveSelf();
             _frightenedTimer = new Timer(6 * 1000 - 5 * 166 * 2);
             _frightenedTimer.ClockReachedLimit += OnFrightenedTimerReached;
             AddComponent(_frightenedTimer);
@@ -371,6 +378,14 @@ namespace Pacman.Scenes
                 _activeDotCounter = _clyde.DotCounter;
             else
                 _activeDotCounter = null;
+        }
+
+        private void OnCollision(PacmanObject pacman, Ghost ghost)
+        {
+            if (ghost.CurrentState == GhostState.FRIGHTENED || ghost.CurrentState == GhostState.FRIGHTENEDFLASHING)
+                ghost.ChangeState(GhostState.EYES);
+            //else if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
+           //     RestartLevel();
         }
     }
 }

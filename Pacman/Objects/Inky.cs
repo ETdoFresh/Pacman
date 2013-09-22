@@ -20,7 +20,8 @@ namespace Pacman.Objects
 
         protected override void SetTransforms()
         {
-            Translate(_tileGrid.GetPosition(11.5f, 14f));
+            _startPosition = _tileGrid.GetPosition(11.5f, 14);
+            Translate(_startPosition);
             base.SetTransforms();
         }
 
