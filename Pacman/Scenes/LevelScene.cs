@@ -34,6 +34,7 @@ namespace Pacman.Scenes
         PelletEater _pelletEater;
         Timer _frightenedTimer;
         DotCounter _activeDotCounter;
+        DotCounter _bonusFruitCounter;
         GlobalDotCounter _globalDotCounter;
         CollisionManager _collisionManager;
 
@@ -106,6 +107,10 @@ namespace Pacman.Scenes
             _blinky.ChangeState(_levelState);
             foreach (Ghost ghost in _ghostArray) ghost.SetLevelState(_levelState);
 
+            // Set blinky to right initial direction (which is left)
+            _blinky.ImmediateTarget.Update(null);
+            _blinky.ReverseDirection();
+
             _levelStateTimer = new Timer(7 * 1000);
             _levelStateTimer.ClockReachedLimit += OnStateTimerLimitReached;
             AddComponent(_levelStateTimer);
@@ -113,10 +118,16 @@ namespace Pacman.Scenes
             _pinky.AddDotCounter(0);
             _inky.AddDotCounter(30);
             _clyde.AddDotCounter(60);
-            _pinky.DotCounter.DotLimitReached += OnDotLimitReached;
-            _inky.DotCounter.DotLimitReached += OnDotLimitReached;
-            _clyde.DotCounter.DotLimitReached += OnDotLimitReached;
+            _pinky.DotCounter.GhostDotLimitReached += OnDotLimitReached;
+            _inky.DotCounter.GhostDotLimitReached += OnDotLimitReached;
+            _clyde.DotCounter.GhostDotLimitReached += OnDotLimitReached;
             _activeDotCounter = _pinky.DotCounter;
+
+            foreach (Ghost ghost in _ghostArray) ghost.GhostArriveHome += OnGhostArriveHome;
+
+            _bonusFruitCounter = new DotCounter(70, null);
+            _bonusFruitCounter.DotLimitReached += OnFirstBonusFruit;
+            AddComponent(_bonusFruitCounter);
 
             //_globalDotCounter = new GlobalDotCounter(7, 17, 32, _pinky, _inky, _clyde);
             //_globalDotCounter.DotLimitReached += OnDotLimitReached;
@@ -291,26 +302,24 @@ namespace Pacman.Scenes
             if (_pinky.CurrentState == GhostState.HOME)
             {
                 _pinky.ChangeState(GhostState.LEAVINGHOME);
-                _activeDotCounter = _inky.DotCounter;
                 _ghostHomeTimer.Reset();
             }
             else if (_inky.CurrentState == GhostState.HOME)
             {
                 _inky.ChangeState(GhostState.LEAVINGHOME);
-                _activeDotCounter = _clyde.DotCounter;
                 _ghostHomeTimer.Reset();
             }
             else if (_clyde.CurrentState == GhostState.HOME)
             {
                 _clyde.ChangeState(GhostState.LEAVINGHOME);
-                _activeDotCounter = null;
                 _ghostHomeTimer.Reset();
             }
             else
             {
-                _ghostHomeTimer.ClockReachedLimit -= OnHomeTimerLimitReached;
-                _ghostHomeTimer.Stop();
+                _ghostHomeTimer.Reset();
             }
+
+            SetActiveDotCounter();
         }
 
         private void OnPelletEaten()
@@ -319,6 +328,11 @@ namespace Pacman.Scenes
                 _activeDotCounter.AddDot();
             else if (_globalDotCounter != null)
                 _globalDotCounter.AddDot();
+
+            if (_ghostHomeTimer != null)
+                _ghostHomeTimer.Reset();
+
+            _bonusFruitCounter.AddDot();
         }
 
         private void OnPowerPelletEaten()
@@ -327,6 +341,11 @@ namespace Pacman.Scenes
                 _activeDotCounter.AddDot();
             else if (_globalDotCounter != null)
                 _globalDotCounter.AddDot();
+
+            if (_ghostHomeTimer != null)
+                _ghostHomeTimer.Reset();
+
+            _bonusFruitCounter.AddDot();
 
             foreach (Ghost ghost in _ghostArray)
             {
@@ -386,6 +405,46 @@ namespace Pacman.Scenes
                 ghost.ChangeState(GhostState.EYES);
             //else if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
            //     RestartLevel();
+        }
+
+        private void OnGhostArriveHome(Ghost ghost)
+        {
+            if (_globalDotCounter == null)
+            {
+                if (ghost is Blinky)
+                    ghost.ChangeState(GhostState.LEAVINGHOME);
+                else if (ghost.DotCounter.IsDotLimitReached())
+                    ghost.ChangeState(GhostState.LEAVINGHOME);
+                else
+                    SetActiveDotCounter();
+            }
+        }
+
+        private void SetActiveDotCounter()
+        {
+            if (_pinky.CurrentState == GhostState.HOME)
+                _activeDotCounter = _pinky.DotCounter;
+            else if (_inky.CurrentState == GhostState.HOME)
+                _activeDotCounter = _inky.DotCounter;
+            else if (_clyde.CurrentState == GhostState.HOME)
+                _activeDotCounter = _inky.DotCounter;
+            else
+                _activeDotCounter = null;
+        }
+
+        private void OnFirstBonusFruit()
+        {
+            Debug.WriteLine("First bonus fruit appears");
+            _bonusFruitCounter.SetNewLimit(170);
+            _bonusFruitCounter.DotLimitReached -= OnFirstBonusFruit;
+            _bonusFruitCounter.DotLimitReached += OnSecondBonusFruit;
+        }
+
+        private void OnSecondBonusFruit()
+        {
+            Debug.WriteLine("Second bonus fruit appears");
+            _bonusFruitCounter.SetNewLimit(1000);
+            _bonusFruitCounter.DotLimitReached -= OnSecondBonusFruit;
         }
     }
 }

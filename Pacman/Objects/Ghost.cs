@@ -11,6 +11,9 @@ namespace Pacman.Objects
 {
     abstract class Ghost : DisplayObject, ISteer
     {
+        public delegate void GhostArriveHomeHandler(Ghost ghost);
+        public event GhostArriveHomeHandler GhostArriveHome = delegate { };
+
         private GhostState _ghostState;
         private GhostState.GhostStates _levelState;
         TunnelChecker _tunnelHandler;
@@ -268,21 +271,27 @@ namespace Pacman.Objects
         {
             Steering.OnArriveAtTarget -= OnEyeFirstArrive;
             Direction.Value = Direction.DOWN;
-            ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14.01f));
+            ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14.02f));
             Steering.OnArriveAtTarget += OnEyeSecondArrive;
         }
 
         private void OnEyeSecondArrive()
         {
             Steering.OnArriveAtTarget -= OnEyeSecondArrive;
-            ImmediateTarget.Translate(_startPosition);
-            Steering.OnArriveAtTarget += OnEyesFinalArrive;
+            if (this is Blinky)
+                OnEyesFinalArrive();
+            else
+            {
+                ImmediateTarget.Translate(_startPosition);
+                Steering.OnArriveAtTarget += OnEyesFinalArrive;
+            }
         }
 
         private void OnEyesFinalArrive()
         {
             Steering.OnArriveAtTarget -= OnEyesFinalArrive;
             ChangeState(GhostState.HOME);
+            GhostArriveHome(this);
         }
 
         public virtual void OnTunnelStart()
@@ -312,6 +321,7 @@ namespace Pacman.Objects
             if (TilePosition != null) TilePosition.RemoveSelf();
             if (ImmediateTarget != null) ImmediateTarget.RemoveSelf();
             if (ShiftEyesToDirection != null) ShiftEyesToDirection.RemoveSelf();
+            GhostArriveHome = null;
             base.RemoveSelf();
         }
 

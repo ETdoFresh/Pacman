@@ -8,7 +8,9 @@ namespace Pacman.Objects
 {
     class DotCounter : GameObject
     {
-        public delegate void DotLimitReachedHandler(Ghost ghost);
+        public delegate void GhostDotLimitReachedHandler(Ghost ghost);
+        public delegate void DotLimitReachedHandler();
+        public event GhostDotLimitReachedHandler GhostDotLimitReached = delegate { };
         public event DotLimitReachedHandler DotLimitReached = delegate { };
 
         protected int _numberDotsEaten;
@@ -20,26 +22,40 @@ namespace Pacman.Objects
             _numberDotsEaten = 0;
             _dotLimit = dotLimit;
             _ghost = ghost;
-            if (_numberDotsEaten >= _dotLimit)
-                DotLimitReached(_ghost);
+            if (IsDotLimitReached())
+                GhostDotLimitReached(_ghost);
         }
 
         public virtual void AddDot()
         {
             _numberDotsEaten++;
-            if (_numberDotsEaten >= _dotLimit)
-                DotLimitReached(_ghost);
+            if (IsDotLimitReached())
+            {
+                GhostDotLimitReached(_ghost);
+                DotLimitReached();
+            }
         }
 
         protected void CallDotLimitReached(Ghost ghost)
         {
-            DotLimitReached(ghost);
+            GhostDotLimitReached(ghost);
         }
 
         public override void RemoveSelf()
         {
             base.RemoveSelf();
+            GhostDotLimitReached = null;
             DotLimitReached = null;
+        }
+
+        public bool IsDotLimitReached()
+        {
+            return _numberDotsEaten >= _dotLimit;
+        }
+
+        public void SetNewLimit(int dotLimit)
+        {
+            _dotLimit = dotLimit;
         }
     }
 
