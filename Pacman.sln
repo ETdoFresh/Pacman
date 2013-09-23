@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PacmanContent", "PacmanCont
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pacman", "Pacman\Pacman.csproj", "{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSVPipeline", "CSVPipeline\CSVPipeline.csproj", "{F374328D-3118-480E-90F1-56270200AD04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,14 @@ Global
 		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Release|Any CPU.ActiveCfg = Release|x86
 		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Release|x86.ActiveCfg = Release|x86
 		{9F12E9B4-A0EF-463C-8C7B-1D96E6CEFA8F}.Release|x86.Build.0 = Release|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Debug|Any CPU.Build.0 = Debug|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Debug|x86.ActiveCfg = Debug|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Debug|x86.Build.0 = Debug|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Release|Any CPU.ActiveCfg = Release|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Release|Any CPU.Build.0 = Release|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Release|x86.ActiveCfg = Release|x86
+		{F374328D-3118-480E-90F1-56270200AD04}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

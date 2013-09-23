@@ -37,10 +37,12 @@ namespace Pacman.Scenes
         DotCounter _bonusFruitCounter;
         GlobalDotCounter _globalDotCounter;
         CollisionManager _collisionManager;
+        LevelSettings _levelSettings;
 
         public LevelScene()
             : base("Level")
         {
+            _levelSettings = new LevelSettings(1);
             LoadLevel();
         }
 
@@ -63,10 +65,12 @@ namespace Pacman.Scenes
             if (Enabled)
             {
                 base.Update(gameTime);
-                if (InputHelper.IsPressed(Keys.Space) || InputHelper.IsPressed(Keys.Escape))
+                if (InputHelper.IsPressed(Keys.Escape))
                     Stage.GotoScene("Menu");
                 else if (InputHelper.IsPressed(Keys.R))
                     RestartLevel();
+                else if (InputHelper.IsPressed(Keys.Space))
+                    _tileGrid.Enabled = !_tileGrid.Enabled;
 
                 if (_mouse != null)
                 {
@@ -83,6 +87,7 @@ namespace Pacman.Scenes
 
         private void LoadLevel()
         {
+            int level = 1;
             _random = new Random();
             _tileGrid = new TileGrid(LevelData.outerWallData.GetLength(1), LevelData.outerWallData.GetLength(0), tileWidth, tileHeight);
             AddComponent(_tileGrid);
@@ -111,13 +116,13 @@ namespace Pacman.Scenes
             _blinky.ImmediateTarget.Update(null);
             _blinky.ReverseDirection();
 
-            _levelStateTimer = new Timer(7 * 1000);
+            _levelStateTimer = new Timer(_levelSettings.Scatter1 * 1000);
             _levelStateTimer.ClockReachedLimit += OnStateTimerLimitReached;
             AddComponent(_levelStateTimer);
 
-            _pinky.AddDotCounter(0);
-            _inky.AddDotCounter(30);
-            _clyde.AddDotCounter(60);
+            _pinky.AddDotCounter(_levelSettings.PinkyDotLimit);
+            _inky.AddDotCounter(_levelSettings.InkyDotLimit);
+            _clyde.AddDotCounter(_levelSettings.ClydeDotLimit);
             _pinky.DotCounter.GhostDotLimitReached += OnDotLimitReached;
             _inky.DotCounter.GhostDotLimitReached += OnDotLimitReached;
             _clyde.DotCounter.GhostDotLimitReached += OnDotLimitReached;
@@ -132,12 +137,12 @@ namespace Pacman.Scenes
             //_globalDotCounter = new GlobalDotCounter(7, 17, 32, _pinky, _inky, _clyde);
             //_globalDotCounter.DotLimitReached += OnDotLimitReached;
 
-            _ghostHomeTimer = new Timer(4 * 1000);
+            _ghostHomeTimer = new Timer(_levelSettings.TimerLimit * 1000);
             _ghostHomeTimer.ClockReachedLimit += OnHomeTimerLimitReached;
             AddComponent(_ghostHomeTimer);
 
-            _pacman.Speed.Factor = 0.8f;
-            foreach (Ghost ghost in _ghostArray) ghost.Speed.Factor = 0.75f;
+            _pacman.Speed.Factor = _levelSettings.PacmanSpeed;
+            foreach (Ghost ghost in _ghostArray) ghost.Speed.Factor = _levelSettings.GhostSpeed;
 
             _collisionManager = new CollisionManager(_pacman, _blinky, _pinky, _inky, _clyde);
             _collisionManager.Collision += OnCollision;
@@ -265,27 +270,27 @@ namespace Pacman.Scenes
             {
                 case 1:
                     _levelState = GhostState.CHASE;
-                    _levelStateTimer.Reset(20 * 1000);
+                    _levelStateTimer.Reset(_levelSettings.Chase1 * 1000);
                     break;
                 case 2:
                     _levelState = GhostState.SCATTER;
-                    _levelStateTimer.Reset(7 * 1000);
+                    _levelStateTimer.Reset(_levelSettings.Scatter2 * 1000);
                     break;
                 case 3:
                     _levelState = GhostState.CHASE;
-                    _levelStateTimer.Reset(20 * 1000);
+                    _levelStateTimer.Reset(_levelSettings.Chase2 * 1000);
                     break;
                 case 4:
                     _levelState = GhostState.SCATTER;
-                    _levelStateTimer.Reset(5 * 1000);
+                    _levelStateTimer.Reset(_levelSettings.Scatter3 * 1000);
                     break;
                 case 5:
                     _levelState = GhostState.CHASE;
-                    _levelStateTimer.Reset(20 * 1000);
+                    _levelStateTimer.Reset(_levelSettings.Chase3 * 1000);
                     break;
                 case 6:
                     _levelState = GhostState.SCATTER;
-                    _levelStateTimer.Reset(5 * 1000);
+                    _levelStateTimer.Reset(_levelSettings.Scatter4 * 1000);
                     break;
                 case 7:
                     _levelState = GhostState.CHASE;
@@ -358,7 +363,7 @@ namespace Pacman.Scenes
 
             if (_frightenedTimer != null)
                 _frightenedTimer.RemoveSelf();
-            _frightenedTimer = new Timer(6 * 1000 - 5 * 166 * 2);
+            _frightenedTimer = new Timer(_levelSettings.FrightTime * 1000 - _levelSettings.NumberOfFlashes * 166 * 2);
             _frightenedTimer.ClockReachedLimit += OnFrightenedTimerReached;
             AddComponent(_frightenedTimer);
         }
@@ -369,7 +374,7 @@ namespace Pacman.Scenes
                 if (ghost.CurrentState == GhostState.FRIGHTENED)
                     ghost.ChangeState(GhostState.FRIGHTENEDFLASHING);
 
-            _frightenedTimer.Reset(5 * 166 * 2);
+            _frightenedTimer.Reset(_levelSettings.NumberOfFlashes * 166 * 2);
             _frightenedTimer.ClockReachedLimit -= OnFrightenedTimerReached;
             _frightenedTimer.ClockReachedLimit += OnFrightenedFlashingTimerReached;
         }
