@@ -37,7 +37,8 @@ namespace Pacman.Scenes
         DotCounter _bonusFruitCounter;
         GlobalDotCounter _globalDotCounter;
         CollisionManager _collisionManager;
-        LevelSettings _levelSettings;
+        Timer _pauseTimer;
+        private Ghost _eatenGhost;
 
         public LevelScene()
             : base("Level")
@@ -87,7 +88,6 @@ namespace Pacman.Scenes
 
         private void LoadLevel()
         {
-            int level = 1;
             _random = new Random();
             _tileGrid = new TileGrid(LevelData.outerWallData.GetLength(1), LevelData.outerWallData.GetLength(0), tileWidth, tileHeight);
             AddComponent(_tileGrid);
@@ -118,7 +118,7 @@ namespace Pacman.Scenes
 
             _levelStateTimer = new Timer(_levelSettings.Scatter1 * 1000);
             _levelStateTimer.ClockReachedLimit += OnStateTimerLimitReached;
-            AddComponent(_levelStateTimer);
+            _tileGrid.AddComponent(_levelStateTimer);
 
             _pinky.AddDotCounter(_levelSettings.PinkyDotLimit);
             _inky.AddDotCounter(_levelSettings.InkyDotLimit);
@@ -132,21 +132,21 @@ namespace Pacman.Scenes
 
             _bonusFruitCounter = new DotCounter(70, null);
             _bonusFruitCounter.DotLimitReached += OnFirstBonusFruit;
-            AddComponent(_bonusFruitCounter);
+            _tileGrid.AddComponent(_bonusFruitCounter);
 
             //_globalDotCounter = new GlobalDotCounter(7, 17, 32, _pinky, _inky, _clyde);
             //_globalDotCounter.DotLimitReached += OnDotLimitReached;
 
             _ghostHomeTimer = new Timer(_levelSettings.TimerLimit * 1000);
             _ghostHomeTimer.ClockReachedLimit += OnHomeTimerLimitReached;
-            AddComponent(_ghostHomeTimer);
+            _tileGrid.AddComponent(_ghostHomeTimer);
 
             _pacman.Speed.Factor = _levelSettings.PacmanSpeed;
             foreach (Ghost ghost in _ghostArray) ghost.Speed.Factor = _levelSettings.GhostSpeed;
 
             _collisionManager = new CollisionManager(_pacman, _blinky, _pinky, _inky, _clyde);
             _collisionManager.Collision += OnCollision;
-            AddComponent(_collisionManager);
+            _tileGrid.AddComponent(_collisionManager);
 
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
@@ -365,7 +365,7 @@ namespace Pacman.Scenes
                 _frightenedTimer.RemoveSelf();
             _frightenedTimer = new Timer(_levelSettings.FrightTime * 1000 - _levelSettings.NumberOfFlashes * 166 * 2);
             _frightenedTimer.ClockReachedLimit += OnFrightenedTimerReached;
-            AddComponent(_frightenedTimer);
+            _tileGrid.AddComponent(_frightenedTimer);
         }
 
         private void OnFrightenedTimerReached()
@@ -407,9 +407,27 @@ namespace Pacman.Scenes
         private void OnCollision(PacmanObject pacman, Ghost ghost)
         {
             if (ghost.CurrentState == GhostState.FRIGHTENED || ghost.CurrentState == GhostState.FRIGHTENEDFLASHING)
+            {
                 ghost.ChangeState(GhostState.EYES);
+                _eatenGhost = ghost;
+                _eatenGhost.Visible = false;
+                _tileGrid.Enabled = false;
+
+                if (_pauseTimer == null)
+                    _pauseTimer = new Timer();
+                _pauseTimer.Reset(1000);
+                _pauseTimer.ClockReachedLimit += OnFrightenedEatenResume;
+                AddComponent(_pauseTimer);
+            }
             //else if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
            //     RestartLevel();
+        }
+
+        private void OnFrightenedEatenResume()
+        {
+            _tileGrid.Enabled = true;
+            _eatenGhost.Visible = true;
+            _pauseTimer.ClockReachedLimit -= OnFrightenedEatenResume;
         }
 
         private void OnGhostArriveHome(Ghost ghost)
