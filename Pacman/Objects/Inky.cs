@@ -25,9 +25,9 @@ namespace Pacman.Objects
             base.SetTransforms();
         }
 
-        protected override void ResetProperties()
+        protected override void ResetGhostState()
         {
-            base.ResetProperties();
+            base.ResetGhostState();
             Body.Tint = Color.Cyan;
         }
 

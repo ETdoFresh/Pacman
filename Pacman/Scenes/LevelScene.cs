@@ -27,7 +27,7 @@ namespace Pacman.Scenes
         Ghost _blinky, _pinky, _inky, _clyde;
         Ghost[] _ghostArray;
         Pellets _pellets;
-        GhostState.GhostStates _levelState;
+        AIState.State _levelState;
         Timer _levelStateTimer;
         int _stateTimerIteration;
         Timer _ghostHomeTimer;
@@ -38,7 +38,8 @@ namespace Pacman.Scenes
         GlobalDotCounter _globalDotCounter;
         CollisionManager _collisionManager;
         Timer _pauseTimer;
-        private Ghost _eatenGhost;
+        Ghost _eatenGhost;
+        LevelSettings _levelSettings;
 
         public LevelScene()
             : base("Level")
@@ -108,8 +109,9 @@ namespace Pacman.Scenes
             AddComponent(_pelletEater);
 
             _stateTimerIteration = 0;
-            _levelState = GhostState.SCATTER;
+            _levelState = AIState.SCATTER;
             _blinky.ChangeState(_levelState);
+            _blinky.ChangeState(GhostState.NORMAL);
             foreach (Ghost ghost in _ghostArray) ghost.SetLevelState(_levelState);
 
             // Set blinky to right initial direction (which is left)
@@ -269,31 +271,31 @@ namespace Pacman.Scenes
             switch (_stateTimerIteration)
             {
                 case 1:
-                    _levelState = GhostState.CHASE;
+                    _levelState = AIState.CHASE;
                     _levelStateTimer.Reset(_levelSettings.Chase1 * 1000);
                     break;
                 case 2:
-                    _levelState = GhostState.SCATTER;
+                    _levelState = AIState.SCATTER;
                     _levelStateTimer.Reset(_levelSettings.Scatter2 * 1000);
                     break;
                 case 3:
-                    _levelState = GhostState.CHASE;
+                    _levelState = AIState.CHASE;
                     _levelStateTimer.Reset(_levelSettings.Chase2 * 1000);
                     break;
                 case 4:
-                    _levelState = GhostState.SCATTER;
+                    _levelState = AIState.SCATTER;
                     _levelStateTimer.Reset(_levelSettings.Scatter3 * 1000);
                     break;
                 case 5:
-                    _levelState = GhostState.CHASE;
+                    _levelState = AIState.CHASE;
                     _levelStateTimer.Reset(_levelSettings.Chase3 * 1000);
                     break;
                 case 6:
-                    _levelState = GhostState.SCATTER;
+                    _levelState = AIState.SCATTER;
                     _levelStateTimer.Reset(_levelSettings.Scatter4 * 1000);
                     break;
                 case 7:
-                    _levelState = GhostState.CHASE;
+                    _levelState = AIState.CHASE;
                     _levelStateTimer.Stop();
                     break;
                 default:
@@ -304,19 +306,19 @@ namespace Pacman.Scenes
 
         private void OnHomeTimerLimitReached()
         {
-            if (_pinky.CurrentState == GhostState.HOME)
+            if (_pinky.CurrentState == AIState.HOME)
             {
-                _pinky.ChangeState(GhostState.LEAVINGHOME);
+                _pinky.ChangeState(AIState.LEAVINGHOME);
                 _ghostHomeTimer.Reset();
             }
-            else if (_inky.CurrentState == GhostState.HOME)
+            else if (_inky.CurrentState == AIState.HOME)
             {
-                _inky.ChangeState(GhostState.LEAVINGHOME);
+                _inky.ChangeState(AIState.LEAVINGHOME);
                 _ghostHomeTimer.Reset();
             }
-            else if (_clyde.CurrentState == GhostState.HOME)
+            else if (_clyde.CurrentState == AIState.HOME)
             {
-                _clyde.ChangeState(GhostState.LEAVINGHOME);
+                _clyde.ChangeState(AIState.LEAVINGHOME);
                 _ghostHomeTimer.Reset();
             }
             else
@@ -354,10 +356,13 @@ namespace Pacman.Scenes
 
             foreach (Ghost ghost in _ghostArray)
             {
-                if (ghost.CurrentState != GhostState.HOME && ghost.CurrentState != GhostState.LEAVINGHOME && ghost.CurrentState != GhostState.EYES)
+                if (ghost.CurrentGhostState != GhostState.EYES)
                 {
                     ghost.ChangeState(GhostState.FRIGHTENED);
                     ghost.ReverseDirection();
+
+                    if (ghost.CurrentState != AIState.HOME && ghost.CurrentState != AIState.LEAVINGHOME)
+                        ghost.ChangeState(AIState.WANDER);
                 }
             }
 
@@ -371,8 +376,8 @@ namespace Pacman.Scenes
         private void OnFrightenedTimerReached()
         {
             foreach (Ghost ghost in _ghostArray)
-                if (ghost.CurrentState == GhostState.FRIGHTENED)
-                    ghost.ChangeState(GhostState.FRIGHTENEDFLASHING);
+                if (ghost.CurrentGhostState == GhostState.FRIGHTENED)
+                    ghost.ChangeState(GhostState.FLASHINGFRIGHTENED);
 
             _frightenedTimer.Reset(_levelSettings.NumberOfFlashes * 166 * 2);
             _frightenedTimer.ClockReachedLimit -= OnFrightenedTimerReached;
@@ -384,7 +389,14 @@ namespace Pacman.Scenes
             _frightenedTimer.RemoveSelf();
             foreach (Ghost ghost in _ghostArray)
             {
-                if (ghost.CurrentState == GhostState.FRIGHTENEDFLASHING)
+                if (ghost.CurrentGhostState == GhostState.FLASHINGFRIGHTENED)
+                {
+                    if (ghost.CurrentState == AIState.HOME)
+                        ghost.ChangeState(GhostState.HOME);
+                    else
+                        ghost.ChangeState(GhostState.NORMAL);
+                }
+                if (ghost.CurrentState == AIState.WANDER)
                 {
                     ghost.ChangeState(_levelState);
                 }
@@ -393,8 +405,8 @@ namespace Pacman.Scenes
 
         private void OnDotLimitReached(Ghost ghost)
         {
-            if (ghost.CurrentState == GhostState.HOME)
-                ghost.ChangeState(GhostState.LEAVINGHOME);
+            if (ghost.CurrentState == AIState.HOME)
+                ghost.ChangeState(AIState.LEAVINGHOME);
 
             if (ghost == _pinky)
                 _activeDotCounter = _inky.DotCounter;
@@ -406,9 +418,10 @@ namespace Pacman.Scenes
 
         private void OnCollision(PacmanObject pacman, Ghost ghost)
         {
-            if (ghost.CurrentState == GhostState.FRIGHTENED || ghost.CurrentState == GhostState.FRIGHTENEDFLASHING)
+            if (ghost.IsFrightened)
             {
                 ghost.ChangeState(GhostState.EYES);
+                ghost.ChangeState(AIState.EYES);
                 _eatenGhost = ghost;
                 _eatenGhost.Visible = false;
                 _tileGrid.Enabled = false;
@@ -435,9 +448,9 @@ namespace Pacman.Scenes
             if (_globalDotCounter == null)
             {
                 if (ghost is Blinky)
-                    ghost.ChangeState(GhostState.LEAVINGHOME);
+                    ghost.ChangeState(AIState.LEAVINGHOME);
                 else if (ghost.DotCounter.IsDotLimitReached())
-                    ghost.ChangeState(GhostState.LEAVINGHOME);
+                    ghost.ChangeState(AIState.LEAVINGHOME);
                 else
                     SetActiveDotCounter();
             }
@@ -445,11 +458,11 @@ namespace Pacman.Scenes
 
         private void SetActiveDotCounter()
         {
-            if (_pinky.CurrentState == GhostState.HOME)
+            if (_pinky.CurrentState == AIState.HOME)
                 _activeDotCounter = _pinky.DotCounter;
-            else if (_inky.CurrentState == GhostState.HOME)
+            else if (_inky.CurrentState == AIState.HOME)
                 _activeDotCounter = _inky.DotCounter;
-            else if (_clyde.CurrentState == GhostState.HOME)
+            else if (_clyde.CurrentState == AIState.HOME)
                 _activeDotCounter = _inky.DotCounter;
             else
                 _activeDotCounter = null;

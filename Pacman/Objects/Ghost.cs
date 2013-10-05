@@ -14,8 +14,9 @@ namespace Pacman.Objects
         public delegate void GhostArriveHomeHandler(Ghost ghost);
         public event GhostArriveHomeHandler GhostArriveHome = delegate { };
 
-        private GhostState _ghostState;
-        private GhostState.GhostStates _levelState;
+        AIState _aiState;
+        GhostState _ghostState;
+        AIState.State _levelState;
         TunnelChecker _tunnelHandler;
         Timer _flashTimer;
         bool _flashBlue;
@@ -37,6 +38,7 @@ namespace Pacman.Objects
             SetProperties();
             SetUpdaters();
             SetupFlashTimer();
+            ChangeState(AIState.HOME);
             ChangeState(GhostState.HOME);
             _tileGrid.AddComponent(this);
         }
@@ -98,41 +100,125 @@ namespace Pacman.Objects
             AddComponent(_tunnelHandler);
         }
 
-        public virtual void ChangeState(GhostState.GhostStates ghostState)
+        public void ChangeState(GhostState.State ghostState)
         {
-            ResetProperties();
-            _ghostState = GhostState.Change(ghostState, this);
+            ResetGhostState();
+            _ghostState = GhostState.Create(ghostState, this);
+        }
+
+        protected virtual void ResetGhostState()
+        {
+            Body.Enabled = true;
+            Eyes.Enabled = true;
+            Pupils.Enabled = true;
+
+            Body.Visible = true;
+            Eyes.Visible = true;
+            Pupils.Visible = true;
+
+            Eyes.Tint = Color.White;
+            Pupils.Tint = new Color(60, 87, 167);
+
+            ShiftEyesToDirection.Enabled = false;
+            Speed.Factor = 0.75f;
+        }
+
+        public void OnHomeGhostState()
+        {
+            Eyes.ChangeIndex(20);
+            Pupils.ChangeIndex(25);
+        }
+
+        public void OnNormalGhostState()
+        {
+            ShiftEyesToDirection.Enabled = true;
+            ShiftEyesToDirection.SetEyesByDirection();
+        }
+
+        public void OnFrightenedGhostState()
+        {
+            Pupils.Visible = false;
+            Body.Tint = new Color(60, 87, 167);
+            Eyes.Tint = new Color(255, 207, 50);
+            Eyes.ChangeIndex(28);
+            Speed.Factor = 0.5f;
+        }
+
+        public void OnFlashingFrightenedGhostState()
+        {
+            Pupils.Visible = false; 
+            Body.Tint = Color.White;
+            Eyes.Tint = Color.Red;
+            Eyes.ChangeIndex(28);
+            Speed.Factor = 0.5f;
+            _flashTimer.Reset();
+            _flashBlue = true;
+        }
+
+        private void OnFlashTimerReached()
+        {
+            if (CurrentGhostState == GhostState.FLASHINGFRIGHTENED)
+            {
+                if (_flashBlue)
+                {
+                    Body.Tint = new Color(60, 87, 167);
+                    Eyes.Tint = new Color(255, 207, 50);
+                }
+                else
+                {
+                    Body.Tint = Color.White;
+                    Eyes.Tint = Color.Red;
+                }
+                _flashBlue = !_flashBlue;
+                _flashTimer.Reset();
+            }
+        }
+
+        public void OnEyesGhostState()
+        {
+            Body.Visible = false;
+            ShiftEyesToDirection.Enabled = true;
+            ShiftEyesToDirection.SetEyesByDirection();
+            Speed.Factor = 1.2f;
         }
 
         public void ReverseDirection()
         {
-            if (ImmediateTarget != null)
+            if (ImmediateTarget != null && CurrentState != AIState.LEAVINGHOME)
                 (ImmediateTarget.CurrentType as Target.ImmediateType).ReverseDirection();
+        }
+
+        public void SetLevelState(AIState.State ghostState)
+        {
+            _levelState = ghostState;
+            if (CurrentState == AIState.CHASE || CurrentState == AIState.SCATTER)
+            {
+                ReverseDirection();
+                ChangeState(_levelState);
+            }
+        }
+
+        public virtual void ChangeState(AIState.State ghostState)
+        {
+            ResetProperties();
+            _aiState = AIState.Change(ghostState, this);
         }
 
         protected virtual void ResetProperties()
         {
-            DisableAllComponents();
-            HideAllComponents();
+            Velocity.Enabled = false;
+            Steering.Enabled = false;
+            SnapToTarget.Enabled = false;
             TilePosition.Enabled = true;
             Wrap.Enabled = true;
-            Body.Enabled = true;
-            Eyes.Enabled = true;
-            Pupils.Enabled = true;
-            Body.Visible = true;
-            Eyes.Visible = true;
-            Pupils.Visible = true;
-            Eyes.Tint = Color.White;
-            Pupils.Tint = new Color(60, 87, 167);
-            Speed.Factor = 0.75f;
             _tunnelHandler.Enabled = true;
+            Steering.OnArriveAtTarget -= OnLeaveHomeFirstArrive;
+            Steering.OnArriveAtTarget -= OnLeaveHomeSecondArrive;
         }
 
-        public virtual void OnHomeState()
+        public void OnHomeState()
         {
             Target.ChangeState(Target.FIXED);
-            Eyes.ChangeIndex(20);
-            Pupils.ChangeIndex(25);
         }
 
         public virtual void OnLeavingHomeState()
@@ -142,11 +228,11 @@ namespace Pacman.Objects
             ImmediateTarget.Translate(_tileGrid.GetPosition(13.5f, 14.01f));
             Velocity.Enabled = true;
             Steering.Enabled = true;
-            ShiftEyesToDirection.Enabled = true;
-            ShiftEyesToDirection.SetEyesByDirection();
             SnapToTarget.Enabled = true;
             Steering.OnArriveAtTarget += OnLeaveHomeFirstArrive;
-            Speed.Factor = 0.4f;
+            
+            if (!IsFrightened)
+                ChangeState(GhostState.NORMAL);
         }
 
         private void OnLeaveHomeFirstArrive()
@@ -164,22 +250,10 @@ namespace Pacman.Objects
             ChangeState(_levelState);
         }
 
-        public void SetLevelState(GhostState.GhostStates ghostState)
-        {
-            _levelState = ghostState;
-            if (_ghostState.CurrentState == GhostState.CHASE || _ghostState.CurrentState == GhostState.SCATTER)
-            {
-                ReverseDirection();
-                ChangeState(_levelState);
-            }
-        }
-
         public virtual void OnChaseState()
         {
             Velocity.Enabled = true;
             Steering.Enabled = true;
-            ShiftEyesToDirection.Enabled = true;
-            ShiftEyesToDirection.SetEyesByDirection();
             SnapToTarget.Enabled = true;
         }
 
@@ -188,72 +262,25 @@ namespace Pacman.Objects
             Target.ChangeState(Target.FIXED);
             Velocity.Enabled = true;
             Steering.Enabled = true;
-            ShiftEyesToDirection.Enabled = true;
-            ShiftEyesToDirection.SetEyesByDirection();
             SnapToTarget.Enabled = true;
         }
 
-        public virtual void OnFrightenedState()
+        public void OnWanderState()
         {
             Target.ChangeState(Target.FRIGHTENED, _tileGrid);
-            Body.Tint = new Color(60, 87, 167);
-            Eyes.Tint = new Color(255, 207, 50);
-            Eyes.ChangeIndex(28);
-            Pupils.Visible = false;
             Velocity.Enabled = true;
             Steering.Enabled = true;
             SnapToTarget.Enabled = true;
-            ShiftEyesToDirection.Enabled = false;
-            Speed.Factor = 0.5f;
         }
 
-        public virtual void OnFrightenedFlashingState()
-        {
-            Target.ChangeState(Target.FRIGHTENED, _tileGrid);
-            Body.Tint = Color.White;
-            Eyes.Tint = Color.Red;
-            Eyes.ChangeIndex(28);
-            Pupils.Visible = false;
-            Velocity.Enabled = true;
-            Steering.Enabled = true;
-            SnapToTarget.Enabled = true;
-            ShiftEyesToDirection.Enabled = false;
-            Speed.Factor = 0.5f;
-            _flashTimer.Reset();
-            _flashBlue = true;
-        }
-
-        private void OnFlashTimerReached()
-        {
-            if (CurrentState == GhostState.FRIGHTENEDFLASHING)
-            {
-                if (_flashBlue)
-                {
-                    Body.Tint = new Color(60, 87, 167);
-                    Eyes.Tint = new Color(255, 207, 50);
-                }
-                else
-                {
-                    Body.Tint = Color.White;
-                    Eyes.Tint = Color.Red;
-                }
-                _flashBlue = !_flashBlue;
-                _flashTimer.Reset();
-            }
-        }
-
-        public virtual void OnEyesState()
+        public void OnEyesState()
         {
             Target.ChangeState(Target.FIXED);
             Target.Translate(_startPosition);
-            Body.Visible = false;
             Velocity.Enabled = true;
             Steering.Enabled = true;
-            ShiftEyesToDirection.Enabled = true;
-            ShiftEyesToDirection.SetEyesByDirection();
             SnapToTarget.Enabled = true;
             TilePosition.ChangeTile += OnEyeTileChange;
-            Speed.Factor = 1.2f;
         }
 
         private void OnEyeTileChange()
@@ -290,6 +317,7 @@ namespace Pacman.Objects
         private void OnEyesFinalArrive()
         {
             Steering.OnArriveAtTarget -= OnEyesFinalArrive;
+            ChangeState(AIState.HOME);
             ChangeState(GhostState.HOME);
             GhostArriveHome(this);
         }
@@ -301,10 +329,10 @@ namespace Pacman.Objects
 
         public virtual void OnTunnelEnd()
         {
-            if (CurrentState == GhostState.CHASE || CurrentState == GhostState.SCATTER)
-                Speed.Factor = 0.75f;
-            else if (CurrentState == GhostState.FRIGHTENED || CurrentState == GhostState.FRIGHTENEDFLASHING)
+            if (IsFrightened)
                 Speed.Factor = 0.5f;
+            else
+                Speed.Factor = 0.75f;
         }
 
         public override void RemoveSelf()
@@ -346,7 +374,9 @@ namespace Pacman.Objects
         public TilePosition TilePosition { get; set; }
         public Target ImmediateTarget { get; set; }
         public ShiftEyesToDirection ShiftEyesToDirection { get; set; }
-        public GhostState.GhostStates CurrentState { get { return _ghostState.CurrentState; } }
+        public AIState.State CurrentState { get { return _aiState.CurrentState; } }
+        public GhostState.State CurrentGhostState { get { return _ghostState.CurrentState; } }
         public DotCounter DotCounter { get; set; }
+        public bool IsFrightened { get { return CurrentGhostState == GhostState.FRIGHTENED || CurrentGhostState == GhostState.FLASHINGFRIGHTENED; } }
     }
 }

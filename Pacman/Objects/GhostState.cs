@@ -2,86 +2,69 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework;
 
 namespace Pacman.Objects
 {
     class GhostState
     {
-        public enum GhostStates { Home, LeavingHome, Chase, Scatter, Frightened, FrightenedFlashing, Eyes }
-        static public GhostStates HOME { get { return GhostStates.Home; } }
-        static public GhostStates LEAVINGHOME { get { return GhostStates.LeavingHome; } }
-        static public GhostStates CHASE { get { return GhostStates.Chase; } }
-        static public GhostStates SCATTER { get { return GhostStates.Scatter; } }
-        static public GhostStates FRIGHTENED { get { return GhostStates.Frightened; } }
-        static public GhostStates FRIGHTENEDFLASHING { get { return GhostStates.FrightenedFlashing; } }
-        static public GhostStates EYES { get { return GhostStates.Eyes; } }
+        public enum State { Home, Normal, Frightened, FlashingFrightened, Eyes }
+        public const State HOME = State.Home;
+        public const State NORMAL = State.Normal;
+        public const State FRIGHTENED = State.Frightened;
+        public const State FLASHINGFRIGHTENED = State.FlashingFrightened;
+        public const State EYES = State.Eyes;
 
-        GhostStates _currentState;
+        private State _currentState;
 
-        private GhostState(GhostStates currentState)
+        private GhostState(State state)
         {
-            _currentState = currentState; 
+            _currentState = state;
         }
 
-        static public GhostState Change(GhostStates ghostState, Ghost ghost)
+        static public GhostState Create(State state, Ghost ghost)
         {
-            switch (ghostState)
+            switch (state)
             {
-                case GhostStates.Home:
+                case HOME:
                     return new Home(ghost);
-                case GhostStates.LeavingHome:
-                    return new LeavingHome(ghost);
-                case GhostStates.Chase:
-                    return new Chase(ghost);
-                case GhostStates.Scatter:
-                    return new Scatter(ghost);
-                case GhostStates.Frightened:
+                case NORMAL:
+                    return new Normal(ghost);
+                case FRIGHTENED:
                     return new Frightened(ghost);
-                case GhostStates.FrightenedFlashing:
-                    return new FrightenedFlashing(ghost);
-                case GhostStates.Eyes:
+                case FLASHINGFRIGHTENED:
+                    return new FlashingFrightened(ghost);
+                case EYES:
                     return new Eyes(ghost);
                 default:
-                    throw new Exception("Ghost State not valid");
+                    throw new Exception("State not valid, how did you get here?");
             }
         }
 
-        public GhostStates CurrentState { get { return _currentState; } }
+        public State CurrentState { get { return _currentState; } }
 
         private class Home : GhostState
         {
-            public Home(Ghost ghost) : base(HOME) { ghost.OnHomeState(); }
+            public Home(Ghost ghost) : base(HOME) { ghost.OnHomeGhostState(); }
         }
 
-        private class LeavingHome : GhostState
+        private class Normal : GhostState
         {
-            public LeavingHome(Ghost ghost) : base(LEAVINGHOME) { ghost.OnLeavingHomeState(); }
-        }
-
-        private class Chase : GhostState
-        {
-            public Chase(Ghost ghost) : base(CHASE) { ghost.OnChaseState(); }
-        }
-
-        private class Scatter : GhostState
-        {
-            public Scatter(Ghost ghost) : base(SCATTER) { ghost.OnScatterState(); }
+            public Normal(Ghost ghost) : base(NORMAL) { ghost.OnNormalGhostState(); }
         }
 
         private class Frightened : GhostState
         {
-            public Frightened(Ghost ghost) : base(FRIGHTENED) { ghost.OnFrightenedState(); }
+            public Frightened(Ghost ghost) : base(FRIGHTENED) { ghost.OnFrightenedGhostState(); }
         }
 
-        private class FrightenedFlashing : GhostState
+        private class FlashingFrightened : GhostState
         {
-            public FrightenedFlashing(Ghost ghost) : base(FRIGHTENEDFLASHING) { ghost.OnFrightenedFlashingState(); }
+            public FlashingFrightened(Ghost ghost) : base(FLASHINGFRIGHTENED) { ghost.OnFlashingFrightenedGhostState(); }
         }
 
         private class Eyes : GhostState
         {
-            public Eyes(Ghost ghost) : base(EYES) { ghost.OnEyesState(); }
+            public Eyes(Ghost ghost) : base(EYES) { ghost.OnEyesGhostState(); }
         }
     }
 }

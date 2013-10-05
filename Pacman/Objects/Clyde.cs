@@ -23,9 +23,9 @@ namespace Pacman.Objects
             base.SetTransforms();
         }
 
-        protected override void ResetProperties()
+        protected override void ResetGhostState()
         {
-            base.ResetProperties();
+            base.ResetGhostState();
             Body.Tint = Color.Orange;
         }
 
@@ -33,7 +33,9 @@ namespace Pacman.Objects
         {
             base.OnLeavingHomeState();
             Direction.Value = Direction.LEFT;
-            ShiftEyesToDirection.SetEyesByDirection();
+
+            if (!IsFrightened)
+                ShiftEyesToDirection.SetEyesByDirection();
         }
 
         public override void OnChaseState()

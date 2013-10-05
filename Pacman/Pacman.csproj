@@ -111,6 +111,7 @@
     <Compile Include="Engine\TextureAtlasReader.cs" />
     <Compile Include="Objects\DotCounter.cs" />
     <Compile Include="Objects\GhostState.cs" />
+    <Compile Include="Objects\AIState.cs" />
     <Compile Include="Objects\Clyde.cs" />
     <Compile Include="Objects\Direction.cs" />
     <Compile Include="Objects\Ghost.cs" />
