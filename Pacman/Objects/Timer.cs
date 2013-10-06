@@ -15,7 +15,8 @@ namespace Pacman.Objects
         public delegate void ClockReachedLimitHandler();
         public event ClockReachedLimitHandler ClockReachedLimit = delegate { };
 
-        public Timer(float limit = 0)
+        public Timer() : this(0) { }
+        public Timer(float limit)
         {
             this.limit = limit;
             Start();

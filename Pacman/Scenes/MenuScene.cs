@@ -64,7 +64,7 @@ namespace Pacman.Scenes
             {
                 Stage.GotoScene("AnimationTest");
             }
-            else if (InputHelper.IsPressed(Keys.Escape))
+            else if (InputHelper.IsPressed(Keys.Q) || InputHelper.IsPressed(Keys.Escape))
             {
                 Stage.GameObject.Exit();
             }

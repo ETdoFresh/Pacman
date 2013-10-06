@@ -40,6 +40,7 @@ namespace Pacman.Scenes
         Timer _pauseTimer;
         Ghost _eatenGhost;
         LevelSettings _levelSettings;
+        BonusFruit _bonusFruit;
 
         public LevelScene()
             : base("Level")
@@ -67,7 +68,7 @@ namespace Pacman.Scenes
             if (Enabled)
             {
                 base.Update(gameTime);
-                if (InputHelper.IsPressed(Keys.Escape))
+                if (InputHelper.IsPressed(Keys.Q) || InputHelper.IsPressed(Keys.Escape))
                     Stage.GotoScene("Menu");
                 else if (InputHelper.IsPressed(Keys.R))
                     RestartLevel();
@@ -471,6 +472,8 @@ namespace Pacman.Scenes
         private void OnFirstBonusFruit()
         {
             Debug.WriteLine("First bonus fruit appears");
+            _bonusFruit = new BonusFruit(_tileGrid);
+            _tileGrid.AddComponent(_bonusFruit);
             _bonusFruitCounter.SetNewLimit(170);
             _bonusFruitCounter.DotLimitReached -= OnFirstBonusFruit;
             _bonusFruitCounter.DotLimitReached += OnSecondBonusFruit;
@@ -479,6 +482,8 @@ namespace Pacman.Scenes
         private void OnSecondBonusFruit()
         {
             Debug.WriteLine("Second bonus fruit appears");
+            _bonusFruit = new BonusFruit(_tileGrid);
+            _tileGrid.AddComponent(_bonusFruit);
             _bonusFruitCounter.SetNewLimit(1000);
             _bonusFruitCounter.DotLimitReached -= OnSecondBonusFruit;
         }

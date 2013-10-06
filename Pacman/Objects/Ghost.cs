@@ -146,7 +146,7 @@ namespace Pacman.Objects
 
         public void OnFlashingFrightenedGhostState()
         {
-            Pupils.Visible = false; 
+            Pupils.Visible = false;
             Body.Tint = Color.White;
             Eyes.Tint = Color.Red;
             Eyes.ChangeIndex(28);
@@ -230,7 +230,7 @@ namespace Pacman.Objects
             Steering.Enabled = true;
             SnapToTarget.Enabled = true;
             Steering.OnArriveAtTarget += OnLeaveHomeFirstArrive;
-            
+
             if (!IsFrightened)
                 ChangeState(GhostState.NORMAL);
         }
@@ -247,7 +247,11 @@ namespace Pacman.Objects
         {
             Steering.OnArriveAtTarget -= OnLeaveHomeSecondArrive;
             ImmediateTarget.ChangeState(Target.IMMEDIATE, _tileGrid, this);
-            ChangeState(_levelState);
+            
+            if (IsFrightened)
+                ChangeState(AIState.WANDER);
+            else
+                ChangeState(_levelState);
         }
 
         public virtual void OnChaseState()

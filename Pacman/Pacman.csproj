@@ -109,6 +109,7 @@
     <Compile Include="Engine\Display\Stage.cs" />
     <Compile Include="Engine\Display\TextObject.cs" />
     <Compile Include="Engine\TextureAtlasReader.cs" />
+    <Compile Include="Objects\BonusFruit.cs" />
     <Compile Include="Objects\DotCounter.cs" />
     <Compile Include="Objects\GhostState.cs" />
     <Compile Include="Objects\AIState.cs" />

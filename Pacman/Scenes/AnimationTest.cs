@@ -96,7 +96,7 @@ namespace Pacman.Scenes
             for (var i = 0; i < _allSprites.Count; i++)
             {
                 AddComponent(_allSprites[i]);
-                _allSprites[i].Translate((i % itemsPerRow) * spacing, ((float)Math.Floor((decimal)i / itemsPerRow) * spacing));
+                _allSprites[i].Translate((i % itemsPerRow) * spacing, ((float)Math.Floor((double)i / itemsPerRow) * spacing));
                 //_allSprites[i].Resize(0.5f);
             }
         }
@@ -104,11 +104,11 @@ namespace Pacman.Scenes
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             base.Update(gameTime);
-            if (InputHelper.IsPressed(Keys.T) || InputHelper.IsPressed(Keys.Escape))
+            if (InputHelper.IsPressed(Keys.T) || InputHelper.IsPressed(Keys.Q))
             {
                 Stage.GotoScene("Menu");
             }
-            else if (InputHelper.IsPressed(Keys.Escape))
+            else if (InputHelper.IsPressed(Keys.Q) || InputHelper.IsPressed(Keys.Escape))
             {
                 Stage.GameObject.Exit();
             }
