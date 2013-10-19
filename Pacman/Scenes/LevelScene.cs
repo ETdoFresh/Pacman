@@ -41,6 +41,10 @@ namespace Pacman.Scenes
         Ghost _eatenGhost;
         LevelSettings _levelSettings;
         BonusFruit _bonusFruit;
+        TextObject _readyText;
+        Timer _readyTextTimer;
+        Score _score;
+        private TextObject _pointsText;
 
         public LevelScene()
             : base("Level")
@@ -97,6 +101,9 @@ namespace Pacman.Scenes
             SetupBoard();
             GeneratePellets();
 
+            _score = new Score();
+            AddComponent(_score);
+
             _pacman = PacmanObject.Create(_tileGrid);
             _blinky = Blinky.Create(_tileGrid, _pacman);
             _pinky = Pinky.Create(_tileGrid, _pacman);
@@ -151,6 +158,8 @@ namespace Pacman.Scenes
             _collisionManager.Collision += OnCollision;
             _tileGrid.AddComponent(_collisionManager);
 
+            ShowReadyText();
+
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
             _mouse.Alpha = 0.75f;
@@ -174,6 +183,34 @@ namespace Pacman.Scenes
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);
             AddComponent(_debugHelper);
+        }
+
+        private void ShowReadyText()
+        {
+            if (_readyText != null) 
+                _readyText.RemoveSelf();
+
+            _readyText = new TextObject("READY!");
+            _readyText.Translate(_tileGrid.GetPosition(13.5f, 17));
+            _readyText.Tint = Color.Yellow;
+            _readyText.Resize(3);
+
+            if (_readyTextTimer != null)
+                _readyTextTimer.RemoveSelf();
+
+            _readyTextTimer = new Timer(1000);
+
+            _tileGrid.AddComponent(_readyText);
+            AddComponent(_readyTextTimer);
+            _readyTextTimer.ClockReachedLimit += new Timer.ClockReachedLimitHandler(OnReadyTextTimer);
+        }
+
+        void OnReadyTextTimer()
+        {
+            _readyTextTimer.RemoveSelf();
+            _readyText.RemoveSelf();
+            _readyTextTimer = null;
+            _readyText = null;
         }
 
         private void RemoveAllItems()
@@ -332,6 +369,7 @@ namespace Pacman.Scenes
 
         private void OnPelletEaten()
         {
+            _score.Add(10);
             if (_activeDotCounter != null)
                 _activeDotCounter.AddDot();
             else if (_globalDotCounter != null)
@@ -345,6 +383,9 @@ namespace Pacman.Scenes
 
         private void OnPowerPelletEaten()
         {
+            _score.Add(50);
+            _score.ResetNumberOfGhostsEaten();
+
             if (_activeDotCounter != null)
                 _activeDotCounter.AddDot();
             else if (_globalDotCounter != null)
@@ -421,10 +462,18 @@ namespace Pacman.Scenes
         {
             if (ghost.IsFrightened)
             {
+                int newScore = _score.AddForEatingGhost();
+                _pointsText = new TextObject(newScore.ToString(),"Font/PacmanFont2");
+                _pointsText.Resize(3.25f);
+                _pointsText.Translate(ghost.Position);
+                _pointsText.Tint = Color.Cyan;
+                _tileGrid.AddComponent(_pointsText);
+                _pointsText.Update(null);
                 ghost.ChangeState(GhostState.EYES);
                 ghost.ChangeState(AIState.EYES);
                 _eatenGhost = ghost;
                 _eatenGhost.Visible = false;
+                _pacman.Visible = false;
                 _tileGrid.Enabled = false;
 
                 if (_pauseTimer == null)
@@ -439,8 +488,10 @@ namespace Pacman.Scenes
 
         private void OnFrightenedEatenResume()
         {
+            _pointsText.RemoveSelf();
             _tileGrid.Enabled = true;
             _eatenGhost.Visible = true;
+            _pacman.Visible = true;
             _pauseTimer.ClockReachedLimit -= OnFrightenedEatenResume;
         }
 

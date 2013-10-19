@@ -12,6 +12,7 @@ namespace Pacman.Engine.Display
     /// </summary>
     class TextObject : DisplayObject
     {
+        readonly string _spriteFontName;
         SpriteFont _spriteFont;
         string _text;
         string _newText;
@@ -22,6 +23,13 @@ namespace Pacman.Engine.Display
             : base()
         {
             _newText = text;
+            _spriteFontName = "Font/PacmanFont";
+        }
+
+        public TextObject(String text, String spriteFontName)
+            : this(text)
+        {
+            _spriteFontName = spriteFontName;
         }
 
         /// <summary>
@@ -30,7 +38,7 @@ namespace Pacman.Engine.Display
         public override void LoadContent()
         {
             base.LoadContent();
-            _spriteFont = Stage.GameContent.Load<SpriteFont>("SpriteFont");
+            _spriteFont = Stage.GameContent.Load<SpriteFont>(_spriteFontName);
             ChangeText("");
         }
 

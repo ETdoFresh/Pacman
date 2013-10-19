@@ -39,15 +39,15 @@ namespace Pacman.Scenes
             circ.Translate(600, 50);
             AddComponent(circ);
 
-            var text = new TextObject("Woot!");
-            text.Translate(550, 100);
+            var text = new TextObject("Woot!\n1234567890\nREADY!\n1UP 2UP\nGAME   OVER");
+            text.Translate(575, 150);
             text.Resize(1.5f);
             text.Rotate(-15);
             text.Tint = Color.Lime;
             AddComponent(text);
 
             var text2 = new TextObject("Press {Spacebar} to proceed to next Scene!\nPress {T} to view Animation Test!");
-            text2.Translate(325, 350);
+            text2.Translate(350, 350);
             text2.Resize(2);
             text2.Rotate(-5);
             AddComponent(text2);

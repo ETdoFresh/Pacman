@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:b0fd293debbadb207f20fce27e0b77b8:1/1$ -->
+<!-- $TexturePacker:SmartUpdate:c2576ab2639907babdca2de07eb84e1c:1/1$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
@@ -49,4 +49,5 @@ r => 'y' only set if sprite is rotated
     <sprite n="07-walls0003.png" x="70" y="266" w="32" h="32"/>
     <sprite n="07-walls0004.png" x="104" y="266" w="32" h="32"/>
     <sprite n="08-cherry.png" x="138" y="266" w="64" h="64"/>
+    <sprite n="09-strawberry.png" x="204" y="266" w="64" h="64"/>
 </TextureAtlas>

@@ -57,7 +57,7 @@ namespace Pacman.Engine.Helpers
                 }
 
                 _textObject.Text = output;
-                _textObject.Translate(_textObject.Width / 2, _textObject.Height / 2);
+                _textObject.Translate(_textObject.Width / 2, _textObject.Height / 2 + 50);
             }
         }
     }
