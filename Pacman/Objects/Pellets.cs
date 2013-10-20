@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Pacman.Engine.Display;
 using Pacman.Engine.Helpers;
+using Microsoft.Xna.Framework;
 
 namespace Pacman.Objects
 {
@@ -62,10 +63,29 @@ namespace Pacman.Objects
 
         public class PowerPellet : Pellet
         {
+            const int _flashRate = 167;
+            int _elapsedTime;
+
             public PowerPellet(TileGrid tileGrid)
                 : base(tileGrid)
             {
                 ChangeIndex(27);
+            }
+
+            public override void Update(GameTime gameTime)
+            {
+                base.Update(gameTime);
+                Flash(gameTime.ElapsedGameTime.Milliseconds);
+            }
+
+            private void Flash(int elapsedTime)
+            {
+                _elapsedTime += elapsedTime;
+                if (_elapsedTime >= _flashRate)
+                {
+                    Visible = !Visible;
+                    _elapsedTime = 0;
+                }
             }
         }
     }

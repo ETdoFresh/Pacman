@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://www.codeandweb.com/texturepacker-->
-<!-- $TexturePacker:SmartUpdate:208961a5281767bd5d072610e2e96fec:1/1$ -->
+<!-- $TexturePacker:SmartUpdate:1b2d70a73c31d423c547fcf5bd075b6b:1/1$ -->
 <!--Format:
 n  => name of the sprite
 x  => sprite x pos in texture
@@ -70,4 +70,29 @@ r => 'y' only set if sprite is rotated
     <sprite n="10-pacmandie0017.png" x="2" y="464" w="64" h="64"/>
     <sprite n="10-pacmandie0018.png" x="68" y="464" w="64" h="64"/>
     <sprite n="10-pacmandie0019.png" x="134" y="464" w="64" h="64"/>
+    <sprite n="10-pacmandie0020.png" x="200" y="464" w="64" h="64"/>
+    <sprite n="10-pacmandie0021.png" x="266" y="464" w="64" h="64"/>
+    <sprite n="10-pacmandie0022.png" x="332" y="464" w="64" h="64"/>
+    <sprite n="10-pacmandie0023.png" x="398" y="464" w="64" h="64"/>
+    <sprite n="10-pacmandie0024.png" x="2" y="530" w="64" h="64"/>
+    <sprite n="10-pacmandie0025.png" x="68" y="530" w="64" h="64"/>
+    <sprite n="10-pacmandie0026.png" x="134" y="530" w="64" h="64"/>
+    <sprite n="10-pacmandie0027.png" x="200" y="530" w="64" h="64"/>
+    <sprite n="10-pacmandie0028.png" x="266" y="530" w="64" h="64"/>
+    <sprite n="10-pacmandie0029.png" x="332" y="530" w="64" h="64"/>
+    <sprite n="10-pacmandie0030.png" x="398" y="530" w="64" h="64"/>
+    <sprite n="10-pacmandie0031.png" x="2" y="596" w="64" h="64"/>
+    <sprite n="10-pacmandie0032.png" x="68" y="596" w="64" h="64"/>
+    <sprite n="10-pacmandie0033.png" x="134" y="596" w="64" h="64"/>
+    <sprite n="10-pacmandie0034.png" x="200" y="596" w="64" h="64"/>
+    <sprite n="10-pacmandie0035.png" x="266" y="596" w="64" h="64"/>
+    <sprite n="10-pacmandie0036.png" x="332" y="596" w="64" h="64"/>
+    <sprite n="10-pacmandie0037.png" x="398" y="596" w="64" h="64"/>
+    <sprite n="10-pacmandie0038.png" x="2" y="662" w="64" h="64"/>
+    <sprite n="10-pacmandie0039.png" x="68" y="662" w="64" h="64"/>
+    <sprite n="10-pacmandie0040.png" x="134" y="662" w="64" h="64"/>
+    <sprite n="10-pacmandie0041.png" x="200" y="662" w="64" h="64"/>
+    <sprite n="10-pacmandie0042.png" x="266" y="662" w="64" h="64"/>
+    <sprite n="10-pacmandie0043.png" x="332" y="662" w="64" h="64"/>
+    <sprite n="10-pacmandie0044.png" x="398" y="662" w="64" h="64"/>
 </TextureAtlas>

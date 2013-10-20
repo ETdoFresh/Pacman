@@ -26,7 +26,7 @@ namespace Pacman.Objects
         Target _target;
         Position _startPosition;
 
-        public PacmanObject(TileGrid tileGrid) 
+        public PacmanObject(TileGrid tileGrid)
         {
             _tileGrid = tileGrid;
         }
@@ -40,6 +40,17 @@ namespace Pacman.Objects
             result.SetupUpdaters();
             tileGrid.AddComponent(result);
             return result;
+        }
+
+        public void Die()
+        {
+            List<GameObject> components = new List<GameObject>() { _velocity, _rotation, _steering, _wrap, _target };
+            foreach (GameObject component in components)
+                component.RemoveSelf();
+
+            Rotate(0);
+            _animatedSprite.SetSequence("Die", true);
+            _target.ChangeState(Target.FIXED);
         }
 
         private void SetupTransforms()
@@ -78,10 +89,10 @@ namespace Pacman.Objects
 
         private void SetupAnimations()
         {
-            
+
             _animatedSprite = new AnimatedSpriteObject("pacman");
             _animatedSprite.AddSequence("Chomp", new[] { 0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1 }, 200);
-            _animatedSprite.AddSequence("Die", 0, 11, 1000);
+            _animatedSprite.AddSequence("Die", 36, 45, 2000, 1);
             _animatedSprite.SetSequence("Chomp");
             _animatedSprite.Tint = Color.Yellow;
             AddComponent(_animatedSprite);

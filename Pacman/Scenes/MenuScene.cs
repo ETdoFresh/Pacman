@@ -18,8 +18,8 @@ namespace Pacman.Scenes
             Translate(32, 32);
 
             var pacman = new ImageObject("pacman");
-            pacman.Translate(256, 256);
-            pacman.Resize(1.1f);
+            pacman.Resize(0.65f);
+            pacman.Translate(256,300);
             AddComponent(pacman);
 
             var pacman2 = new SpriteObject("pacman", 8);

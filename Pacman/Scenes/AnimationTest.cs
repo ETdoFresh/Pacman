@@ -20,7 +20,7 @@ namespace Pacman.Scenes
 
             Translate(35, 35);
 
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 5; i++)
             {
                 DisplayObject ghostGroup = new DisplayObject();
 
@@ -42,6 +42,7 @@ namespace Pacman.Scenes
             var pinky = (_allSprites[1] as DisplayObject)[0] as AnimatedSpriteObject;
             var inky = (_allSprites[2] as DisplayObject)[0] as AnimatedSpriteObject;
             var clyde = (_allSprites[3] as DisplayObject)[0] as AnimatedSpriteObject;
+            var eyesBody = (_allSprites[4] as DisplayObject)[0] as AnimatedSpriteObject;
 
             blinky.AddSequence("BlinkyUp", 8, 8, 250);
             blinky.Tint = Color.Red;
@@ -55,6 +56,7 @@ namespace Pacman.Scenes
             clyde.AddSequence("ClydeUp", 8, 8, 250);
             clyde.Tint = Color.Orange;
 
+            eyesBody.RemoveSelf();
 
             var frightenedGroup = new DisplayObject();
             var frightenedGhost = new AnimatedSpriteObject("pacman");
@@ -86,7 +88,7 @@ namespace Pacman.Scenes
             powerPellet.AddSequence("PowerPellet", 27, 1, 10000);
 
             var pacmanDie = new AnimatedSpriteObject("pacman");
-            pacmanDie.AddSequence("PacmanDie", 36, 20, 1500);
+            pacmanDie.AddSequence("PacmanDie", 36, 45, 2000, 1);
             pacmanDie.Tint = Color.Yellow;
 
             _allSprites.Add(frightenedGroup);
@@ -112,6 +114,8 @@ namespace Pacman.Scenes
             if (InputHelper.IsPressed(Keys.T) || InputHelper.IsPressed(Keys.Q))
             {
                 Stage.GotoScene("Menu");
+                Stage.UnloadScene(this);
+                Stage.LoadScene(new AnimationTest());
             }
             else if (InputHelper.IsPressed(Keys.Q) || InputHelper.IsPressed(Keys.Escape))
             {

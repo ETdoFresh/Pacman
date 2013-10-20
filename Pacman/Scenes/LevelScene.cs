@@ -172,21 +172,10 @@ namespace Pacman.Scenes
             _tileGrid.AddComponent(_mouse);
 
             _debugHelper = new DebugHelper();
-            _debugHelper.AddLine("Self Position: ", Position);
-            _debugHelper.AddLine("TileGrid Position", _tileGrid.Position);
-            _debugHelper.AddLine("Pacman Position: ", _pacman.Position);
-            _debugHelper.AddLine("Pacman Tile Position: ", _pacman.TilePosition);
-            _debugHelper.AddLine("Pacman Orientation: ", _pacman.Orientation);
-            _debugHelper.AddLine("Pacman Rotation: ", _pacman.Rotation);
-            _debugHelper.AddLine("Pacman Velocity: ", _pacman.Velocity);
-            _debugHelper.AddLine("Blinky Tile Position: ", _blinky.TilePosition);
-            _debugHelper.AddLine("Blinky Target Position: ", _blinky.Target.Position);
-            _debugHelper.AddLine("Blinky Immediate Target Position: ", _blinky.ImmediateTarget.Position);
-            _debugHelper.AddLine("Blinky Direction: ", _blinky.Direction);
             _debugHelper.AddLine("Mouse Position: ", _mouse.Position);
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);
-            AddComponent(_debugHelper);
+            //AddComponent(_debugHelper);
 
             Pause();
             PerformWithDelay(2000, Resume);
@@ -499,8 +488,15 @@ namespace Pacman.Scenes
                 _pauseTimer.ClockReachedLimit += OnFrightenedEatenResume;
                 AddComponent(_pauseTimer);
             }
-            //else if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
-            //     RestartLevel();
+            else if (ghost.CurrentGhostState == GhostState.NORMAL)
+            {
+                _pacman.Die();
+                _blinky.RemoveSelf();
+                _pinky.RemoveSelf();
+                _inky.RemoveSelf();
+                _clyde.RemoveSelf();
+                PerformWithDelay(3000, RestartLevel);
+            }
         }
 
         private void OnFrightenedEatenResume()
