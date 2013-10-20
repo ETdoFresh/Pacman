@@ -41,16 +41,14 @@ namespace Pacman.Scenes
         Ghost _eatenGhost;
         LevelSettings _levelSettings;
         BonusFruit _bonusFruit;
-        TextObject _readyText;
-        Timer _readyTextTimer;
         Score _score;
-        private TextObject _pointsText;
+        TextObject _ghostScoreText;
 
         public LevelScene()
             : base("Level")
         {
             _levelSettings = new LevelSettings(1);
-            LoadLevel();
+            StartLevel();
         }
 
         public override void LoadContent()
@@ -92,7 +90,7 @@ namespace Pacman.Scenes
             }
         }
 
-        private void LoadLevel()
+        private void StartLevel()
         {
             _random = new Random();
             _tileGrid = new TileGrid(LevelData.outerWallData.GetLength(1), LevelData.outerWallData.GetLength(0), tileWidth, tileHeight);
@@ -104,6 +102,14 @@ namespace Pacman.Scenes
             _score = new Score();
             AddComponent(_score);
 
+            ShowReadyText();
+            ShowPlayerOneText();
+
+            PerformWithDelay(2000, LoadLevel);
+        }
+
+        private void LoadLevel()
+        {
             _pacman = PacmanObject.Create(_tileGrid);
             _blinky = Blinky.Create(_tileGrid, _pacman);
             _pinky = Pinky.Create(_tileGrid, _pacman);
@@ -158,8 +164,6 @@ namespace Pacman.Scenes
             _collisionManager.Collision += OnCollision;
             _tileGrid.AddComponent(_collisionManager);
 
-            ShowReadyText();
-
             _mouse = new CircleObject(15 / 2);
             _mouse.Translate(400, 25);
             _mouse.Alpha = 0.75f;
@@ -183,34 +187,47 @@ namespace Pacman.Scenes
             _debugHelper.AddLine("Mouse Tile Position: ", _mouseTilePosition);
             _debugHelper.AddLine("Mouse Cursor Position", InputHelper.MousePosition);
             AddComponent(_debugHelper);
+
+            Pause();
+            PerformWithDelay(2000, Resume);
+        }
+
+        private void Pause()
+        {
+            _tileGrid.Enabled = false;
+        }
+
+        private void Resume()
+        {
+            _tileGrid.Enabled = true;
+        }
+
+        private void ShowPlayerOneText()
+        {
+            var playerText = new TextObject("PLAYER ONE");
+            playerText.Translate(_tileGrid.GetPosition(13.5f, 11));
+            playerText.Tint = Color.Cyan;
+            playerText.Resize(3);
+            _tileGrid.AddComponent(playerText);
+            PerformWithDelay(2000, playerText.RemoveSelf);
         }
 
         private void ShowReadyText()
         {
-            if (_readyText != null) 
-                _readyText.RemoveSelf();
-
-            _readyText = new TextObject("READY!");
-            _readyText.Translate(_tileGrid.GetPosition(13.5f, 17));
-            _readyText.Tint = Color.Yellow;
-            _readyText.Resize(3);
-
-            if (_readyTextTimer != null)
-                _readyTextTimer.RemoveSelf();
-
-            _readyTextTimer = new Timer(1000);
-
-            _tileGrid.AddComponent(_readyText);
-            AddComponent(_readyTextTimer);
-            _readyTextTimer.ClockReachedLimit += new Timer.ClockReachedLimitHandler(OnReadyTextTimer);
+            var readyText = new TextObject("READY!");
+            readyText.Translate(_tileGrid.GetPosition(13.5f, 17));
+            readyText.Tint = Color.Yellow;
+            readyText.Resize(3);
+            _tileGrid.AddComponent(readyText);
+            PerformWithDelay(4000, readyText.RemoveSelf);
         }
 
-        void OnReadyTextTimer()
+        private void PerformWithDelay(int delay, Action action)
         {
-            _readyTextTimer.RemoveSelf();
-            _readyText.RemoveSelf();
-            _readyTextTimer = null;
-            _readyText = null;
+            Timer timer = new Timer(delay);
+            AddComponent(timer);
+            timer.ClockReachedLimit += new Timer.ClockReachedLimitHandler(action);
+            timer.ClockReachedLimit += timer.RemoveSelf;
         }
 
         private void RemoveAllItems()
@@ -237,7 +254,7 @@ namespace Pacman.Scenes
         private void RestartLevel()
         {
             RemoveAllItems();
-            LoadLevel();
+            StartLevel();
             LoadContent();
         }
 
@@ -462,13 +479,13 @@ namespace Pacman.Scenes
         {
             if (ghost.IsFrightened)
             {
-                int newScore = _score.AddForEatingGhost();
-                _pointsText = new TextObject(newScore.ToString(),"Font/PacmanFont2");
-                _pointsText.Resize(3.25f);
-                _pointsText.Translate(ghost.Position);
-                _pointsText.Tint = Color.Cyan;
-                _tileGrid.AddComponent(_pointsText);
-                _pointsText.Update(null);
+                int ghostScore = _score.AddForEatingGhost();
+                _ghostScoreText = new TextObject(ghostScore.ToString(), "Font/PacmanFont2");
+                _ghostScoreText.Resize(3.25f);
+                _ghostScoreText.Translate(ghost.Position);
+                _ghostScoreText.Tint = Color.Cyan;
+                _tileGrid.AddComponent(_ghostScoreText);
+                _ghostScoreText.Update(null);
                 ghost.ChangeState(GhostState.EYES);
                 ghost.ChangeState(AIState.EYES);
                 _eatenGhost = ghost;
@@ -483,12 +500,12 @@ namespace Pacman.Scenes
                 AddComponent(_pauseTimer);
             }
             //else if (ghost.CurrentState == GhostState.CHASE || ghost.CurrentState == GhostState.SCATTER)
-           //     RestartLevel();
+            //     RestartLevel();
         }
 
         private void OnFrightenedEatenResume()
         {
-            _pointsText.RemoveSelf();
+            _ghostScoreText.RemoveSelf();
             _tileGrid.Enabled = true;
             _eatenGhost.Visible = true;
             _pacman.Visible = true;
@@ -522,8 +539,8 @@ namespace Pacman.Scenes
 
         private void OnFirstBonusFruit()
         {
-            Debug.WriteLine("First bonus fruit appears");
-            _bonusFruit = new BonusFruit(_tileGrid);
+            _bonusFruit = new BonusFruit(_tileGrid, _pacman);
+            _bonusFruit.Eaten += OnEatBonusFruit;
             _tileGrid.AddComponent(_bonusFruit);
             _bonusFruitCounter.SetNewLimit(170);
             _bonusFruitCounter.DotLimitReached -= OnFirstBonusFruit;
@@ -532,11 +549,23 @@ namespace Pacman.Scenes
 
         private void OnSecondBonusFruit()
         {
-            Debug.WriteLine("Second bonus fruit appears");
-            _bonusFruit = new BonusFruit(_tileGrid);
+            _bonusFruit = new BonusFruit(_tileGrid, _pacman);
+            _bonusFruit.Eaten += OnEatBonusFruit;
             _tileGrid.AddComponent(_bonusFruit);
             _bonusFruitCounter.SetNewLimit(1000);
             _bonusFruitCounter.DotLimitReached -= OnSecondBonusFruit;
+        }
+
+        private void OnEatBonusFruit()
+        {
+            _score.Add(_levelSettings.BonusPoint);
+            var bonusScoreText = new TextObject(_levelSettings.BonusPoint.ToString(), "Font/PacmanFont2");
+            bonusScoreText.Resize(3.25f);
+            bonusScoreText.Translate(_bonusFruit.Position);
+            bonusScoreText.Tint = Color.LightPink;
+            _tileGrid.AddComponent(bonusScoreText);
+            PerformWithDelay(3000, bonusScoreText.RemoveSelf);
+            _bonusFruit.RemoveSelf();
         }
     }
 }

@@ -85,11 +85,16 @@ namespace Pacman.Scenes
             var powerPellet = new AnimatedSpriteObject("pacman");
             powerPellet.AddSequence("PowerPellet", 27, 1, 10000);
 
+            var pacmanDie = new AnimatedSpriteObject("pacman");
+            pacmanDie.AddSequence("PacmanDie", 36, 20, 1500);
+            pacmanDie.Tint = Color.Yellow;
+
             _allSprites.Add(frightenedGroup);
             _allSprites.Add(frightenedGroup1);
             _allSprites.Add(pacman);
             _allSprites.Add(pellet);
             _allSprites.Add(powerPellet);
+            _allSprites.Add(pacmanDie);
 
             var itemsPerRow = 16;
             var spacing = 70;

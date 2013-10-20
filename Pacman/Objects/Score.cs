@@ -48,7 +48,7 @@ namespace Pacman.Objects
             if (_prevScore != _score)
             {
                 _prevScore = _score;
-                _scoreText.Text = string.Format("Score: {0}", _score);
+                _scoreText.Text = string.Format("1UP: {0}", _score);
             }
 
             base.Update(gameTime);

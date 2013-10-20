@@ -22,6 +22,12 @@ namespace Pacman.Objects
             Start();
         }
 
+        public override void RemoveSelf()
+        {
+            ClockReachedLimit = null;
+            base.RemoveSelf();
+        }
+
         public void Stop()
         {
             Enabled = false;
